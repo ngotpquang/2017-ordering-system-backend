@@ -42,7 +42,7 @@ public class RateType {
         this.name = name;
     }
 
-    @OneToMany(mappedBy = "rate_type")
+    @OneToMany(mappedBy = "rateType")
     public Set<Rate> getRates() {
         return rates;
     }

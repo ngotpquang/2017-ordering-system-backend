@@ -1,5 +1,7 @@
 package com.alfrescos.orderingsystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.persistence.Table;
 import java.util.Set;
@@ -59,7 +61,8 @@ public class FoodAndDrinkType {
         this.detail = detail;
     }
 
-    @OneToMany(mappedBy = "food_and_drink_type")
+    @JsonIgnore
+    @OneToMany(mappedBy = "foodAndDrinkType")
     public Set<FoodAndDrink> getFoodAndDrinks() {
         return foodAndDrinks;
     }

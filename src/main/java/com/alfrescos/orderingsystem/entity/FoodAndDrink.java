@@ -1,5 +1,8 @@
 package com.alfrescos.orderingsystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import javax.persistence.Table;
 
@@ -8,6 +11,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "food_and_drink")
+//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class FoodAndDrink {
     private Long id;
     private String name;
@@ -64,6 +68,7 @@ public class FoodAndDrink {
     }
 
     @ManyToOne
+//    @JsonIgnore
     @JoinColumn(name = "food_and_drink_type_id", nullable = false)
     public FoodAndDrinkType getFoodAndDrinkType() {
         return foodAndDrinkType;
