@@ -20,7 +20,13 @@ public class FoodAndDrinkService {
 
     @GetMapping(value = "/{foodAndDrinkId}")
     public ResponseEntity<FoodAndDrink> getFoodAndDrinkById(@PathVariable Long foodAndDrinkId) {
-        return new ResponseEntity<>(foodAndDrinkRepository.findById(foodAndDrinkId), HttpStatus.OK);
+        FoodAndDrink foodAndDrink = foodAndDrinkRepository.findById(foodAndDrinkId);
+        System.out.print(foodAndDrink);
+        if (foodAndDrink != null){
+            return new ResponseEntity<>(foodAndDrink, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
     }
 
     @GetMapping(value = "/search")

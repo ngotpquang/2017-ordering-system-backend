@@ -21,12 +21,13 @@ public class User {
     private String detail;
     private float membershipPoint;
     private Role role;
+    private String token;
     private Set<WorkingTime> workingTimes;
 
     public User() {
     }
 
-    public User(String id, String name, String password, byte gender, Date dateOfBirth, String avatar, String detail, float membershipPoint, Role role) {
+    public User(String id, String name, String password, byte gender, Date dateOfBirth, String avatar, String detail, float membershipPoint, Role role, String token) {
         this.id = id;
         this.name = name;
         this.password = password;
@@ -36,9 +37,10 @@ public class User {
         this.detail = detail;
         this.membershipPoint = membershipPoint;
         this.role = role;
+        this.token = token;
     }
 
-    public User(String id, String name, String password, byte gender, Date dateOfBirth, String avatar, String detail, float membershipPoint, Role role, Set<WorkingTime> workingTimes) {
+    public User(String id, String name, String password, byte gender, Date dateOfBirth, String avatar, String detail, float membershipPoint, Role role, String token, Set<WorkingTime> workingTimes) {
         this.id = id;
         this.name = name;
         this.password = password;
@@ -49,6 +51,7 @@ public class User {
         this.membershipPoint = membershipPoint;
         this.role = role;
         this.workingTimes = workingTimes;
+        this.token = token;
     }
 
     @Id
@@ -131,6 +134,15 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    @Column(name = "token")
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     @OneToMany(mappedBy = "user")

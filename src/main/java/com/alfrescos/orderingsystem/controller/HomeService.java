@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(value = "/")
-public class TestService {
+public class HomeService {
 
     @GetMapping
     public ResponseEntity<String> testGet() {
-        return new ResponseEntity<>("Successfully", HttpStatus.OK);
+        return new ResponseEntity<>("Ordering System Web Service is running. Created by Liger.", HttpStatus.OK);
     }
 }
