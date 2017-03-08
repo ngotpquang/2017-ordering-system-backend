@@ -3,8 +3,13 @@ package com.alfrescos.orderingsystem.entity;
  * Created by Liger on 27-Feb-17.
  */
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import javax.persistence.Table;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -12,7 +17,7 @@ import java.util.Set;
 public class Role {
     private Long id;
     private String name;
-    private Set<User> users;
+    private List<Permission> permissionList;
 
     public Role() {
     }
@@ -25,7 +30,6 @@ public class Role {
     public Role(Long id, String name, Set<User> users) {
         this.id = id;
         this.name = name;
-        this.users = users;
     }
 
     @Id
@@ -48,11 +52,13 @@ public class Role {
     }
 
     @OneToMany(mappedBy = "role")
-    public Set<User> getUsers() {
-        return users;
+    @LazyCollection(LazyCollectionOption.TRUE)
+    @JsonIgnore
+    public List<Permission> getPermissionList() {
+        return permissionList;
     }
 
-    public void setUsers(Set<User> users) {
-        this.users = users;
+    public void setPermissionList(List<Permission> permissionList) {
+        this.permissionList = permissionList;
     }
 }

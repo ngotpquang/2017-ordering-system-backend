@@ -14,7 +14,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "api/v1/food_and_drink")
-public class FoodAndDrinkService {
+public class FoodAndDrinkController {
     @Autowired
     private FoodAndDrinkRepository foodAndDrinkRepository;
 
@@ -35,7 +35,7 @@ public class FoodAndDrinkService {
     }
 
     @GetMapping(value = "/all")
-    public ResponseEntity<List<FoodAndDrink>> getAllFoodAndDrink() {
+    public ResponseEntity<List<FoodAndDrink>> getAllFoodAndDrink(){
         return new ResponseEntity<>(foodAndDrinkRepository.findAll(), HttpStatus.OK);
     }
 }

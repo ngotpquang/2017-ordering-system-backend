@@ -1,18 +1,25 @@
 package com.alfrescos.orderingsystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import javax.persistence.Table;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 /**
  * Created by Liger on 28-Feb-17.
  */
 @Entity
-@Table (name="\"user\"")
+@Table(name = "\"user\"")
 public class User {
-    private String id;
+    private Long id;
+    private String email;
     private String name;
     private String password;
     private byte gender;
@@ -20,47 +27,47 @@ public class User {
     private String avatar;
     private String detail;
     private float membershipPoint;
-    private Role role;
     private String token;
     private Set<WorkingTime> workingTimes;
+    private List<Permission> permissionList = new ArrayList<>();
+    private String accountCode;
 
     public User() {
     }
 
-    public User(String id, String name, String password, byte gender, Date dateOfBirth, String avatar, String detail, float membershipPoint, Role role, String token) {
+    public User(Long id, String email, String name, String password) {
         this.id = id;
+        this.email = email;
         this.name = name;
         this.password = password;
-        this.gender = gender;
-        this.dateOfBirth = dateOfBirth;
-        this.avatar = avatar;
-        this.detail = detail;
-        this.membershipPoint = membershipPoint;
-        this.role = role;
-        this.token = token;
-    }
-
-    public User(String id, String name, String password, byte gender, Date dateOfBirth, String avatar, String detail, float membershipPoint, Role role, String token, Set<WorkingTime> workingTimes) {
-        this.id = id;
-        this.name = name;
-        this.password = password;
-        this.gender = gender;
-        this.dateOfBirth = dateOfBirth;
-        this.avatar = avatar;
-        this.detail = detail;
-        this.membershipPoint = membershipPoint;
-        this.role = role;
-        this.workingTimes = workingTimes;
-        this.token = token;
     }
 
     @Id
-    public String getId() {
+    @GeneratedValue
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
+    }
+
+    @Column(name = "email", nullable = false)
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    @Column(name = "account_code")
+    public String getAccountCode() {
+        return accountCode;
+    }
+
+    public void setAccountCode(String accountCode) {
+        this.accountCode = accountCode;
     }
 
     @Column(name = "name", nullable = false)
@@ -126,16 +133,6 @@ public class User {
         this.membershipPoint = membershipPoint;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "role_id", nullable = false)
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
     @Column(name = "token")
     public String getToken() {
         return token;
@@ -152,5 +149,16 @@ public class User {
 
     public void setWorkingTimes(Set<WorkingTime> workingTimes) {
         this.workingTimes = workingTimes;
+    }
+
+    @OneToMany(mappedBy = "user")
+    @LazyCollection(LazyCollectionOption.TRUE)
+    @JsonIgnore
+    public List<Permission> getPermissionList() {
+        return permissionList;
+    }
+
+    public void setPermissionList(List<Permission> permissionList) {
+        this.permissionList = permissionList;
     }
 }
