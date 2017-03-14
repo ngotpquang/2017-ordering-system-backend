@@ -29,4 +29,6 @@ public interface UserService {
 
     List<Role> getAllRoleByUserId(Long id);
 
+    User updatePassword(User user);
+
 }

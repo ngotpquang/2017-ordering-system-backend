@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/api/v1/auth")
+@RequestMapping(value = "/api/auth")
 public class AuthenticationRestController {
 
     @Autowired
@@ -40,18 +40,15 @@ public class AuthenticationRestController {
 
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @PostMapping(value = "/login")
     public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody JwtAuthenticationRequest authenticationRequest) throws AuthenticationException {
-        User user = userService.findByEmailAndPassword(authenticationRequest.getEmail(), authenticationRequest.getPassword());
-//        || !passwordEncoder.matches(authenticationRequest.getPassword(), user.getPassword())
-        if (user == null) {
+        System.out.println(authenticationRequest.getEmail());
+        User user = userService.findByEmail(authenticationRequest.getEmail());
+        if (user == null || !passwordEncoder.matches(authenticationRequest.getPassword(), user.getPassword())) {
             throw new AuthenticationCredentialsNotFoundException("Account not found!");
         }
         final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getAccountCode());
         final String token = this.jwtTokenUtil.generateToken(userDetails);
-        System.out.println("Validate token: " + this.jwtTokenUtil.validateToken(token, userDetails));
-        System.out.println("Expiration date: " + this.jwtTokenUtil.getExpirationDateFromToken(token));
-        System.out.println("Created date: " + this.jwtTokenUtil.getCreatedDateFromToken(token));
         return new ResponseEntity<Object>(new JwtAuthenticationResponse(token), HttpStatus.OK);
     }
 

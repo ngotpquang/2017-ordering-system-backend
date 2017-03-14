@@ -1,8 +1,11 @@
 package com.alfrescos.orderingsystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.persistence.Table;
@@ -16,6 +19,8 @@ import java.util.Set;
  * Created by Liger on 28-Feb-17.
  */
 @Entity
+@JsonFilter("filter.User")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Table(name = "\"user\"")
 public class User {
     private Long id;
@@ -31,6 +36,8 @@ public class User {
     private Set<WorkingTime> workingTimes;
     private List<Permission> permissionList = new ArrayList<>();
     private String accountCode;
+    private byte[] avatarContent;
+//    private boolean ignoreJoin;
 
     public User() {
     }
@@ -61,7 +68,7 @@ public class User {
         this.email = email;
     }
 
-    @Column(name = "account_code")
+    @Column(name = "account_code", nullable = false)
     public String getAccountCode() {
         return accountCode;
     }
@@ -142,7 +149,8 @@ public class User {
         this.token = token;
     }
 
-    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<WorkingTime> getWorkingTimes() {
         return workingTimes;
     }
@@ -151,7 +159,7 @@ public class User {
         this.workingTimes = workingTimes;
     }
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.TRUE)
     @JsonIgnore
     public List<Permission> getPermissionList() {
@@ -160,5 +168,30 @@ public class User {
 
     public void setPermissionList(List<Permission> permissionList) {
         this.permissionList = permissionList;
+    }
+
+    @Lob
+    @Column(name = "avatar_content", columnDefinition = "varbinary(max)")
+    public byte[] getAvatarContent() {
+        return avatarContent;
+    }
+
+    public void setAvatarContent(byte[] avatarContent) {
+        this.avatarContent = avatarContent;
+    }
+
+//    @JsonIgnore
+//    public boolean isIgnoreJoin() {
+//        return ignoreJoin;
+//    }
+//    public void setIgnoreJoin(boolean ignoreJoin) {
+//        this.ignoreJoin = ignoreJoin;
+//    }
+
+
+    @Override
+    public String toString() {
+        return this.id + "\t" + this.email + "\t" + this.name + "\t" + this.gender + "\t"
+                + this.dateOfBirth + "\t" + this.password + "\t" + this.accountCode + "\n";
     }
 }

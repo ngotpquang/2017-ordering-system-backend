@@ -10,11 +10,5 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class FoodAndDrinkServiceImpl implements FoodAndDrinkService {
-    @Autowired
-    private FoodAndDrinkRepository foodAndDrinkRepository;
 
-    @Override
-    public FoodAndDrink getFoodAndDrink(Long id) {
-        return foodAndDrinkRepository.findOne(id);
-    }
 }

@@ -92,4 +92,14 @@ public class UserServiceImpl implements UserService {
         List<Role> list =  this.userRepository.findOne(id).getPermissionList().stream().map(x -> x.getRole()).collect(Collectors.toList());
         return list;
     }
+
+    @Override
+    public User updatePassword(User user) {
+        User oldUser = this.userRepository.findByAccountCode(user.getAccountCode());
+        if(checkString(user.getPassword())) {
+            oldUser.setPassword(user.getPassword());
+        }
+//        oldUser.setIgnoreJoin(user.isIgnoreJoin());
+        return this.userRepository.save(oldUser);
+    }
 }

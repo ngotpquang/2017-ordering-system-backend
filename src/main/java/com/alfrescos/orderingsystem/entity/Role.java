@@ -51,7 +51,7 @@ public class Role {
         this.name = name;
     }
 
-    @OneToMany(mappedBy = "role")
+    @OneToMany(mappedBy = "role", fetch = FetchType.EAGER)
     @LazyCollection(LazyCollectionOption.TRUE)
     @JsonIgnore
     public List<Permission> getPermissionList() {

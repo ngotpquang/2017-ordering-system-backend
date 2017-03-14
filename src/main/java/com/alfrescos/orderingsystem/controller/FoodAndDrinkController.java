@@ -13,16 +13,15 @@ import java.util.List;
  * Created by Liger on 05-Mar-17.
  */
 @RestController
-@RequestMapping(value = "api/v1/food_and_drink")
+@RequestMapping(value = "api/food-and-drink")
 public class FoodAndDrinkController {
     @Autowired
     private FoodAndDrinkRepository foodAndDrinkRepository;
 
     @GetMapping(value = "/{foodAndDrinkId}")
-    public ResponseEntity<FoodAndDrink> getFoodAndDrinkById(@PathVariable Long foodAndDrinkId) {
-        FoodAndDrink foodAndDrink = foodAndDrinkRepository.findById(foodAndDrinkId);
-        System.out.print(foodAndDrink);
-        if (foodAndDrink != null){
+    public ResponseEntity<?> getFoodAndDrinkById(@PathVariable Long foodAndDrinkId) {
+        FoodAndDrink foodAndDrink = foodAndDrinkRepository.findOne(foodAndDrinkId);
+        if (foodAndDrink != null) {
             return new ResponseEntity<>(foodAndDrink, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -30,12 +29,22 @@ public class FoodAndDrinkController {
     }
 
     @GetMapping(value = "/search")
-    public ResponseEntity<List<FoodAndDrink>> getFoodAndDrinkByName(@RequestParam String name) {
-        return new ResponseEntity<>(foodAndDrinkRepository.findByName(name), HttpStatus.OK);
+    public ResponseEntity<?> getFoodAndDrinkByName(@RequestParam String name) {
+        List<FoodAndDrink> foodAndDrinkList = foodAndDrinkRepository.findByName(name);
+        if (foodAndDrinkList.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(foodAndDrinkList, HttpStatus.OK);
+        }
     }
 
     @GetMapping(value = "/all")
-    public ResponseEntity<List<FoodAndDrink>> getAllFoodAndDrink(){
-        return new ResponseEntity<>(foodAndDrinkRepository.findAll(), HttpStatus.OK);
+    public ResponseEntity<?> getAllFoodAndDrink() {
+        Iterable<FoodAndDrink> foodAndDrinkList = foodAndDrinkRepository.findAll();
+        if (!foodAndDrinkList.iterator().hasNext()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(foodAndDrinkList, HttpStatus.OK);
+        }
     }
 }

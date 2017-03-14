@@ -70,7 +70,7 @@ public class SocialAccountController {
             }
             user.setGender((byte) (userSocial.getGender().equals("male") ? 0 : 1));
             user.setName(userSocial.getFirstName() + " " + userSocial.getMiddleName() + " " + userSocial.getLastName());
-            user.setName(userSocial.getName());
+//            user.setName(userSocial.getName());
             user.setAvatar("http://graph.facebook.com/" + userSocial.getId() + "/picture?type=square");
             User newUser = userService.create(user);
 
