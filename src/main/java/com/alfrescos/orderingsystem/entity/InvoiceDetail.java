@@ -14,19 +14,22 @@ public class InvoiceDetail {
     private Invoice invoice;
     private FoodAndDrink foodAndDrink;
     private int quantity;
+    private float price;
     private float amount;
+    private boolean isMade;
     private Date orderingTime;
 
     public InvoiceDetail() {
     }
 
-    public InvoiceDetail(Long id, Invoice invoice, FoodAndDrink foodAndDrink, int quantity, float amount, Date orderingTime) {
+    public InvoiceDetail(Long id, Invoice invoice, FoodAndDrink foodAndDrink, int quantity, float price, Date orderingTime) {
         this.id = id;
         this.invoice = invoice;
-        this.foodAndDrink = this.foodAndDrink;
+        this.foodAndDrink = foodAndDrink;
         this.quantity = quantity;
-        this.amount = amount;
+        this.price = price;
         this.orderingTime = orderingTime;
+        this.isMade = false;
     }
 
     @Id
@@ -68,6 +71,15 @@ public class InvoiceDetail {
         this.quantity = quantity;
     }
 
+    @Column(name = "price", nullable = false)
+    public float getPrice() {
+        return price;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
+    }
+
     @Column(name = "amount", nullable = false)
     public float getAmount() {
         return amount;
@@ -84,5 +96,14 @@ public class InvoiceDetail {
 
     public void setOrderingTime(Date orderingTime) {
         this.orderingTime = orderingTime;
+    }
+
+    @Column(name = "is_made", nullable = false)
+    public boolean isMade() {
+        return isMade;
+    }
+
+    public void setMade(boolean made) {
+        isMade = made;
     }
 }
