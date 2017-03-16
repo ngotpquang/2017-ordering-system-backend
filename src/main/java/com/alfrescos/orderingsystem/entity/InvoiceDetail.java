@@ -44,6 +44,7 @@ public class InvoiceDetail {
         this.id = id;
     }
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "invoice_id", nullable = false)
     public Invoice getInvoice() {

@@ -1,23 +1,15 @@
 package com.alfrescos.orderingsystem.controller;
 
+import com.alfrescos.orderingsystem.common.InvoiceDetailUtil;
 import com.alfrescos.orderingsystem.common.UserUtil;
 import com.alfrescos.orderingsystem.entity.*;
 import com.alfrescos.orderingsystem.service.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ser.FilterProvider;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -59,18 +51,8 @@ public class InvoiceController {
         Table table = tableService.findById(tableId);
         Invoice invoice = invoiceService.create(new Invoice(invoiceId, customer, customer, table));
         Date timeOrdered = new Date();
-        boolean isInvoiceDetailAllCreated = true;
-        for (int i = 1; i <= numberOfInvoiceDetails; i++) {
-            String foodAndDrinkId = data.get("foodAndDrinkId" + i).trim();
-            int quantity = Integer.parseInt(data.get("quantity" + i).trim());
-            FoodAndDrink foodAndDrink = foodAndDrinkService.findById(Long.parseLong(foodAndDrinkId));
-            InvoiceDetail invoiceDetail = invoiceDetailService.create(new InvoiceDetail(invoice, foodAndDrink, quantity, timeOrdered, foodAndDrink.getPrice()));
-            if (invoiceDetail == null) {
-                isInvoiceDetailAllCreated = false;
-                break;
-            }
-        }
-        if (isInvoiceDetailAllCreated && invoice != null) {
+//        InvoiceDetailUtil.addInvoiceDetail(numberOfInvoiceDetails, data, invoice, timeOrdered, foodAndDrinkService, invoiceDetailService);
+        if (invoice != null && InvoiceDetailUtil.addInvoiceDetail(numberOfInvoiceDetails, data, invoice, timeOrdered, foodAndDrinkService, invoiceDetailService)) {
             return new ResponseEntity<>("Ordered!", HttpStatus.CREATED);
         } else {
             return new ResponseEntity<>("Failed when created something. Please check again!", HttpStatus.BAD_REQUEST);
