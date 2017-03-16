@@ -26,13 +26,6 @@ public class FoodAndDrinkType {
         this.detail = detail;
     }
 
-    public FoodAndDrinkType(Long id, String name, String detail, Set<FoodAndDrink> foodAndDrinks) {
-        this.id = id;
-        this.name = name;
-        this.detail = detail;
-        this.foodAndDrinks = foodAndDrinks;
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getId() {
