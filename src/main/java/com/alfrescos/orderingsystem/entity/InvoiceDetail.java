@@ -1,5 +1,8 @@
 package com.alfrescos.orderingsystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import javax.persistence.*;
 import javax.persistence.Table;
 import java.util.Date;
@@ -9,27 +12,26 @@ import java.util.Date;
  */
 @Entity
 @Table (name = "invoice_detail")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class InvoiceDetail {
     private Long id;
     private Invoice invoice;
     private FoodAndDrink foodAndDrink;
     private int quantity;
     private float price;
-    private float amount;
     private boolean isMade;
     private Date orderingTime;
 
     public InvoiceDetail() {
     }
 
-    public InvoiceDetail(Long id, Invoice invoice, FoodAndDrink foodAndDrink, int quantity, float price, Date orderingTime) {
-        this.id = id;
+    public InvoiceDetail(Invoice invoice, FoodAndDrink foodAndDrink, int quantity, Date orderingTime, float price) {
         this.invoice = invoice;
         this.foodAndDrink = foodAndDrink;
         this.quantity = quantity;
-        this.price = price;
-        this.orderingTime = orderingTime;
         this.isMade = false;
+        this.orderingTime = orderingTime;
+        this.price = price;
     }
 
     @Id
@@ -80,15 +82,6 @@ public class InvoiceDetail {
         this.price = price;
     }
 
-    @Column(name = "amount", nullable = false)
-    public float getAmount() {
-        return amount;
-    }
-
-    public void setAmount(float amount) {
-        this.amount = amount;
-    }
-
     @Column(name = "ordering_time", nullable = false)
     public Date getOrderingTime() {
         return orderingTime;
@@ -105,5 +98,12 @@ public class InvoiceDetail {
 
     public void setMade(boolean made) {
         isMade = made;
+    }
+
+    @Override
+    public String toString() {
+        return this.getId() + "\t" + this.getFoodAndDrink().getName() + "\t"
+                + this.getQuantity() + "\t" + this.getInvoice().getId() + "\t"
+                + this.getOrderingTime();
     }
 }

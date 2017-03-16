@@ -1,5 +1,7 @@
 package com.alfrescos.orderingsystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.persistence.Table;
 import java.util.Set;
@@ -42,6 +44,7 @@ public class RateType {
         this.name = name;
     }
 
+    @JsonIgnore
     @OneToMany(mappedBy = "rateType")
     public Set<Rate> getRates() {
         return rates;

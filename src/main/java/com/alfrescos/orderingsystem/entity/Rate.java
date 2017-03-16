@@ -1,5 +1,7 @@
 package com.alfrescos.orderingsystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.persistence.Table;
 import java.util.Date;
@@ -68,6 +70,7 @@ public class Rate {
         this.score = score;
     }
 
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "invoice_id", nullable = false)
     public Invoice getInvoice() {

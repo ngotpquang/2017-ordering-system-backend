@@ -19,7 +19,7 @@ import java.util.Set;
  * Created by Liger on 28-Feb-17.
  */
 @Entity
-@JsonFilter("filter.User")
+//@JsonFilter("filter.User")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Table(name = "\"user\"")
 public class User {
@@ -37,6 +37,8 @@ public class User {
     private List<Permission> permissionList = new ArrayList<>();
     private String accountCode;
     private byte[] avatarContent;
+    private Set<Invoice> customerInvoices;
+    private Set<Invoice> staffInvoices;
 //    private boolean ignoreJoin;
 
     public User() {
@@ -86,6 +88,7 @@ public class User {
         this.name = name;
     }
 
+    @JsonIgnore
     @Column(name = "password", nullable = false)
     public String getPassword() {
         return password;
@@ -149,7 +152,6 @@ public class User {
         this.token = token;
     }
 
-    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<WorkingTime> getWorkingTimes() {
         return workingTimes;
@@ -188,6 +190,26 @@ public class User {
 //        this.ignoreJoin = ignoreJoin;
 //    }
 
+
+    @OneToMany(mappedBy = "customerUser")
+    @JsonIgnore
+    public Set<Invoice> getCustomerInvoices() {
+        return customerInvoices;
+    }
+
+    public void setCustomerInvoices(Set<Invoice> customerInvoices) {
+        this.customerInvoices = customerInvoices;
+    }
+
+    @OneToMany(mappedBy = "staffUser")
+    @JsonIgnore
+    public Set<Invoice> getStaffInvoices() {
+        return staffInvoices;
+    }
+
+    public void setStaffInvoices(Set<Invoice> staffInvoices) {
+        this.staffInvoices = staffInvoices;
+    }
 
     @Override
     public String toString() {

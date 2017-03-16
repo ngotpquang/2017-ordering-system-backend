@@ -1,7 +1,7 @@
 package com.alfrescos.orderingsystem.controller;
 
 import com.alfrescos.orderingsystem.entity.FoodAndDrink;
-import com.alfrescos.orderingsystem.repositoty.FoodAndDrinkRepository;
+import com.alfrescos.orderingsystem.service.FoodAndDrinkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,14 +13,15 @@ import java.util.List;
  * Created by Liger on 05-Mar-17.
  */
 @RestController
-@RequestMapping(value = "api/food-and-drink")
+@RequestMapping(value = "/api/food-and-drink")
 public class FoodAndDrinkController {
+
     @Autowired
-    private FoodAndDrinkRepository foodAndDrinkRepository;
+    private FoodAndDrinkService foodAndDrinkservice;
 
     @GetMapping(value = "/{foodAndDrinkId}")
     public ResponseEntity<?> getFoodAndDrinkById(@PathVariable Long foodAndDrinkId) {
-        FoodAndDrink foodAndDrink = foodAndDrinkRepository.findOne(foodAndDrinkId);
+        FoodAndDrink foodAndDrink = foodAndDrinkservice.findById(foodAndDrinkId);
         if (foodAndDrink != null) {
             return new ResponseEntity<>(foodAndDrink, HttpStatus.OK);
         } else {
@@ -30,7 +31,7 @@ public class FoodAndDrinkController {
 
     @GetMapping(value = "/search")
     public ResponseEntity<?> getFoodAndDrinkByName(@RequestParam String name) {
-        List<FoodAndDrink> foodAndDrinkList = foodAndDrinkRepository.findByName(name);
+        List<FoodAndDrink> foodAndDrinkList = foodAndDrinkservice.findByName(name);
         if (foodAndDrinkList.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
@@ -40,7 +41,7 @@ public class FoodAndDrinkController {
 
     @GetMapping(value = "/all")
     public ResponseEntity<?> getAllFoodAndDrink() {
-        Iterable<FoodAndDrink> foodAndDrinkList = foodAndDrinkRepository.findAll();
+        Iterable<FoodAndDrink> foodAndDrinkList = foodAndDrinkservice.findAll();
         if (!foodAndDrinkList.iterator().hasNext()){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {

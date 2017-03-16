@@ -89,8 +89,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<Role> getAllRoleByUserId(Long id) {
-        List<Role> list =  this.userRepository.findOne(id).getPermissionList().stream().map(x -> x.getRole()).collect(Collectors.toList());
-        return list;
+        return this.userRepository.findOne(id).getPermissionList().stream().map(x -> x.getRole()).collect(Collectors.toList());
     }
 
     @Override

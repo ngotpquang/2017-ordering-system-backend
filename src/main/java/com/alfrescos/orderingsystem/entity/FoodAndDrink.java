@@ -68,7 +68,6 @@ public class FoodAndDrink {
     }
 
     @ManyToOne
-//    @JsonIgnore
     @JoinColumn(name = "food_and_drink_type_id", nullable = false)
     public FoodAndDrinkType getFoodAndDrinkType() {
         return foodAndDrinkType;

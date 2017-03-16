@@ -1,5 +1,7 @@
 package com.alfrescos.orderingsystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -46,6 +48,7 @@ public class Table {
         this.size = size;
     }
 
+    @JsonIgnore
     @OneToMany(mappedBy = "table")
     public Set<Invoice> getInvoices() {
         return invoices;

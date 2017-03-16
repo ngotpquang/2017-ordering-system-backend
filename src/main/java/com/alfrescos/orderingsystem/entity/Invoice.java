@@ -1,6 +1,11 @@
 package com.alfrescos.orderingsystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.Set;
 
@@ -9,6 +14,7 @@ import java.util.Set;
  */
 @Entity
 @javax.persistence.Table(name = "invoice")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Invoice {
     private String id;
     private User customerUser;
@@ -21,14 +27,12 @@ public class Invoice {
     public Invoice() {
     }
 
-    public Invoice(String id, User customerUser, User staffUser, Table table, boolean isPaid, Date payingTime, Set<InvoiceDetail> invoiceDetails) {
+    public Invoice(String id, User customerUser, User staffUser, Table table) {
         this.id = id;
         this.customerUser = customerUser;
         this.staffUser = staffUser;
         this.table = table;
-        this.isPaid = isPaid;
-        this.payingTime = payingTime;
-        this.invoiceDetails = invoiceDetails;
+        this.isPaid = false;
     }
 
     @Id
@@ -79,7 +83,7 @@ public class Invoice {
         isPaid = paid;
     }
 
-    @Column(name = "paying_time", nullable = false)
+    @Column(name = "paying_time")
     public Date getPayingTime() {
         return payingTime;
     }
@@ -88,6 +92,7 @@ public class Invoice {
         this.payingTime = payingTime;
     }
 
+    @JsonIgnore
     @OneToMany(mappedBy = "invoice")
     public Set<InvoiceDetail> getInvoiceDetails() {
         return invoiceDetails;
@@ -96,4 +101,10 @@ public class Invoice {
     public void setInvoiceDetails(Set<InvoiceDetail> invoiceDetails) {
         this.invoiceDetails = invoiceDetails;
     }
+
+//    @Override
+//    public String toString() {
+//        return this.getId() + "\t" + this.getCustomerUser().getAccountCode() + "\t"
+//                + this.getStaffUser().getAccountCode() + "\t" + this.getTable().getSize();
+//    }
 }

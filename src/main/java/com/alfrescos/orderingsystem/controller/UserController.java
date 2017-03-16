@@ -53,7 +53,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<MappingJacksonValue> getAll() {
+    public ResponseEntity<?> getAll() {
         List<User> users = userService.getAll();
         MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(users);
         FilterProvider filters = new SimpleFilterProvider()
