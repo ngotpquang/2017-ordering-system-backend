@@ -22,8 +22,7 @@ public class Rate {
     public Rate() {
     }
 
-    public Rate(Long id, User user, RateType rateType, float score, Invoice invoice, Date rateTime) {
-        this.id = id;
+    public Rate(User user, RateType rateType, float score, Invoice invoice, Date rateTime) {
         this.user = user;
         this.rateType = rateType;
         this.score = score;
@@ -70,7 +69,6 @@ public class Rate {
         this.score = score;
     }
 
-    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "invoice_id", nullable = false)
     public Invoice getInvoice() {
