@@ -12,6 +12,7 @@ public interface InvoiceService {
     public List<Invoice> findAllInvoicesByStaffId(Long staffId);
     public Invoice create(Invoice invoice);
     public Iterable<Invoice> findAll();
-    public void delete(String invoiceId);
-    Invoice findInvoiceByInvoiceId(String invoiceId);
+    public boolean switchVisible(String invoiceId);
+    public Invoice findById(String invoiceId);
+    public boolean setPaid(Long staffId, String invoiceId);
 }

@@ -26,4 +26,34 @@ public class InvoiceDetailServiceImpl implements InvoiceDetailService{
         return invoiceDetailRepository.save(invoiceDetail);
     }
 
+    @Override
+    public void delete(Long invoiceDetailId) {
+        this.invoiceDetailRepository.delete(invoiceDetailId);
+    }
+
+    @Override
+    public void deleteByInvoiceId(String invoiceId) {
+        List<InvoiceDetail> invoiceDetailList = this.invoiceDetailRepository.findAllInvoiceDetailsByInvoiceId(invoiceId);
+        for (InvoiceDetail invoiceDetail:
+             invoiceDetailList) {
+            invoiceDetail.setVisible(false);
+            this.invoiceDetailRepository.delete(invoiceDetail);
+        }
+    }
+
+    @Override
+    public boolean setMade(Long invoiceDetailId) {
+        InvoiceDetail invoiceDetail = this.invoiceDetailRepository.findOne(invoiceDetailId);
+        if (invoiceDetail == null){
+            return false;
+        }
+        invoiceDetail.setMade(true);
+        return this.invoiceDetailRepository.save(invoiceDetail).isMade();
+    }
+
+    @Override
+    public InvoiceDetail findById(Long invoiceDetailId) {
+        return this.invoiceDetailRepository.findOne(invoiceDetailId);
+    }
+
 }

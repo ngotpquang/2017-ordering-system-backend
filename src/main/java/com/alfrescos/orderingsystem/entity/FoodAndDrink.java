@@ -18,6 +18,7 @@ public class FoodAndDrink {
     private float price;
     private String detail;
     private FoodAndDrinkType foodAndDrinkType;
+    private boolean isVisible = true;
 
     public FoodAndDrink() {
     }
@@ -71,6 +72,15 @@ public class FoodAndDrink {
     @JoinColumn(name = "food_and_drink_type_id", nullable = false)
     public FoodAndDrinkType getFoodAndDrinkType() {
         return foodAndDrinkType;
+    }
+
+    @Column(name = "is_visible", nullable = false)
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public void setVisible(boolean visible) {
+        isVisible = visible;
     }
 
     public void setFoodAndDrinkType(FoodAndDrinkType foodAndDrinkType) {

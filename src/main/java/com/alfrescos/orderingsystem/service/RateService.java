@@ -12,7 +12,9 @@ public interface RateService {
     Rate update(Rate rate);
     void delete(Long rateId);
     List<Rate> findAllRatesByUserId(long userId);
+    Iterable<Rate> findAllRates();
     List<Rate> findAllRatesByRateTypeId(long rateTypeId);
     List<Rate> findAllRatesByUserIdAndRateTypeId(long userId, long rateTypeId);
     Rate findRateByInvoiceId(String invoiceId);
+    Rate findById(Long rateId);
 }

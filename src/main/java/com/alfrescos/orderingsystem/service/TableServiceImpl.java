@@ -16,6 +16,13 @@ public class TableServiceImpl implements TableService{
 
     @Override
     public Table findById(Long id) {
-        return tableRepository.findOne(id);
+        return this.tableRepository.findOne(id);
+    }
+
+    @Override
+    public boolean switchVisible(Long id) {
+        Table table = this.tableRepository.findOne(id);
+        table.setVisible(!table.isVisible());
+        return this.tableRepository.save(table).isVisible();
     }
 }

@@ -11,7 +11,7 @@ import java.util.Date;
  * Created by Liger on 28-Feb-17.
  */
 @Entity
-@Table (name = "invoice_detail")
+@Table(name = "invoice_detail")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class InvoiceDetail {
     private Long id;
@@ -19,8 +19,9 @@ public class InvoiceDetail {
     private FoodAndDrink foodAndDrink;
     private int quantity;
     private float price;
-    private boolean isMade;
+    private boolean isMade = false;
     private Date orderingTime;
+    private boolean isVisible = true;
 
     public InvoiceDetail() {
     }
@@ -29,7 +30,6 @@ public class InvoiceDetail {
         this.invoice = invoice;
         this.foodAndDrink = foodAndDrink;
         this.quantity = quantity;
-        this.isMade = false;
         this.orderingTime = orderingTime;
         this.price = price;
     }
@@ -61,7 +61,7 @@ public class InvoiceDetail {
         return foodAndDrink;
     }
 
-    public void setFoodAndDrink (FoodAndDrink foodAndDrink) {
+    public void setFoodAndDrink(FoodAndDrink foodAndDrink) {
         this.foodAndDrink = foodAndDrink;
     }
 
@@ -99,6 +99,15 @@ public class InvoiceDetail {
 
     public void setMade(boolean made) {
         isMade = made;
+    }
+
+    @Column(name = "is_visible", nullable = false)
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public void setVisible(boolean visible) {
+        isVisible = visible;
     }
 
     @Override

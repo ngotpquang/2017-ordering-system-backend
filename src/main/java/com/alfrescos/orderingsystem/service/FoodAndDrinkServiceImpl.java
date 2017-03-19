@@ -17,6 +17,16 @@ public class FoodAndDrinkServiceImpl implements FoodAndDrinkService {
     private FoodAndDrinkRepository foodAndDrinkRepository;
 
     @Override
+    public FoodAndDrink create(FoodAndDrink foodAndDrink) {
+        return this.foodAndDrinkRepository.save(foodAndDrink);
+    }
+
+    @Override
+    public FoodAndDrink update(FoodAndDrink foodAndDrink) {
+        return this.foodAndDrinkRepository.save(foodAndDrink);
+    }
+
+    @Override
     public FoodAndDrink findById(Long id) {
         return foodAndDrinkRepository.findOne(id);
     }
@@ -27,7 +37,19 @@ public class FoodAndDrinkServiceImpl implements FoodAndDrinkService {
     }
 
     @Override
+    public List<FoodAndDrink> findByFoodAndDrinkTypeId(Long typeId) {
+        return this.foodAndDrinkRepository.findByFoodAndDrinkTypeId(typeId);
+    }
+
+    @Override
     public Iterable<FoodAndDrink> findAll() {
         return foodAndDrinkRepository.findAll();
+    }
+
+    @Override
+    public boolean switchVisible(Long id) {
+        FoodAndDrink foodAndDrink = this.foodAndDrinkRepository.findOne(id);
+        foodAndDrink.setVisible(!foodAndDrink.isVisible());
+        return this.foodAndDrinkRepository.save(foodAndDrink).isVisible();
     }
 }

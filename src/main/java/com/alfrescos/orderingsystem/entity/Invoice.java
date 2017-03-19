@@ -20,9 +20,10 @@ public class Invoice {
     private User customerUser;
     private User staffUser;
     private Table table;
-    private boolean isPaid;
+    private boolean isPaid = false;
     private Date payingTime;
     private Set<InvoiceDetail> invoiceDetails;
+    private boolean isVisible = true;
 
     public Invoice() {
     }
@@ -32,7 +33,6 @@ public class Invoice {
         this.customerUser = customerUser;
         this.staffUser = staffUser;
         this.table = table;
-        this.isPaid = false;
     }
 
     @Id
@@ -102,9 +102,18 @@ public class Invoice {
         this.invoiceDetails = invoiceDetails;
     }
 
-//    @Override
-//    public String toString() {
-//        return this.getId() + "\t" + this.getCustomerUser().getAccountCode() + "\t"
-//                + this.getStaffUser().getAccountCode() + "\t" + this.getTable().getSize();
-//    }
+    @Column(name = "is_visible", nullable = false)
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public void setVisible(boolean visible) {
+        isVisible = visible;
+    }
+
+    @Override
+    public String toString() {
+        return this.getId() + "\t" + this.getCustomerUser().getAccountCode() + "\t"
+                + this.getStaffUser().getAccountCode() + "\t" + this.getTable().getSize();
+    }
 }

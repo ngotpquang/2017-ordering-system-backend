@@ -1,5 +1,6 @@
 package com.alfrescos.orderingsystem.service;
 
+import com.alfrescos.orderingsystem.entity.FoodAndDrink;
 import com.alfrescos.orderingsystem.entity.FoodAndDrinkType;
 import com.alfrescos.orderingsystem.repositoty.FoodAndDrinkTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,9 @@ public class FoodAndDrinkTypeServiceImpl implements FoodAndDrinkTypeService{
     }
 
     @Override
-    public void delete(Long foodAndDrinkTypeId) {
-        this.foodAndDrinkTypeRepository.delete(foodAndDrinkTypeId);
+    public boolean switchVisible(Long foodAndDrinkTypeId) {
+        FoodAndDrinkType foodAndDrinkType = this.foodAndDrinkTypeRepository.findOne(foodAndDrinkTypeId);
+        foodAndDrinkType.setVisible(!foodAndDrinkType.isVisible());
+        return this.foodAndDrinkTypeRepository.save(foodAndDrinkType).isVisible();
     }
 }

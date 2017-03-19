@@ -14,6 +14,7 @@ public class Table {
     private Long id;
     private int size;
     private Set<Invoice> invoices;
+    private boolean isVisible = true;
 
     public Table() {
     }
@@ -56,6 +57,15 @@ public class Table {
 
     public void setInvoices(Set<Invoice> invoices) {
         this.invoices = invoices;
+    }
+
+    @Column(name = "is_visible", nullable = false)
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public void setVisible(boolean visible) {
+        isVisible = visible;
     }
 }
 

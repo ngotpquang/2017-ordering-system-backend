@@ -86,20 +86,24 @@ public class UserController {
         if (existUser != null){
             return new ResponseEntity<>("Email has been registered already!", HttpStatus.CONFLICT);
         } else {
-            String[] roleIdList = roleIds.split(",");
-            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            String passwordEncoded = passwordEncoder.encode(password);
-            User user = new User(new Long(0), email, name, passwordEncoded);
-            user.setAccountCode(user.getEmail());
-            user.setAvatar("https://scontent.fdad3-2.fna.fbcdn.net/v/t1.0-9/14192786_1136070546471857_2394520358912381986_n.jpg?oh=43b61e721fa1960b009119b0551a4407&oe=5935E2AE");
-            User newUser = userService.create(user);
-            for (String roleId: roleIdList){
-                Role role = roleService.findById(Long.parseLong(roleId.trim()));
-                permissionService.create(newUser, role);
-            }
-            String token = this.jwtTokenUtil.generateToken(this.userDetailsService.loadUserByUsername(user.getAccountCode()));
+            try {
+                String[] roleIdList = roleIds.split(",");
+                BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+                String passwordEncoded = passwordEncoder.encode(password);
+                User user = new User(new Long(0), email, name, passwordEncoded);
+                user.setAccountCode(user.getEmail());
+                user.setAvatar("https://scontent.fdad3-2.fna.fbcdn.net/v/t1.0-9/14192786_1136070546471857_2394520358912381986_n.jpg?oh=43b61e721fa1960b009119b0551a4407&oe=5935E2AE");
+                User newUser = userService.create(user);
+                for (String roleId: roleIdList){
+                    Role role = roleService.findById(Long.parseLong(roleId.trim()));
+                    permissionService.create(newUser, role);
+                }
+                String token = this.jwtTokenUtil.generateToken(this.userDetailsService.loadUserByUsername(user.getAccountCode()));
 //        emailService.sendWelcomeMailNewMember(newUser.getEmail(), newUser.getFullName());
-            return new ResponseEntity<>(new JwtAuthenticationResponse(token), HttpStatus.CREATED);
+                return new ResponseEntity<>(new JwtAuthenticationResponse(token), HttpStatus.CREATED);
+            } catch (NumberFormatException e){
+                return new ResponseEntity<>("Can't create user due to some error.", HttpStatus.NOT_ACCEPTABLE);
+            }
         }
     }
 
@@ -123,8 +127,13 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(value = "/delete/{userId}")
     public ResponseEntity<?> delete(@PathVariable Long userId) {
-        userService.delete(userId);
-        return new ResponseEntity<>("User deleted successfully!", HttpStatus.OK);
+        User user = userService.findById(userId);
+        if (user != null){
+            userService.switchDeletedStatus(userId);
+            return new ResponseEntity<>("User deleted successfully!", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Can't delete due to error.", HttpStatus.NO_CONTENT);
+        }
     }
 
     @PreAuthorize("isAuthenticated()")

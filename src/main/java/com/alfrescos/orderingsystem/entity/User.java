@@ -39,6 +39,7 @@ public class User {
     private byte[] avatarContent;
     private Set<Invoice> customerInvoices;
     private Set<Invoice> staffInvoices;
+    private boolean isDeleted = false;
 //    private boolean ignoreJoin;
 
     public User() {
@@ -190,6 +191,14 @@ public class User {
 //        this.ignoreJoin = ignoreJoin;
 //    }
 
+    @Column(name = "is_deleted", nullable = false)
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
 
     @OneToMany(mappedBy = "customerUser")
     @JsonIgnore

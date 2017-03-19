@@ -37,6 +37,11 @@ public class RateServiceImpl implements RateService {
     }
 
     @Override
+    public Iterable<Rate> findAllRates() {
+        return this.rateRepository.findAll();
+    }
+
+    @Override
     public List<Rate> findAllRatesByRateTypeId(long rateTypeId) {
         return this.rateRepository.findAllRatesByRateTypeId(rateTypeId);
     }
@@ -49,5 +54,10 @@ public class RateServiceImpl implements RateService {
     @Override
     public Rate findRateByInvoiceId(String invoiceId) {
         return this.rateRepository.findRateByInvoiceId(invoiceId);
+    }
+
+    @Override
+    public Rate findById(Long rateId) {
+        return this.rateRepository.findOne(rateId);
     }
 }

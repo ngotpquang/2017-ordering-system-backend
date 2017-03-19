@@ -23,9 +23,9 @@ public class FoodAndDrinkTypeController {
     public ResponseEntity<?> create(@RequestBody FoodAndDrinkType foodAndDrinkType){
         FoodAndDrinkType foodAndDrinkType1 = this.foodAndDrinkTypeService.create(foodAndDrinkType);
         if (foodAndDrinkType1 != null){
-            return new ResponseEntity<Object>("Created successfully", HttpStatus.CREATED);
+            return new ResponseEntity<Object>("Created successfully.", HttpStatus.CREATED);
         } else {
-            return new ResponseEntity<Object>("Can't create due to some error", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<Object>("Can't create due to some error.", HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
@@ -35,7 +35,7 @@ public class FoodAndDrinkTypeController {
         FoodAndDrinkType foodAndDrinkType1 = this.foodAndDrinkTypeService.findById(foodAndDrinkType.getId());
         if (foodAndDrinkType1 != null && !foodAndDrinkType.getName().isEmpty() && !foodAndDrinkType.getDetail().isEmpty()){
             foodAndDrinkType1 = this.foodAndDrinkTypeService.update(foodAndDrinkType);
-            return new ResponseEntity<Object>(foodAndDrinkType1, HttpStatus.CREATED);
+            return new ResponseEntity<Object>("Updated FADT with id: " + foodAndDrinkType1.getId() + " successfully.", HttpStatus.CREATED);
         } else {
             return new ResponseEntity<Object>("Can't update due to some error.", HttpStatus.NOT_ACCEPTABLE);
         }
@@ -46,9 +46,8 @@ public class FoodAndDrinkTypeController {
     public ResponseEntity<?> delete(@PathVariable Long foodAndDrinkTypeId){
         FoodAndDrinkType foodAndDrinkType = this.foodAndDrinkTypeService.findById(foodAndDrinkTypeId);
         if (foodAndDrinkType != null){
-            this.foodAndDrinkTypeService.delete(foodAndDrinkTypeId);
-            return new ResponseEntity<Object>("Deleted successfully", HttpStatus.OK);
+            return new ResponseEntity<Object>("Visible status of FADT with id: " + foodAndDrinkTypeId + " is: " + this.foodAndDrinkTypeService.switchVisible(foodAndDrinkTypeId), HttpStatus.OK);
         }
-        return new ResponseEntity<Object>("Can't delete due to some error.", HttpStatus.NO_CONTENT);
+        return new ResponseEntity<Object>("Can't find FADT with id: " + foodAndDrinkTypeId, HttpStatus.NO_CONTENT);
     }
 }

@@ -10,4 +10,9 @@ import java.util.List;
 public interface InvoiceDetailService {
     public List<InvoiceDetail> findAllInvoiceDetailsByInvoiceId(String invoiceId);
     public InvoiceDetail create(InvoiceDetail invoiceDetail);
+    public void delete(Long invoiceDetailId);
+    public void deleteByInvoiceId(String invoiceId);
+    public boolean setMade(Long invoiceDetailId);
+
+    InvoiceDetail findById(Long invoiceDetailId);
 }

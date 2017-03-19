@@ -2,6 +2,7 @@ package com.alfrescos.orderingsystem.service;
 
 import com.alfrescos.orderingsystem.entity.Invoice;
 import com.alfrescos.orderingsystem.repositoty.InvoiceRepository;
+import com.alfrescos.orderingsystem.repositoty.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,10 @@ import java.util.List;
 public class InvoiceServiceImpl implements InvoiceService {
 
     @Autowired
-    InvoiceRepository invoiceRepository;
+    private InvoiceRepository invoiceRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public List<Invoice> findAllInvoicesByCustomerId(Long customerId) {
@@ -37,12 +41,23 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public void delete(String invoiceId) {
-        invoiceRepository.delete(invoiceId);
+    public boolean switchVisible(String invoiceId) {
+        Invoice invoice = this.invoiceRepository.findOne(invoiceId);
+        invoice.setVisible(!invoice.isVisible());
+        return this.invoiceRepository.save(invoice).isVisible();
     }
 
     @Override
-    public Invoice findInvoiceByInvoiceId(String invoiceId) {
-        return invoiceRepository.findOne(invoiceId);
+    public Invoice findById(String invoiceId) {
+        return this.invoiceRepository.findOne(invoiceId);
+    }
+
+    @Override
+    public boolean setPaid(Long staffId, String invoiceId) {
+        Invoice invoice = this.invoiceRepository.findOne(invoiceId);
+        invoice.setPaid(true);
+        invoice.setStaffUser(this.userRepository.findOne(staffId));
+        System.out.println(invoiceId + "-" + invoice.isPaid() + "-" + invoice.getStaffUser().getAccountCode());
+        return this.invoiceRepository.save(invoice).isPaid();
     }
 }

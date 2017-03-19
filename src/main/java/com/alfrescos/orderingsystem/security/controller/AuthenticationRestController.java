@@ -42,7 +42,6 @@ public class AuthenticationRestController {
 
     @PostMapping(value = "/login")
     public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody JwtAuthenticationRequest authenticationRequest) throws AuthenticationException {
-        System.out.println(authenticationRequest.getEmail());
         User user = userService.findByEmail(authenticationRequest.getEmail());
         if (user == null || !passwordEncoder.matches(authenticationRequest.getPassword(), user.getPassword())) {
             throw new AuthenticationCredentialsNotFoundException("Account not found!");

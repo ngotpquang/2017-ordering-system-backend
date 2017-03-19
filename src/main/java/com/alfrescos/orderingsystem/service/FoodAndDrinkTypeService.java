@@ -9,5 +9,5 @@ public interface FoodAndDrinkTypeService {
     FoodAndDrinkType findById(Long foodAndDrinkTypeId);
     FoodAndDrinkType create(FoodAndDrinkType foodAndDrinkType);
     FoodAndDrinkType update(FoodAndDrinkType foodAndDrinkType);
-    void delete(Long foodAndDrinkTypeId);
+    boolean switchVisible(Long foodAndDrinkTypeId);
 }

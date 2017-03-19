@@ -50,7 +50,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
+        System.out.println(email);
+        User user = this.userRepository.findByEmail(email);
+        System.out.println(user);
+        return user;
     }
 
     @Override
@@ -73,8 +76,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(Long id) {
-        this.userRepository.delete(id);
+    public boolean switchDeletedStatus(Long id) {
+        User user = this.userRepository.findOne(id);
+        user.setDeleted(!user.isDeleted());
+        return this.userRepository.save(user).isDeleted();
     }
 
     @Override

@@ -7,4 +7,5 @@ import com.alfrescos.orderingsystem.entity.Table;
  */
 public interface TableService {
     public Table findById(Long id);
+    boolean switchVisible(Long id);
 }

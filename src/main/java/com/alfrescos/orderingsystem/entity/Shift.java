@@ -11,6 +11,7 @@ import javax.persistence.Table;
 public class Shift {
     private Long id;
     private String detail;
+    private boolean isVisible = true;
 
     public Shift() {
     }
@@ -37,5 +38,14 @@ public class Shift {
 
     public void setDetail(String detail) {
         this.detail = detail;
+    }
+
+    @Column(name = "is_visible", nullable = false)
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public void setVisible(boolean visible) {
+        isVisible = visible;
     }
 }

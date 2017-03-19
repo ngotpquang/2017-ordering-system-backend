@@ -21,7 +21,7 @@ public interface UserService {
 
     User update(User user);
 
-    void delete(Long id);
+    boolean switchDeletedStatus(Long id);
 
     List<User> getAll();
 

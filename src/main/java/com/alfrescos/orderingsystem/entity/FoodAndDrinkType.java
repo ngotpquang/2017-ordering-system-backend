@@ -16,6 +16,7 @@ public class FoodAndDrinkType {
     private String name;
     private String detail;
     private Set<FoodAndDrink> foodAndDrinks;
+    private boolean isVisible = true;
 
     public FoodAndDrinkType() {
     }
@@ -58,6 +59,15 @@ public class FoodAndDrinkType {
     @OneToMany(mappedBy = "foodAndDrinkType")
     public Set<FoodAndDrink> getFoodAndDrinks() {
         return foodAndDrinks;
+    }
+
+    @Column(name = "is_visible", nullable = false)
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public void setVisible(boolean visible) {
+        isVisible = visible;
     }
 
     public void setFoodAndDrinks(Set<FoodAndDrink> foodAndDrinks) {
