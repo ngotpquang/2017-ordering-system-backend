@@ -15,4 +15,10 @@ public class UserUtil {
     public static String getAccountCodeByAuthorization(){
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
+
+    public static boolean checkAdminOrManagerAccount(){
+        return SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().contains("MANAGER") ||
+        SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().contains("ADMIN");
+    }
+
 }

@@ -33,7 +33,6 @@ public class HandleException {
         Map<String, Object> metadata = new HashMap<String, Object>();
         metadata.put("status", 403);
         metadata.put("message","Forbidden");
-//        metadata.put("Test key", "Account not found!");
         return new ResponseEntity<Object>(metadata, HttpStatus.NOT_FOUND);
     }
 

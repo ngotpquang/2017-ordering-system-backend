@@ -153,6 +153,7 @@ public class User {
         this.token = token;
     }
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<WorkingTime> getWorkingTimes() {
         return workingTimes;
