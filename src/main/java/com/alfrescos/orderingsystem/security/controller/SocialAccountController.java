@@ -1,5 +1,6 @@
 package com.alfrescos.orderingsystem.security.controller;
 
+import com.alfrescos.orderingsystem.common.UserUtil;
 import com.alfrescos.orderingsystem.entity.User;
 import com.alfrescos.orderingsystem.security.JwtAuthenticationResponse;
 import com.alfrescos.orderingsystem.security.JwtTokenUtil;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.facebook.api.impl.FacebookTemplate;
 import org.springframework.social.google.api.Google;
@@ -23,15 +25,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Map;
 
 /**
- * Created by dtnhat on 12/20/2016.
+ * Created by Liger on 28-Feb-17.
  */
 @RestController
-@RequestMapping(value = "/api/v1/social")
+@RequestMapping(value = "/api/auth/social")
 public class SocialAccountController {
 
     private Facebook facebook;
@@ -56,7 +61,7 @@ public class SocialAccountController {
 
         String accessToken = data.get("accessToken");
         facebook = new FacebookTemplate(accessToken);
-        String[] fields = {"id", "email", "name", "first_name", "last_name", "gender", "middle_name", "cover", "hometown", "location"};
+        String[] fields = {"id", "email", "name", "gender"};
         org.springframework.social.facebook.api.User userSocial = facebook.fetchObject("me", org.springframework.social.facebook.api.User.class, fields);
         if (userService.findByAccountCode(userSocial.getId()) != null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(userSocial.getId());
@@ -67,13 +72,16 @@ public class SocialAccountController {
             user.setAccountCode(userSocial.getId());
             if (userSocial.getEmail() != null) {
                 user.setEmail(userSocial.getEmail());
+            } else {
+                user.setEmail(user.getAccountCode());
             }
             user.setGender((byte) (userSocial.getGender().equals("male") ? 0 : 1));
-            user.setName(userSocial.getFirstName() + " " + userSocial.getMiddleName() + " " + userSocial.getLastName());
-//            user.setName(userSocial.getName());
+            user.setName(userSocial.getName());
             user.setAvatar("http://graph.facebook.com/" + userSocial.getId() + "/picture?type=square");
+            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+            String password = bCryptPasswordEncoder.encode(userSocial.getId());
+            user.setPassword(password);
             User newUser = userService.create(user);
-
             UserDetails userDetails = userDetailsService.loadUserByUsername(newUser.getAccountCode());
             String token = this.jwtTokenUtil.generateToken(userDetails);
             return new ResponseEntity<Object>(new JwtAuthenticationResponse(token), HttpStatus.OK);
@@ -82,16 +90,15 @@ public class SocialAccountController {
 
     @PostMapping(value = "/google")
     private ResponseEntity<?> signUpByGoogle(@RequestBody Map<String, String> accessTokenClient) {
-        String accessToken = accessTokenClient.get("accessToken");
-        String CLIENT_ID = "597737117477-3mpfnd8v8u8gjc2mtpr0m9b1frfjbhh0.apps.googleusercontent.com";
+        String idTokenString = accessTokenClient.get("idTokenString");
+        String CLIENT_ID = "841843481336-uaje8r0pj66c5g4dj099o9vqa1lmb78g.apps.googleusercontent.com";
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(this.transport, this.jsonFactory).setAudience(Collections.singletonList(CLIENT_ID)).build();
-
         UserDetails userDetails = null;
         String token = "";
 
         GoogleIdToken idToken = null;
         try {
-            idToken = verifier.verify(accessToken);
+            idToken = verifier.verify(idTokenString);
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -99,29 +106,16 @@ public class SocialAccountController {
         }
         if (idToken != null) {
             GoogleIdToken.Payload payload = idToken.getPayload();
-            String userId = payload.getSubject();
-            if (this.userService.findByAccountCode(payload.getEmail()) != null) {
+            if (this.userService.findByAccountCode(payload.getEmail()) != null || this.userService.findByEmail(payload.getEmail()) != null) {
                 userDetails = userDetailsService.loadUserByUsername(payload.getEmail());
                 token = this.jwtTokenUtil.generateToken(userDetails);
             } else {
-                User user = new User();
-                user.setEmail(payload.getEmail());
-                user.setAccountCode(payload.getEmail());
-                user.setName((String) payload.get("name"));
-                user.setAvatar((String) payload.get("picture"));
+                BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+                String password = bCryptPasswordEncoder.encode(payload.getEmail());
+                User user = new User(new Long(1), payload.getEmail(), (String) payload.get("name"), password);
                 User newUser = this.userService.create(user);
-
                 userDetails = userDetailsService.loadUserByUsername(newUser.getEmail());
                 token = this.jwtTokenUtil.generateToken(userDetails);
-//                System.out.println("User ID: " + userId);
-//                String email = payload.getEmail();
-//                boolean emailVerified = Boolean.valueOf(payload.getEmailVerified());
-//                String name = (String) payload.get("name");
-//                String pictureUrl = (String) payload.get("picture");
-//                String locale = (String) payload.get("locale");
-//                String familyName = (String) payload.get("family_name");
-//                String givenName = (String) payload.get("given_name");
-//                System.out.println(payload.getEmail());
             }
         }
         return new ResponseEntity<Object>(new JwtAuthenticationResponse(token), HttpStatus.OK);

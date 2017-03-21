@@ -109,4 +109,11 @@ public class InvoiceController {
         }
 
     }
+
+    @PreAuthorize("hasAnyRole('MANAGER', 'STAFF')")
+    @PutMapping(value = "/confirm-paid/{invoiceId}")
+    public ResponseEntity<?> confirmPaidInvoice(@PathVariable String invoiceId){
+        Long staffId = UserUtil.getIdByAuthorization();
+        return new ResponseEntity<Object>(this.invoiceService.setPaid(staffId, invoiceId), HttpStatus.CREATED);
+    }
 }

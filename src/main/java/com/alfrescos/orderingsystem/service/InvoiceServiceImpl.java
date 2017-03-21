@@ -6,6 +6,7 @@ import com.alfrescos.orderingsystem.repositoty.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -55,9 +56,15 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public boolean setPaid(Long staffId, String invoiceId) {
         Invoice invoice = this.invoiceRepository.findOne(invoiceId);
-        invoice.setPaid(true);
-        invoice.setStaffUser(this.userRepository.findOne(staffId));
-        System.out.println(invoiceId + "-" + invoice.isPaid() + "-" + invoice.getStaffUser().getAccountCode());
-        return this.invoiceRepository.save(invoice).isPaid();
+        if (invoice != null){
+            Date payTime = new Date();
+            invoice.setPaid(true);
+            invoice.setStaffUser(this.userRepository.findOne(staffId));
+            invoice.setPayingTime(payTime);
+            System.out.println(invoiceId + " - " + invoice.isPaid() + " - " + invoice.getStaffUser().getAccountCode());
+            return this.invoiceRepository.save(invoice).isPaid();
+        } else {
+            return false;
+        }
     }
 }

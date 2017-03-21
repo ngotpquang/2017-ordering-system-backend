@@ -23,6 +23,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Created by Liger on 28-Feb-17.
+ */
 @RestController
 @RequestMapping(value = "/api/auth")
 public class AuthenticationRestController {
@@ -39,6 +42,15 @@ public class AuthenticationRestController {
     private Map<String, String> oldUsing = new HashMap<>();
 
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    @PostMapping(value = "/test")
+    public ResponseEntity<?> findUserByAccountCode(@RequestBody Map<String, String> data){
+        String accountCode = data.get("accountCode");
+        System.out.println(accountCode);
+        User user = this.userService.findByAccountCode(accountCode);
+        System.out.println(user.toString());
+        return new ResponseEntity<Object>(user, HttpStatus.OK);
+    }
 
     @PostMapping(value = "/login")
     public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody JwtAuthenticationRequest authenticationRequest) throws AuthenticationException {

@@ -31,7 +31,7 @@ public class User {
     private Date dateOfBirth;
     private String avatar;
     private String detail;
-    private float membershipPoint;
+    private float membershipPoint = 0;
     private String token;
     private Set<WorkingTime> workingTimes;
     private List<Permission> permissionList = new ArrayList<>();
@@ -80,7 +80,7 @@ public class User {
         this.accountCode = accountCode;
     }
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, columnDefinition = "nvarchar(255)")
     public String getName() {
         return name;
     }
@@ -126,7 +126,7 @@ public class User {
         this.avatar = avatar;
     }
 
-    @Column(name = "detail")
+    @Column(name = "detail", columnDefinition = "nvarchar(255)")
     public String getDetail() {
         return detail;
     }
