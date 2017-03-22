@@ -21,4 +21,8 @@ public class UserUtil {
         SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().contains("ADMIN");
     }
 
+    public static boolean checkStaffAccount(){
+        return SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().contains("STAFF");
+    }
+
 }

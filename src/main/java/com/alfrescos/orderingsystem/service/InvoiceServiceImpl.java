@@ -67,4 +67,9 @@ public class InvoiceServiceImpl implements InvoiceService {
             return false;
         }
     }
+
+    @Override
+    public List<String> findOrderedTable() {
+        return this.invoiceRepository.findOrderedTable();
+    }
 }

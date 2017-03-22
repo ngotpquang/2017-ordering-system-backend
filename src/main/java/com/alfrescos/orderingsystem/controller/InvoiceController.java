@@ -38,9 +38,9 @@ public class InvoiceController {
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody Map<String, String> data) {
-        int numberOfInvoiceDetails = Integer.parseInt(data.get("numberOfInvoiceDetails").trim());
         String invoiceId = data.get("invoiceId").trim();
         try {
+            int numberOfInvoiceDetails = Integer.parseInt(data.get("numberOfInvoiceDetails").trim());
             Long tableId = Long.parseLong(data.get("tableId").trim());
             String customerAccountCode = UserUtil.getAccountCodeByAuthorization();
             User customer;
@@ -66,7 +66,12 @@ public class InvoiceController {
     @GetMapping(value = "/all")
     public ResponseEntity<?> getAllInvoicesForUserLoggedIn(){
         Long loggedInUserId = UserUtil.getIdByAuthorization();
-        List<Invoice> invoiceList = invoiceService.findAllInvoicesByCustomerId(loggedInUserId);
+        List<Invoice> invoiceList;
+        if (UserUtil.checkStaffAccount()){
+            invoiceList = invoiceService.findAllInvoicesByStaffId(loggedInUserId);
+        } else {
+            invoiceList = invoiceService.findAllInvoicesByCustomerId(loggedInUserId);
+        }
         if (invoiceList != null) {
             return new ResponseEntity<>(invoiceList, HttpStatus.OK);
         } else {
@@ -115,5 +120,11 @@ public class InvoiceController {
     public ResponseEntity<?> confirmPaidInvoice(@PathVariable String invoiceId){
         Long staffId = UserUtil.getIdByAuthorization();
         return new ResponseEntity<Object>(this.invoiceService.setPaid(staffId, invoiceId), HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'STAFF')")
+    @GetMapping(value = "/table-ordered")
+    public ResponseEntity<?> getOrderedTable(){
+        return new ResponseEntity<Object>(this.invoiceService.findOrderedTable(), HttpStatus.OK);
     }
 }

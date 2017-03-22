@@ -15,4 +15,5 @@ public interface InvoiceService {
     public boolean switchVisible(String invoiceId);
     public Invoice findById(String invoiceId);
     public boolean setPaid(Long staffId, String invoiceId);
+    public List<String> findOrderedTable();
 }
