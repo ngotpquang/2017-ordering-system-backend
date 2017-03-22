@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.controller;
 
 import com.alfrescos.orderingsystem.common.InvoiceDetailUtil;
@@ -126,5 +130,26 @@ public class InvoiceController {
     @GetMapping(value = "/table-ordered")
     public ResponseEntity<?> getOrderedTable(){
         return new ResponseEntity<Object>(this.invoiceService.findOrderedTable(), HttpStatus.OK);
+    }
+
+//    @PreAuthorize("isAuthenticated()")
+    @GetMapping(value = "/date/{date}")
+    public ResponseEntity<?> getInvoiceByDate(@PathVariable String date){
+        List<Invoice> invoiceList = invoiceService.findAllInvoicesByDate(date);
+        if (invoiceList != null) {
+            return new ResponseEntity<>(invoiceList, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+    }
+
+    @GetMapping(value = "/date/{beginningDate}/to/{endDate}")
+    public ResponseEntity<?> getInvoiceBetweenDates(@PathVariable String beginningDate, @PathVariable String endDate){
+        List<Invoice> invoiceList = invoiceService.findAllInvoicesBetweenDates(beginningDate, endDate);
+        if (invoiceList != null) {
+            return new ResponseEntity<>(invoiceList, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
     }
 }

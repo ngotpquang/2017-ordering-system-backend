@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.service;
 
 import com.alfrescos.orderingsystem.entity.Invoice;
@@ -16,4 +20,6 @@ public interface InvoiceService {
     public Invoice findById(String invoiceId);
     public boolean setPaid(Long staffId, String invoiceId);
     public List<String> findOrderedTable();
+    public List<Invoice> findAllInvoicesByDate(String date);
+    public List<Invoice> findAllInvoicesBetweenDates(String beginningDate, String endDate);
 }

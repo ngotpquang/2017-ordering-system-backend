@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.service;
 
 import com.alfrescos.orderingsystem.entity.Invoice;
@@ -70,6 +74,18 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public List<String> findOrderedTable() {
-        return this.invoiceRepository.findOrderedTable();
+        return this.invoiceRepository.findAllOrderedTable();
+    }
+
+    @Override
+    public List<Invoice> findAllInvoicesByDate(String date) {
+        return this.invoiceRepository.findAllInvoicesByDate(date);
+    }
+
+    @Override
+    public List<Invoice> findAllInvoicesBetweenDates(String beginningDate, String endDate) {
+        beginningDate = beginningDate + " 00:00:00";
+        endDate = endDate + " 23:59:59";
+        return this.invoiceRepository.findAllInvoicesBetweenDates(beginningDate, endDate);
     }
 }
