@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.service;
 
 import com.alfrescos.orderingsystem.entity.Rate;
@@ -59,5 +63,10 @@ public class RateServiceImpl implements RateService {
     @Override
     public Rate findById(Long rateId) {
         return this.rateRepository.findOne(rateId);
+    }
+
+    @Override
+    public float getAverageScoreByRateTypeId(Long rateTypeId) {
+        return this.rateRepository.getAverageScoreByRateTypeId(rateTypeId);
     }
 }

@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.service;
 
 import com.alfrescos.orderingsystem.entity.Rate;
@@ -17,4 +21,5 @@ public interface RateService {
     List<Rate> findAllRatesByUserIdAndRateTypeId(long userId, long rateTypeId);
     Rate findRateByInvoiceId(String invoiceId);
     Rate findById(Long rateId);
+    float getAverageScoreByRateTypeId(Long rateTypeId);
 }

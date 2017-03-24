@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.controller;
 
 import com.alfrescos.orderingsystem.common.UserUtil;
@@ -91,6 +95,12 @@ public class RateController {
             return new ResponseEntity<>(rateList, HttpStatus.OK);
         }
         return new ResponseEntity<>("No rates", HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping(value = "/all-rates/average-score/{rateTypeId}")
+    public ResponseEntity<?> getAverageScore(@PathVariable Long rateTypeId){
+        float averageScore = this.rateService.getAverageScoreByRateTypeId(rateTypeId);
+        return new ResponseEntity<>(averageScore, HttpStatus.OK);
     }
 
     @PreAuthorize("isAuthenticated()")

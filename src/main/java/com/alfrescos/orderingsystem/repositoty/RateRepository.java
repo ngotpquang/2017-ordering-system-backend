@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.repositoty;
 
 import com.alfrescos.orderingsystem.entity.Rate;
@@ -24,4 +28,7 @@ public interface RateRepository extends CrudRepository<Rate, Long>{
 
     @Query(value = "SELECT * FROM rate WHERE rate_type_id = ?1", nativeQuery = true)
     public List<Rate> findAllRatesByRateTypeId(long rateTypeId);
+
+    @Query(value = "SELECT AVG(R.score) FROM rate as R WHERE R.rate_type_id = ?1", nativeQuery = true)
+    public float getAverageScoreByRateTypeId(long rateTypeId);
 }

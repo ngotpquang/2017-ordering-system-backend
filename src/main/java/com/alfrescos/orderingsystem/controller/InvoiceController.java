@@ -132,7 +132,7 @@ public class InvoiceController {
         return new ResponseEntity<Object>(this.invoiceService.findOrderedTable(), HttpStatus.OK);
     }
 
-//    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @GetMapping(value = "/date/{date}")
     public ResponseEntity<?> getInvoiceByDate(@PathVariable String date){
         List<Invoice> invoiceList = invoiceService.findAllInvoicesByDate(date);
@@ -143,6 +143,7 @@ public class InvoiceController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @GetMapping(value = "/date/{beginningDate}/to/{endDate}")
     public ResponseEntity<?> getInvoiceBetweenDates(@PathVariable String beginningDate, @PathVariable String endDate){
         List<Invoice> invoiceList = invoiceService.findAllInvoicesBetweenDates(beginningDate, endDate);
