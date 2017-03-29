@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.controller;
 
 import com.alfrescos.orderingsystem.common.UserUtil;
@@ -26,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -108,20 +113,25 @@ public class UserController {
     }
 
 
-    //TODO: Check object type received
     @PreAuthorize("isAuthenticated()")
     @PutMapping(value = "/update")
-    public ResponseEntity<?> update(@Valid @RequestBody User user) {
-//        if(result.hasErrors()){
-//            return new CommonMessageException().badRequest();
-//        }
-        User updatedUser = userService.update(user);
-        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(updatedUser);
-        FilterProvider filters = new SimpleFilterProvider()
-                .addFilter("filter.User", SimpleBeanPropertyFilter
-                        .filterOutAllExcept("id", "name", "email"));
-        mappingJacksonValue.setFilters(filters);
-        return new ResponseEntity<MappingJacksonValue>(mappingJacksonValue, HttpStatus.OK);
+    public ResponseEntity<?> update(@Valid @RequestBody Map<String, String> data) {
+        User user = this.userService.findById(UserUtil.getIdByAuthorization());
+        try {
+            Long dateOfBirth = Long.parseLong(data.get("dateOfBirth"));
+            String detail = data.get("detail");
+            byte gender = Byte.parseByte(data.get("gender"));
+            String name = data.get("name");
+            user.setDateOfBirth(new Date(dateOfBirth));
+            user.setDetail(detail);
+            user.setGender(gender);
+            user.setName(name);
+            User updatedUser = userService.update(user);
+            return new ResponseEntity<>(updatedUser, HttpStatus.CREATED);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>("Can't update due to error.", HttpStatus.OK);
+        }
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -148,7 +158,14 @@ public class UserController {
         return new ResponseEntity<Object>(mappingJacksonValue, HttpStatus.OK);
     }
 
-    //TODO
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping(value = "/info/permission")
+    public ResponseEntity<?> getPermissionList() {
+        User user = this.userService.findByAccountCode(UserUtil.getAccountCodeByAuthorization());
+        return new ResponseEntity<Object>(user.getPermissionList(), HttpStatus.OK);
+    }
+
+    //TODO: Check later
     @PreAuthorize("isAuthenticated()")
     @PutMapping(value = "/profile", consumes = {"multipart/form-data"})
     public ResponseEntity<Object> update(@RequestPart("profile") String profile, @RequestPart(name = "avatar", required = false) MultipartFile avatar) throws IOException {
