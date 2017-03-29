@@ -22,4 +22,6 @@ public interface InvoiceService {
     public List<String> findOrderedTable();
     public List<Invoice> findAllInvoicesByDate(String date);
     public List<Invoice> findAllInvoicesBetweenDates(String beginningDate, String endDate);
+
+    public Invoice update(Invoice invoice);
 }

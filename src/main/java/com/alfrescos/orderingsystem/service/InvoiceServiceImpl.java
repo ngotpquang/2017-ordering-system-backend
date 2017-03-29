@@ -88,4 +88,9 @@ public class InvoiceServiceImpl implements InvoiceService {
         endDate = endDate + " 23:59:59";
         return this.invoiceRepository.findAllInvoicesBetweenDates(beginningDate, endDate);
     }
+
+    @Override
+    public Invoice update(Invoice invoice) {
+        return this.invoiceRepository.save(invoice);
+    }
 }

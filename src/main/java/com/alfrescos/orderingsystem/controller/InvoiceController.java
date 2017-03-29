@@ -126,6 +126,27 @@ public class InvoiceController {
         return new ResponseEntity<Object>(this.invoiceService.setPaid(staffId, invoiceId), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAnyRole('MANAGER', 'STAFF')")
+    @PutMapping(value = "/update-table")
+    public ResponseEntity<?> updateTableId(@RequestBody Map<String, String> data){
+        Invoice invoice = this.invoiceService.findById(data.get("invoiceId").trim());
+        if (invoice != null){
+            try {
+                Long tableId = Long.parseLong(data.get("tableId").trim());
+                Table table = this.tableService.findById(tableId);
+                if (table != null){
+                    invoice.setTable(table);
+                    invoice = this.invoiceService.update(invoice);
+                    return new ResponseEntity<Object>(invoice, HttpStatus.CREATED);
+                }
+            } catch (Exception e){
+                System.out.println(e.getMessage());
+                return new ResponseEntity<Object>("Can't update due to error", HttpStatus.NO_CONTENT);
+            }
+        }
+        return new ResponseEntity<Object>("Can't update due to error", HttpStatus.NO_CONTENT);
+    }
+
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'STAFF')")
     @GetMapping(value = "/table-ordered")
     public ResponseEntity<?> getOrderedTable(){
