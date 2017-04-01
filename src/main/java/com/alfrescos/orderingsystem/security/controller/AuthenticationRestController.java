@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.security.controller;
 
 import com.alfrescos.orderingsystem.entity.User;
@@ -5,7 +9,9 @@ import com.alfrescos.orderingsystem.security.JwtAuthenticationRequest;
 import com.alfrescos.orderingsystem.security.JwtAuthenticationResponse;
 import com.alfrescos.orderingsystem.security.JwtTokenUtil;
 import com.alfrescos.orderingsystem.security.service.JwtUserDetailsServiceImpl;
+import com.alfrescos.orderingsystem.service.EmailService;
 import com.alfrescos.orderingsystem.service.UserService;
+import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,18 +45,12 @@ public class AuthenticationRestController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private EmailService emailService;
+
     private Map<String, String> oldUsing = new HashMap<>();
 
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-    @PostMapping(value = "/test")
-    public ResponseEntity<?> findUserByAccountCode(@RequestBody Map<String, String> data){
-        String accountCode = data.get("accountCode");
-        System.out.println(accountCode);
-        User user = this.userService.findByAccountCode(accountCode);
-        System.out.println(user.toString());
-        return new ResponseEntity<Object>(user, HttpStatus.OK);
-    }
 
     @PostMapping(value = "/login")
     public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody JwtAuthenticationRequest authenticationRequest) throws AuthenticationException {
@@ -63,39 +63,42 @@ public class AuthenticationRestController {
         return new ResponseEntity<Object>(new JwtAuthenticationResponse(token), HttpStatus.OK);
     }
 
-//    @RequestMapping(value = "/auth/forgotPassword", method = RequestMethod.POST)
-//    public ResponseEntity<?> createForgotPasswordToken(@Valid @RequestBody JwtAuthenticationRequest authenticationRequest) throws javax.naming.AuthenticationException {
-//        User user = userService.findByEmail(authenticationRequest.getEmail());
-//        if (user == null) {
-//            return new ResponseEntity<Object>(HttpStatus.NOT_FOUND);
-//        }
-//
-//        String password = RandomStringUtils.randomAlphanumeric(10);
-//        final String token = this.jwtTokenUtil.generateToken(authenticationRequest.getEmail(), password, authenticationRequest.getUrlPath());
-//
-//        try {
-//            emailService.sendForgotPasswordMail(authenticationRequest.getEmail(), user.getFullName(), password, authenticationRequest.getUrlPath() + "forgotPassword?token=" + token);
-//        } catch (Exception e) {
-//            // catch error
-//            System.out.println("Error Sending Email: " + e.getMessage());
-//        }
-//        return new ResponseEntity<Object>(new JwtAuthenticationResponse(token), HttpStatus.OK);
-//    }
-//
-//    @RequestMapping(value = "/forgotPassword", method = RequestMethod.GET)
-//    void generatePassword(HttpServletResponse response, @RequestParam("token") String token) throws IOException {
-//        String email = this.jwtTokenUtil.getEmailFromToken(token);
-//        String password = this.jwtTokenUtil.getPasswordFromToken(token);
-//        String urlPath = this.jwtTokenUtil.getUrlFromToken(token);
-//
-//        if (email == null || password == null || urlPath == null || oldUsing.containsKey(email)) {
-//            response.sendRedirect(urlPath + "?mod=login&act=fail");
-//        } else {
-//            oldUsing.put(email, token);
-//            User user = userService.findByAccountCode(email);
-//            user.setPassword(passwordEncoder.encode(password));
-//            userService.save(user);
-//            response.sendRedirect(urlPath + "?mod=login&act=success&email=" + email);
-//        }
-//    }
+    @RequestMapping(value = "/auth/forgotPassword", method = RequestMethod.POST)
+    public ResponseEntity<?> createForgotPasswordToken(@Valid @RequestBody JwtAuthenticationRequest authenticationRequest) throws javax.naming.AuthenticationException {
+        User user = userService.findByEmail(authenticationRequest.getEmail());
+        if (user == null) {
+            return new ResponseEntity<Object>(HttpStatus.NOT_FOUND);
+        }
+
+        String password = RandomStringUtils.randomAlphanumeric(10);
+        final String token = this.jwtTokenUtil.generateToken(authenticationRequest.getEmail(), password, authenticationRequest.getUrlPath());
+
+        try {
+            emailService.sendForgotPasswordMail(authenticationRequest.getEmail(), user.getName(), password, authenticationRequest.getUrlPath() + "/api/auth/forgotPassword?token=" + token);
+        } catch (Exception e) {
+            // catch error
+            System.out.println("Error Sending Email: " + e.getMessage());
+        }
+        return new ResponseEntity<Object>(new JwtAuthenticationResponse(token), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/forgotPassword", method = RequestMethod.GET)
+    void generatePassword(HttpServletResponse response, @RequestParam("token") String token) throws IOException {
+        System.out.println(token);
+        String email = this.jwtTokenUtil.getEmailFromToken(token);
+        String password = this.jwtTokenUtil.getPasswordFromToken(token);
+        String urlPath = this.jwtTokenUtil.getUrlFromToken(token);
+
+        if (email == null || password == null || urlPath == null || oldUsing.containsKey(email)) {
+            response.sendRedirect(urlPath + "?mod=login&act=fail");
+            System.out.println("Can't reset password");
+        } else {
+            oldUsing.put(email, token);
+            User user = userService.findByAccountCode(email);
+            user.setPassword(passwordEncoder.encode(password));
+            userService.save(user);
+            System.out.println(user.getAccountCode());
+            response.sendRedirect(urlPath + "?mod=login&act=success&email=" + email);
+        }
+    }
 }

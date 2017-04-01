@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.controller;
 
 import com.alfrescos.orderingsystem.common.InvoiceDetailUtil;
@@ -60,9 +64,8 @@ public class InvoiceDetailController {
             return new ResponseEntity<Object>("You can't modify this invoice as you're not the owner.", HttpStatus.NOT_ACCEPTABLE);
         }
         try {
-            int numberOfInvoiceDetails = Integer.parseInt(data.get("numberOfInvoiceDetails").trim());
             Date timeOrdered = new Date();
-            if (invoice != null && InvoiceDetailUtil.addInvoiceDetail(numberOfInvoiceDetails, data, invoice, timeOrdered, foodAndDrinkService, invoiceDetailService)){
+            if (invoice != null && InvoiceDetailUtil.addInvoiceDetail(data, invoice, timeOrdered, foodAndDrinkService, invoiceDetailService)){
                 return new ResponseEntity<Object>("Added successfully.", HttpStatus.CREATED);
             }
         } catch (NumberFormatException e){

@@ -42,9 +42,8 @@ public class InvoiceController {
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody Map<String, String> data) {
-        String invoiceId = data.get("invoiceId").trim();
+        String invoiceId = "INV" + new Date().getTime();
         try {
-            int numberOfInvoiceDetails = Integer.parseInt(data.get("numberOfInvoiceDetails").trim());
             Long tableId = Long.parseLong(data.get("tableId").trim());
             String customerAccountCode = UserUtil.getAccountCodeByAuthorization();
             User customer;
@@ -56,7 +55,7 @@ public class InvoiceController {
             Table table = tableService.findById(tableId);
             Invoice invoice = invoiceService.create(new Invoice(invoiceId, customer, customer, table));
             Date timeOrdered = new Date();
-            if (invoice != null && InvoiceDetailUtil.addInvoiceDetail(numberOfInvoiceDetails, data, invoice, timeOrdered, foodAndDrinkService, invoiceDetailService)) {
+            if (invoice != null && InvoiceDetailUtil.addInvoiceDetail(data, invoice, timeOrdered, foodAndDrinkService, invoiceDetailService)) {
                 return new ResponseEntity<>("Ordered!", HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>("Failed when created something. Please check again!", HttpStatus.BAD_REQUEST);
