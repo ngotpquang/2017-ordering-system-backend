@@ -1,11 +1,14 @@
-package com.alfrescos.orderingsystem.repositoty;
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
+package com.alfrescos.orderingsystem.repository;
 
 import com.alfrescos.orderingsystem.entity.WorkingTime;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
 import java.util.List;
 
 /**

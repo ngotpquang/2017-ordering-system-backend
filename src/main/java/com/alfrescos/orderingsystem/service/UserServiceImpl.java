@@ -1,8 +1,12 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.service;
 
 import com.alfrescos.orderingsystem.entity.Role;
 import com.alfrescos.orderingsystem.entity.User;
-import com.alfrescos.orderingsystem.repositoty.UserRepository;
+import com.alfrescos.orderingsystem.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;

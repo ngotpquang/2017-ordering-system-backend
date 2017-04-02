@@ -1,11 +1,14 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.service;
 
 import com.alfrescos.orderingsystem.entity.WorkingTime;
-import com.alfrescos.orderingsystem.repositoty.WorkingTimeRepository;
+import com.alfrescos.orderingsystem.repository.WorkingTimeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 
 /**

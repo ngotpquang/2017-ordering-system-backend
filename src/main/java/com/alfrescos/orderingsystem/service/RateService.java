@@ -22,4 +22,5 @@ public interface RateService {
     Rate findRateByInvoiceId(String invoiceId);
     Rate findById(Long rateId);
     float getAverageScoreByRateTypeId(Long rateTypeId);
+    int getNumOfPeopleByTypeAndScore(int score, int type);
 }

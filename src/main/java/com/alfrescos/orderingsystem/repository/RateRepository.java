@@ -2,7 +2,7 @@
  * Copyright (c) 2017. All rights reserved.
  */
 
-package com.alfrescos.orderingsystem.repositoty;
+package com.alfrescos.orderingsystem.repository;
 
 import com.alfrescos.orderingsystem.entity.Rate;
 import org.springframework.data.jpa.repository.Query;
@@ -31,4 +31,7 @@ public interface RateRepository extends CrudRepository<Rate, Long>{
 
     @Query(value = "SELECT AVG(R.score) FROM rate as R WHERE R.rate_type_id = ?1", nativeQuery = true)
     public float getAverageScoreByRateTypeId(long rateTypeId);
+
+    @Query(value = "SELECT COUNT(invoice_id) FROM rate WHERE score = ?1 AND rate_type_id = ?2", nativeQuery = true)
+    public int countNumOfPeopleByTypeAndScore(int score, int typeId);
 }

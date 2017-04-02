@@ -1,8 +1,11 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.service;
 
-import com.alfrescos.orderingsystem.entity.FoodAndDrink;
 import com.alfrescos.orderingsystem.entity.FoodAndDrinkType;
-import com.alfrescos.orderingsystem.repositoty.FoodAndDrinkTypeRepository;
+import com.alfrescos.orderingsystem.repository.FoodAndDrinkTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

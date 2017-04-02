@@ -68,6 +68,12 @@
             <version>6.1.0.jre8</version>
             <scope>runtime</scope>
         </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -156,6 +162,19 @@
             <groupId>com.google.zxing</groupId>
             <artifactId>javase</artifactId>
             <version>2.2</version>
+        </dependency>
+
+        <!-- Optional: to use JPA 2.1 -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+        </dependency>
+
+        <!-- Validator -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator-annotation-processor</artifactId>
+            <version>5.3.4.Final</version>
         </dependency>
 
     </dependencies>

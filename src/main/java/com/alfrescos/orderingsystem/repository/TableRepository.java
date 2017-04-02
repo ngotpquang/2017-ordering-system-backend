@@ -1,4 +1,8 @@
-package com.alfrescos.orderingsystem.repositoty;
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
+package com.alfrescos.orderingsystem.repository;
 
 import com.alfrescos.orderingsystem.entity.Table;
 import org.springframework.data.repository.CrudRepository;

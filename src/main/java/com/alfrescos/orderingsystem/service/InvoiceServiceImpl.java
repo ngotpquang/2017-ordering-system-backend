@@ -5,8 +5,8 @@
 package com.alfrescos.orderingsystem.service;
 
 import com.alfrescos.orderingsystem.entity.Invoice;
-import com.alfrescos.orderingsystem.repositoty.InvoiceRepository;
-import com.alfrescos.orderingsystem.repositoty.UserRepository;
+import com.alfrescos.orderingsystem.repository.InvoiceRepository;
+import com.alfrescos.orderingsystem.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

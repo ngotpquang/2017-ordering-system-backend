@@ -1,7 +1,11 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.service;
 
 import com.alfrescos.orderingsystem.entity.InvoiceDetail;
-import com.alfrescos.orderingsystem.repositoty.InvoiceDetailRepository;
+import com.alfrescos.orderingsystem.repository.InvoiceDetailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

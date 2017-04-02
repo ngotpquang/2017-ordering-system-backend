@@ -5,7 +5,7 @@
 package com.alfrescos.orderingsystem.service;
 
 import com.alfrescos.orderingsystem.entity.Rate;
-import com.alfrescos.orderingsystem.repositoty.RateRepository;
+import com.alfrescos.orderingsystem.repository.RateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -68,5 +68,10 @@ public class RateServiceImpl implements RateService {
     @Override
     public float getAverageScoreByRateTypeId(Long rateTypeId) {
         return this.rateRepository.getAverageScoreByRateTypeId(rateTypeId);
+    }
+
+    @Override
+    public int getNumOfPeopleByTypeAndScore(int score, int type) {
+        return this.rateRepository.countNumOfPeopleByTypeAndScore(score, type);
     }
 }

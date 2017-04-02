@@ -2,7 +2,7 @@
  * Copyright (c) 2017. All rights reserved.
  */
 
-package com.alfrescos.orderingsystem.repositoty;
+package com.alfrescos.orderingsystem.repository;
 
 import com.alfrescos.orderingsystem.entity.Invoice;
 import org.springframework.data.jpa.repository.Query;

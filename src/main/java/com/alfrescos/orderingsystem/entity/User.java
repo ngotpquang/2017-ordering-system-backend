@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.entity;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
@@ -175,7 +179,7 @@ public class User {
     }
 
     @Lob
-    @Column(name = "avatar_content", columnDefinition = "varbinary(max)")
+    @Column(name = "avatar_content", columnDefinition = "LONGBLOB")
     public byte[] getAvatarContent() {
         return avatarContent;
     }
