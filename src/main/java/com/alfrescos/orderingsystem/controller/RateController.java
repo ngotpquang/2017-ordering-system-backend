@@ -21,9 +21,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Liger on 16-Mar-17.
@@ -139,5 +137,19 @@ public class RateController {
             return new ResponseEntity<Object>("Can't update rate for invoice id: " + invoiceId + " due to error.", HttpStatus.NOT_ACCEPTABLE);
         }
         return new ResponseEntity<Object>("Can't update rate for invoice id: " + invoiceId + " due to error.", HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @GetMapping(value = "/{rateTypeId}/num-of-people")
+    public ResponseEntity<?> getNumOfPeople(@PathVariable int rateTypeId){
+        List<Map<String, String>> returnList = new ArrayList<>();
+        for (int i = 1; i <= 5; i++){
+            Map<String, String> data = new HashMap<>();
+            String id = i + "";
+            String numOfPeople = this.rateService.getNumOfPeopleByTypeAndScore(i, rateTypeId) + "";
+            data.put("numOfPeople", numOfPeople);
+            data.put("id", id);
+            returnList.add(data);
+        }
+        return new ResponseEntity<Object>(returnList, HttpStatus.OK);
     }
 }
