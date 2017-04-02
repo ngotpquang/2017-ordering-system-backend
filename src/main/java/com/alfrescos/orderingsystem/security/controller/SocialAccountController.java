@@ -134,10 +134,14 @@ public class SocialAccountController {
                 token = this.jwtTokenUtil.generateToken(userDetails);
                 System.out.println("Google: Registered already");
             } else {
+                System.out.println(payload.getEmail());
                 BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
                 String password = bCryptPasswordEncoder.encode(payload.getEmail());
-                User user = new User(new Long(1), payload.getEmail(), (String) payload.get("name"), password);
+                User user = new User(new Long(0), payload.getEmail(), (String) payload.get("name"), password);
+                user.setAccountCode(user.getEmail());
+                System.out.println(user.getAccountCode() + " - " + user.getEmail());
                 User newUser = this.userService.create(user);
+                System.out.println(newUser.getAccountCode() + " - " + newUser.getEmail() + " - " + newUser.getPassword());
                 Role role = roleService.findById(new Long(4));
                 permissionService.create(newUser, role);
                 userDetails = userDetailsService.loadUserByUsername(newUser.getEmail());
