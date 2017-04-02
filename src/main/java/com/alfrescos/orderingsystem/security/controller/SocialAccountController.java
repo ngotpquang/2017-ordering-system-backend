@@ -1,9 +1,16 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.security.controller;
 
 import com.alfrescos.orderingsystem.common.UserUtil;
+import com.alfrescos.orderingsystem.entity.Role;
 import com.alfrescos.orderingsystem.entity.User;
 import com.alfrescos.orderingsystem.security.JwtAuthenticationResponse;
 import com.alfrescos.orderingsystem.security.JwtTokenUtil;
+import com.alfrescos.orderingsystem.service.PermissionService;
+import com.alfrescos.orderingsystem.service.RoleService;
 import com.alfrescos.orderingsystem.service.UserService;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
@@ -54,6 +61,12 @@ public class SocialAccountController {
     private UserService userService;
 
     @Autowired
+    private RoleService roleService;
+
+    @Autowired
+    private PermissionService permissionService;
+
+    @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
     @PostMapping(value = "/facebook")
@@ -66,8 +79,15 @@ public class SocialAccountController {
         if (userService.findByAccountCode(userSocial.getId()) != null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(userSocial.getId());
             String token = this.jwtTokenUtil.generateToken(userDetails);
+            System.out.println("Facebook: Registered already");
             return new ResponseEntity<Object>(new JwtAuthenticationResponse(token), HttpStatus.OK);
-        } else {
+        } else if ((userSocial.getEmail() != null && userService.findByEmail(userSocial.getEmail()) != null)){
+            UserDetails userDetails = userDetailsService.loadUserByUsername(userSocial.getEmail());
+            String token = this.jwtTokenUtil.generateToken(userDetails);
+            System.out.println("Facebook: Registered already");
+            return new ResponseEntity<Object>(new JwtAuthenticationResponse(token), HttpStatus.OK);
+        }
+        else {
             User user = new User();
             user.setAccountCode(userSocial.getId());
             if (userSocial.getEmail() != null) {
@@ -82,6 +102,8 @@ public class SocialAccountController {
             String password = bCryptPasswordEncoder.encode(userSocial.getId());
             user.setPassword(password);
             User newUser = userService.create(user);
+            Role role = roleService.findById(new Long(4));
+            permissionService.create(newUser, role);
             UserDetails userDetails = userDetailsService.loadUserByUsername(newUser.getAccountCode());
             String token = this.jwtTokenUtil.generateToken(userDetails);
             return new ResponseEntity<Object>(new JwtAuthenticationResponse(token), HttpStatus.OK);
@@ -107,13 +129,17 @@ public class SocialAccountController {
         if (idToken != null) {
             GoogleIdToken.Payload payload = idToken.getPayload();
             if (this.userService.findByAccountCode(payload.getEmail()) != null || this.userService.findByEmail(payload.getEmail()) != null) {
-                userDetails = userDetailsService.loadUserByUsername(payload.getEmail());
+                String accountCode = this.userService.findByEmail(payload.getEmail()).getAccountCode();
+                userDetails = userDetailsService.loadUserByUsername(accountCode);
                 token = this.jwtTokenUtil.generateToken(userDetails);
+                System.out.println("Google: Registered already");
             } else {
                 BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
                 String password = bCryptPasswordEncoder.encode(payload.getEmail());
                 User user = new User(new Long(1), payload.getEmail(), (String) payload.get("name"), password);
                 User newUser = this.userService.create(user);
+                Role role = roleService.findById(new Long(4));
+                permissionService.create(newUser, role);
                 userDetails = userDetailsService.loadUserByUsername(newUser.getEmail());
                 token = this.jwtTokenUtil.generateToken(userDetails);
             }
