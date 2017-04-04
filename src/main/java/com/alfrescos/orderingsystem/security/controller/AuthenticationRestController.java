@@ -54,12 +54,16 @@ public class AuthenticationRestController {
 
     @PostMapping(value = "/login")
     public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody JwtAuthenticationRequest authenticationRequest) throws AuthenticationException {
+        System.out.println(authenticationRequest.getEmail());
         User user = userService.findByEmail(authenticationRequest.getEmail());
+        System.out.println(11111);
         if (user == null || !passwordEncoder.matches(authenticationRequest.getPassword(), user.getPassword())) {
             throw new AuthenticationCredentialsNotFoundException("Account not found!");
         }
         final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getAccountCode());
+        System.out.println(222222);
         final String token = this.jwtTokenUtil.generateToken(userDetails);
+        System.out.println(33333);
         return new ResponseEntity<Object>(new JwtAuthenticationResponse(token), HttpStatus.OK);
     }
 

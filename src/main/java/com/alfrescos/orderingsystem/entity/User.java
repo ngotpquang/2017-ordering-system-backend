@@ -84,7 +84,7 @@ public class User {
         this.accountCode = accountCode;
     }
 
-    @Column(name = "name", nullable = false, columnDefinition = "nvarchar(255)")
+    @Column(name = "name", nullable = false, columnDefinition = "varchar(255)")
     public String getName() {
         return name;
     }
@@ -130,7 +130,7 @@ public class User {
         this.avatar = avatar;
     }
 
-    @Column(name = "detail", columnDefinition = "nvarchar(255)")
+    @Column(name = "detail", columnDefinition = "varchar(255)")
     public String getDetail() {
         return detail;
     }
@@ -179,7 +179,7 @@ public class User {
     }
 
     @Lob
-    @Column(name = "avatar_content", columnDefinition = "LONGBLOB")
+    @Column(name = "avatar_content", columnDefinition = "oid")
     public byte[] getAvatarContent() {
         return avatarContent;
     }

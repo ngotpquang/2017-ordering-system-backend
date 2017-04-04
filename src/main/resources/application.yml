@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    url: ${JDBC_DATABASE_URL}
+    username: ${JDBC_DATABASE_USERNAME}
+    password: ${JDBC_DATABASE_PASSWORD}
+    testWhileIdle: true
+    validationQuery: SELECT 1
+  mail:
+    host: smtp.gmail.com
+    username: quangghost262@gmail.com
+    password: ngoquang20575485
+    port: 587
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL9Dialect
+security:
+  secretKey: orderingsystem_alfrescos2017
+  expirationTime: 86400
+server:
+  port: 8080
