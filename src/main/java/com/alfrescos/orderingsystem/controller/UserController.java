@@ -10,6 +10,7 @@ import com.alfrescos.orderingsystem.entity.Role;
 import com.alfrescos.orderingsystem.entity.User;
 import com.alfrescos.orderingsystem.security.JwtAuthenticationResponse;
 import com.alfrescos.orderingsystem.security.JwtTokenUtil;
+import com.alfrescos.orderingsystem.service.EmailService;
 import com.alfrescos.orderingsystem.service.PermissionService;
 import com.alfrescos.orderingsystem.service.RoleService;
 import com.alfrescos.orderingsystem.service.UserService;
@@ -56,6 +57,9 @@ public class UserController {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private EmailService emailService;
+
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<?> getAll() {
@@ -87,6 +91,7 @@ public class UserController {
         String password = data.get("password");
         String name = data.get("name");
         String roleIds = data.get("roleId");
+        System.out.println(email + " - " + password + " - " + name + " - " + roleIds);
         User existUser = userService.findByEmail(email);
         if (existUser != null){
             return new ResponseEntity<>("Email has been registered already!", HttpStatus.CONFLICT);
@@ -104,7 +109,7 @@ public class UserController {
                     permissionService.create(newUser, role);
                 }
                 String token = this.jwtTokenUtil.generateToken(this.userDetailsService.loadUserByUsername(user.getAccountCode()));
-//        emailService.sendWelcomeMailNewMember(newUser.getEmail(), newUser.getFullName());
+//        emailService.sendWelcomeMailNewMember(newUser.getEmail(), newUser.getName());
                 return new ResponseEntity<>(new JwtAuthenticationResponse(token), HttpStatus.CREATED);
             } catch (NumberFormatException e){
                 return new ResponseEntity<>("Can't create user due to some error.", HttpStatus.NOT_ACCEPTABLE);

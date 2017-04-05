@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -17,6 +21,7 @@ public class FoodAndDrink {
     private String name;
     private float price;
     private String detail;
+    private int numOrdered = 0;
     private FoodAndDrinkType foodAndDrinkType;
     private boolean isVisible = true;
 
@@ -85,5 +90,14 @@ public class FoodAndDrink {
 
     public void setFoodAndDrinkType(FoodAndDrinkType foodAndDrinkType) {
         this.foodAndDrinkType = foodAndDrinkType;
+    }
+
+    @Column(name = "num_ordered", nullable = false)
+    public int getNumOrdered() {
+        return numOrdered;
+    }
+
+    public void setNumOrdered(int numOrdered) {
+        this.numOrdered = numOrdered;
     }
 }
