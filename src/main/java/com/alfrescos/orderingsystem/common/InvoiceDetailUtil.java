@@ -33,10 +33,11 @@ public class InvoiceDetailUtil {
                         InvoiceDetail invoiceDetail = invoiceDetailService.create(new InvoiceDetail(invoice, foodAndDrink,
                                 quantity, timeOrdered, foodAndDrink.getPrice()));
                         if (invoiceDetail == null){
-                            foodAndDrink.setNumOrdered(foodAndDrink.getNumOrdered() + quantity);
-                            foodAndDrinkService.update(foodAndDrink);
                             isInvoiceDetailAllCreated = false;
                             break;
+                        } else {
+                            foodAndDrink.setNumOrdered(foodAndDrink.getNumOrdered() + quantity);
+                            foodAndDrinkService.update(foodAndDrink);
                         }
                     } else {
                         break;
