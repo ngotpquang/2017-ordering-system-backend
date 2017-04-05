@@ -56,7 +56,7 @@ public class InvoiceController {
             Invoice invoice = invoiceService.create(new Invoice(invoiceId, customer, customer, table));
             Date timeOrdered = new Date();
             if (invoice != null && InvoiceDetailUtil.addInvoiceDetail(data, invoice, timeOrdered, foodAndDrinkService, invoiceDetailService)) {
-                return new ResponseEntity<>("Ordered!", HttpStatus.CREATED);
+                return new ResponseEntity<>(invoice.getId(), HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>("Failed when created something. Please check again!", HttpStatus.BAD_REQUEST);
             }
