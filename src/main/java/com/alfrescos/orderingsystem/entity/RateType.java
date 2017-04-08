@@ -1,9 +1,14 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.persistence.Table;
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -15,14 +20,15 @@ public class RateType {
     private Long id;
     private String name;
     private Set<Rate> rates;
+    private Date createdDate;
 
     public RateType() {
     }
 
-    public RateType(Long id, String name, Set<Rate> rates) {
-        this.id = id;
+    public RateType(String name, Set<Rate> rates) {
         this.name = name;
         this.rates = rates;
+        this.createdDate = new Date();
     }
 
     @Id
@@ -52,5 +58,14 @@ public class RateType {
 
     public void setRates(Set<Rate> rates) {
         this.rates = rates;
+    }
+
+    @Column(name = "created_date", nullable = false)
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 }

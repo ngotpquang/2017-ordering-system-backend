@@ -9,6 +9,8 @@ import com.alfrescos.orderingsystem.repository.FoodAndDrinkTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by Liger on 16-Mar-17.
  */
@@ -38,5 +40,15 @@ public class FoodAndDrinkTypeServiceImpl implements FoodAndDrinkTypeService{
         FoodAndDrinkType foodAndDrinkType = this.foodAndDrinkTypeRepository.findOne(foodAndDrinkTypeId);
         foodAndDrinkType.setVisible(!foodAndDrinkType.isVisible());
         return this.foodAndDrinkTypeRepository.save(foodAndDrinkType).isVisible();
+    }
+
+    @Override
+    public List<FoodAndDrinkType> findAllDrinkOrDesert() {
+        return this.foodAndDrinkTypeRepository.findAllDrinkOrDesert();
+    }
+
+    @Override
+    public List<FoodAndDrinkType> findAllMainDish() {
+        return this.foodAndDrinkTypeRepository.findAllMainDish();
     }
 }

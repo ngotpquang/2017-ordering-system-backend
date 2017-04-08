@@ -1,7 +1,12 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.entity;
 
 import javax.persistence.*;
 import javax.persistence.Table;
+import java.util.Date;
 
 /**
  * Created by Liger on 27-Feb-17.
@@ -12,13 +17,14 @@ public class Shift {
     private Long id;
     private String detail;
     private boolean isVisible = true;
+    private Date createdDate;
 
     public Shift() {
     }
 
-    public Shift(Long id, String detail) {
-        this.id = id;
+    public Shift(String detail) {
         this.detail = detail;
+        this.createdDate = new Date();
     }
 
     @Id
@@ -47,5 +53,14 @@ public class Shift {
 
     public void setVisible(boolean visible) {
         isVisible = visible;
+    }
+
+    @Column(name = "created_date", nullable = false)
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 }

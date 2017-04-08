@@ -1,7 +1,15 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.controller;
 
 import com.alfrescos.orderingsystem.entity.FoodAndDrink;
+import com.alfrescos.orderingsystem.entity.FoodAndDrinkType;
+import com.alfrescos.orderingsystem.entity.OrderCombination;
 import com.alfrescos.orderingsystem.service.FoodAndDrinkService;
+import com.alfrescos.orderingsystem.service.FoodAndDrinkTypeService;
+import com.alfrescos.orderingsystem.service.OrderCombinationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +28,12 @@ public class FoodAndDrinkController {
 
     @Autowired
     private FoodAndDrinkService foodAndDrinkservice;
+
+    @Autowired
+    private OrderCombinationService orderCombinationService;
+
+    @Autowired
+    private FoodAndDrinkTypeService foodAndDrinkTypeService;
 
     @GetMapping(value = "/{foodAndDrinkId}")
     public ResponseEntity<?> getFoodAndDrinkById(@PathVariable Long foodAndDrinkId) {
@@ -51,11 +65,32 @@ public class FoodAndDrinkController {
         }
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+//    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody FoodAndDrink foodAndDrink){
         FoodAndDrink createdFoodAndDrink = this.foodAndDrinkservice.create(foodAndDrink);
         if (createdFoodAndDrink != null){
+            if (createdFoodAndDrink.getFoodAndDrinkType().isMainDish()){
+                List<FoodAndDrinkType> drinkOrDesertTypeList = this.foodAndDrinkTypeService.findAllDrinkOrDesert();
+                if (!drinkOrDesertTypeList.isEmpty()){
+                    for (FoodAndDrinkType fadt: drinkOrDesertTypeList) {
+                        List<FoodAndDrink> drinkOrDesertList = this.foodAndDrinkservice.findByFoodAndDrinkTypeId(fadt.getId());
+                        for (FoodAndDrink fad: drinkOrDesertList){
+                            this.orderCombinationService.createOrderCombination(new OrderCombination(createdFoodAndDrink, fad));
+                        }
+                    }
+                }
+            } else {
+                List<FoodAndDrinkType> mainDishTypeList = this.foodAndDrinkTypeService.findAllMainDish();
+                if(!mainDishTypeList.isEmpty()){
+                    for (FoodAndDrinkType fadt: mainDishTypeList) {
+                        List<FoodAndDrink> mainDishList = this.foodAndDrinkservice.findByFoodAndDrinkTypeId(fadt.getId());
+                        for (FoodAndDrink fad: mainDishList){
+                            this.orderCombinationService.createOrderCombination(new OrderCombination(fad, createdFoodAndDrink));
+                        }
+                    }
+                }
+            }
             return new ResponseEntity<Object>("Created FAD name: " + createdFoodAndDrink.getName() + " successfully.", HttpStatus.CREATED);
         } else {
             return new ResponseEntity<Object>("Can't create due to error.", HttpStatus.NOT_ACCEPTABLE);

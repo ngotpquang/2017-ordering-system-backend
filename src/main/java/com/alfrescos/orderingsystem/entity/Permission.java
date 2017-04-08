@@ -1,9 +1,14 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.persistence.Table;
+import java.util.Date;
 
 /**
  * Created by Liger on 06-Mar-17.
@@ -14,6 +19,7 @@ public class Permission {
     private Integer id;
     private Role role;
     private User user;
+    private Date createdDate;
 
     public Permission() {
     }
@@ -22,6 +28,7 @@ public class Permission {
         this.id = id;
         this.role = role;
         this.user = user;
+        this.createdDate = new Date();
     }
 
     public Permission(Role role, User user) {
@@ -59,5 +66,14 @@ public class Permission {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Column(name = "created_date", nullable = false)
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 }

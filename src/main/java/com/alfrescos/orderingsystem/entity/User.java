@@ -43,6 +43,7 @@ public class User {
     private byte[] avatarContent;
     private Set<Invoice> customerInvoices;
     private Set<Invoice> staffInvoices;
+    private Date createdDate;
     private boolean isDeleted = false;
 //    private boolean ignoreJoin;
 
@@ -54,6 +55,7 @@ public class User {
         this.email = email;
         this.name = name;
         this.password = password;
+        this.createdDate = new Date();
     }
 
     @Id
@@ -179,7 +181,10 @@ public class User {
     }
 
     @Lob
-    @Column(name = "avatar_content", columnDefinition = "oid")
+//    For PostgreSQL
+//    @Column(name = "avatar_content", columnDefinition = "oid")
+//    For SQL Server
+    @Column(name = "avatar_content", columnDefinition = "varbinary(max)")
     public byte[] getAvatarContent() {
         return avatarContent;
     }
@@ -223,6 +228,15 @@ public class User {
 
     public void setStaffInvoices(Set<Invoice> staffInvoices) {
         this.staffInvoices = staffInvoices;
+    }
+
+    @Column(name = "created_date", nullable = false)
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 
     @Override

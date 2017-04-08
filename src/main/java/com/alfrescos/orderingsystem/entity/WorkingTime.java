@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.entity;
 
 import javax.persistence.*;
@@ -18,8 +22,7 @@ public class WorkingTime {
     public WorkingTime() {
     }
 
-    public WorkingTime(Long id, User user, Shift shift, Date date) {
-        this.id = id;
+    public WorkingTime(User user, Shift shift, Date date) {
         this.user = user;
         this.shift = shift;
         this.date = date;

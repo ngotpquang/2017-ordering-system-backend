@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.entity;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
@@ -21,6 +25,7 @@ public class Invoice {
     private User staffUser;
     private Table table;
     private boolean isPaid = false;
+    private Date createdDate;
     private Date payingTime;
     private Set<InvoiceDetail> invoiceDetails;
     private boolean isVisible = true;
@@ -33,6 +38,7 @@ public class Invoice {
         this.customerUser = customerUser;
         this.staffUser = staffUser;
         this.table = table;
+        this.createdDate = new Date();
     }
 
     @Id
@@ -109,6 +115,15 @@ public class Invoice {
 
     public void setVisible(boolean visible) {
         isVisible = visible;
+    }
+
+    @Column(name = "created_date", nullable = false)
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 
     @Override

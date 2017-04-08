@@ -1,9 +1,14 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.persistence.Table;
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -17,14 +22,16 @@ public class FoodAndDrinkType {
     private String detail;
     private Set<FoodAndDrink> foodAndDrinks;
     private boolean isVisible = true;
+    private boolean isMainDish = false;
+    private Date createdDate;
 
     public FoodAndDrinkType() {
     }
 
-    public FoodAndDrinkType(Long id, String name, String detail) {
-        this.id = id;
+    public FoodAndDrinkType(String name, String detail) {
         this.name = name;
         this.detail = detail;
+        this.createdDate = new Date();
     }
 
     @Id
@@ -72,5 +79,23 @@ public class FoodAndDrinkType {
 
     public void setFoodAndDrinks(Set<FoodAndDrink> foodAndDrinks) {
         this.foodAndDrinks = foodAndDrinks;
+    }
+
+    @Column(name = "is_main_dish", nullable = false)
+    public boolean isMainDish() {
+        return isMainDish;
+    }
+
+    public void setMainDish(boolean mainDish) {
+        isMainDish = mainDish;
+    }
+
+    @Column(name = "created_date", nullable = false)
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 }

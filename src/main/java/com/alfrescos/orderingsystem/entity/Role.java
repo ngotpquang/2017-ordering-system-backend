@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.entity;
 /**
  * Created by Liger on 27-Feb-17.
@@ -9,6 +13,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.persistence.Table;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -18,18 +23,14 @@ public class Role {
     private Long id;
     private String name;
     private List<Permission> permissionList;
+    private Date createdDate;
 
     public Role() {
     }
 
-    public Role(Long id, String name) {
-        this.id = id;
+    public Role(String name) {
         this.name = name;
-    }
-
-    public Role(Long id, String name, Set<User> users) {
-        this.id = id;
-        this.name = name;
+        this.createdDate = new Date();
     }
 
     @Id
@@ -60,5 +61,14 @@ public class Role {
 
     public void setPermissionList(List<Permission> permissionList) {
         this.permissionList = permissionList;
+    }
+
+    @Column(name = "created_date", nullable = false)
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 }

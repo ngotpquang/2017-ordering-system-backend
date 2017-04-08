@@ -1,8 +1,13 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -15,13 +20,14 @@ public class Table {
     private int size;
     private Set<Invoice> invoices;
     private boolean isVisible = true;
+    private Date createdDate;
 
     public Table() {
     }
 
-    public Table(Long id, int size) {
-        this.id = id;
+    public Table(int size) {
         this.size = size;
+        this.createdDate = new Date();
     }
 
     public Table(Long id, int size, Set<Invoice> invoices) {
@@ -66,6 +72,15 @@ public class Table {
 
     public void setVisible(boolean visible) {
         isVisible = visible;
+    }
+
+    @Column(name = "created_date", nullable = false)
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 }
 

@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.controller;
 
 import com.alfrescos.orderingsystem.common.UserUtil;
@@ -44,12 +48,12 @@ public class WorkingTimeController {
             Long date = Long.parseLong(data.get("date"));
             Date workingDate = new Date(date);
             if (UserUtil.checkAdminOrManagerAccount()){
-                WorkingTime workingTime = this.workingTimeService.create(new WorkingTime(new Long(1), this.userService.findById(userId), this.shiftService.findById(shiftId), workingDate));
+                WorkingTime workingTime = this.workingTimeService.create(new WorkingTime(this.userService.findById(userId), this.shiftService.findById(shiftId), workingDate));
                 if (workingTime != null){
                     return new ResponseEntity<Object>("Created successfully!", HttpStatus.CREATED);
                 }
             } else {
-                WorkingTime workingTime = this.workingTimeService.create(new WorkingTime(new Long(1), this.userService.findById(UserUtil.getIdByAuthorization()), this.shiftService.findById(shiftId), workingDate));
+                WorkingTime workingTime = this.workingTimeService.create(new WorkingTime(this.userService.findById(UserUtil.getIdByAuthorization()), this.shiftService.findById(shiftId), workingDate));
                 if (workingTime != null){
                     return new ResponseEntity<Object>("Created successfully!", HttpStatus.CREATED);
                 }
