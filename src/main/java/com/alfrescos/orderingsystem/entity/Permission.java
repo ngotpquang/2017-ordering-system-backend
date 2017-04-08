@@ -24,16 +24,10 @@ public class Permission {
     public Permission() {
     }
 
-    public Permission(Integer id, Role role, User user) {
-        this.id = id;
-        this.role = role;
-        this.user = user;
-        this.createdDate = new Date();
-    }
-
     public Permission(Role role, User user) {
         this.role = role;
         this.user = user;
+        this.createdDate = new Date();
     }
 
     @Id

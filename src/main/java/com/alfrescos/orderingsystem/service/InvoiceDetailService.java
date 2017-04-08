@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.service;
 
 import com.alfrescos.orderingsystem.entity.InvoiceDetail;
@@ -13,6 +17,7 @@ public interface InvoiceDetailService {
     public void delete(Long invoiceDetailId);
     public void deleteByInvoiceId(String invoiceId);
     public boolean setMade(Long invoiceDetailId);
-
     InvoiceDetail findById(Long invoiceDetailId);
+    InvoiceDetail findByDrinkAndFoodId(Long foodAndDrinkId, String invoiceId);
+    InvoiceDetail update(InvoiceDetail invoiceDetail);
 }

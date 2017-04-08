@@ -22,4 +22,7 @@ public interface OrderCombinationRepository extends CrudRepository<OrderCombinat
 
     @Query(value = "SELECT * FROM order_combination WHERE drink_or_desert_id = ?1", nativeQuery = true)
     List<OrderCombination> findByDrinkOrDesertId(Long id);
+
+    @Query(value = "SELECT * FROM order_combination WHERE main_dish_id = ?1 AND drink_or_desert_id = ?2", nativeQuery = true)
+    OrderCombination findByMainDishIdAndDrinkOrDesertId(Long mainDishId, Long drinkOrDesertId);
 }

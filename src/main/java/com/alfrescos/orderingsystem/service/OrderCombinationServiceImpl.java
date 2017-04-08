@@ -39,4 +39,9 @@ public class OrderCombinationServiceImpl implements OrderCombinationService{
     public OrderCombination createOrderCombination(OrderCombination orderCombination) {
         return this.orderCombinationRepository.save(orderCombination);
     }
+
+    @Override
+    public OrderCombination findByMainDishIdAndDrinkAndDesertId(Long mainDishId, Long drinkOrDesertId) {
+        return this.orderCombinationRepository.findByMainDishIdAndDrinkOrDesertId(mainDishId, drinkOrDesertId);
+    }
 }

@@ -62,13 +62,15 @@ public class InvoiceDetailController {
             return new ResponseEntity<Object>("Can't find invoice with id: " + invoiceId, HttpStatus.NOT_ACCEPTABLE);
         } else if (!invoice.getCustomerUser().getAccountCode().equals(UserUtil.getAccountCodeByAuthorization())){
             return new ResponseEntity<Object>("You can't modify this invoice as you're not the owner.", HttpStatus.NOT_ACCEPTABLE);
+        } else if(invoice.isPaid()){
+            return new ResponseEntity<Object>("Can't modify invoice after paid", HttpStatus.NOT_ACCEPTABLE);
         }
         try {
             Date timeOrdered = new Date();
-            if (invoice != null && InvoiceDetailUtil.addInvoiceDetail(data, invoice, timeOrdered, foodAndDrinkService, invoiceDetailService)){
+            if (InvoiceDetailUtil.addInvoiceDetail(data, invoice, timeOrdered, foodAndDrinkService, invoiceDetailService)){
                 return new ResponseEntity<Object>("Added successfully.", HttpStatus.CREATED);
             }
-        } catch (NumberFormatException e){
+        } catch (Exception e){
             return new ResponseEntity<Object>("Couldn't add new invoice detail due to errors.", HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<Object>("Couldn't add new invoice detail due to errors.", HttpStatus.NO_CONTENT);

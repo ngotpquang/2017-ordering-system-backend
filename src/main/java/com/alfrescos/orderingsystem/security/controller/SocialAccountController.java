@@ -137,7 +137,7 @@ public class SocialAccountController {
                 System.out.println(payload.getEmail());
                 BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
                 String password = bCryptPasswordEncoder.encode(payload.getEmail());
-                User user = new User(new Long(0), payload.getEmail(), (String) payload.get("name"), password);
+                User user = new User(payload.getEmail(), (String) payload.get("name"), password);
                 user.setAccountCode(user.getEmail());
                 System.out.println(user.getAccountCode() + " - " + user.getEmail());
                 User newUser = this.userService.create(user);

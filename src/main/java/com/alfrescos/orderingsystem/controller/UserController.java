@@ -100,7 +100,8 @@ public class UserController {
                 String[] roleIdList = roleIds.split(",");
                 BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
                 String passwordEncoded = passwordEncoder.encode(password);
-                User user = new User(new Long(0), email, name, passwordEncoded);
+                User user = new User(email, name, passwordEncoded);
+                System.out.println("Created date: " + user.getCreatedDate());
                 user.setAccountCode(user.getEmail());
                 user.setAvatar("https://scontent.fdad3-2.fna.fbcdn.net/v/t1.0-9/14192786_1136070546471857_2394520358912381986_n.jpg?oh=43b61e721fa1960b009119b0551a4407&oe=5935E2AE");
                 User newUser = userService.create(user);

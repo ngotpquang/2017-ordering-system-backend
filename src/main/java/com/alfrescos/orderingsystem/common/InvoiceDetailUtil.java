@@ -30,8 +30,15 @@ public class InvoiceDetailUtil {
                     quantity = Integer.parseInt(quantityList[i].trim());
                     foodAndDrink = foodAndDrinkService.findById(Long.parseLong(foodAndDrinkIdList[i].trim()));
                     if (foodAndDrink != null){
-                        InvoiceDetail invoiceDetail = invoiceDetailService.create(new InvoiceDetail(invoice, foodAndDrink,
-                                quantity, timeOrdered, foodAndDrink.getPrice()));
+                        InvoiceDetail invoiceDetail;
+                        invoiceDetail = invoiceDetailService.findByDrinkAndFoodId(foodAndDrink.getId(), invoice.getId());
+                        if (invoiceDetail == null){
+                            invoiceDetail = invoiceDetailService.create(new InvoiceDetail(invoice, foodAndDrink,
+                                    quantity, timeOrdered, foodAndDrink.getPrice()));
+                        } else {
+                            invoiceDetail.setQuantity(invoiceDetail.getQuantity() + quantity);
+                            invoiceDetailService.update(invoiceDetail);
+                        }
                         if (invoiceDetail == null){
                             isInvoiceDetailAllCreated = false;
                             break;
@@ -44,7 +51,7 @@ public class InvoiceDetailUtil {
                     }
                 }
             }
-        } catch (NumberFormatException e){
+        } catch (Exception e){
             System.out.println(e.getMessage());
         }
         return isInvoiceDetailAllCreated;

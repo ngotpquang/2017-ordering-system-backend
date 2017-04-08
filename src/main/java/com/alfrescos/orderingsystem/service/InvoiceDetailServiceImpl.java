@@ -47,17 +47,28 @@ public class InvoiceDetailServiceImpl implements InvoiceDetailService{
 
     @Override
     public boolean setMade(Long invoiceDetailId) {
-        InvoiceDetail invoiceDetail = this.invoiceDetailRepository.findOne(invoiceDetailId);
-        if (invoiceDetail == null){
-            return false;
-        }
-        invoiceDetail.setMade(true);
-        return this.invoiceDetailRepository.save(invoiceDetail).isMade();
+//        InvoiceDetail invoiceDetail = this.invoiceDetailRepository.findOne(invoiceDetailId);
+//        if (invoiceDetail == null){
+//            return false;
+//        }
+//        invoiceDetail.setMade(true);
+//        return this.invoiceDetailRepository.save(invoiceDetail).isMade();
+        return false;
     }
 
     @Override
     public InvoiceDetail findById(Long invoiceDetailId) {
         return this.invoiceDetailRepository.findOne(invoiceDetailId);
+    }
+
+    @Override
+    public InvoiceDetail findByDrinkAndFoodId(Long foodAndDrinkId, String invoiceId) {
+        return this.invoiceDetailRepository.findByFoodAndDrinkId(foodAndDrinkId, invoiceId);
+    }
+
+    @Override
+    public InvoiceDetail update(InvoiceDetail invoiceDetail) {
+        return this.invoiceDetailRepository.save(invoiceDetail);
     }
 
 }

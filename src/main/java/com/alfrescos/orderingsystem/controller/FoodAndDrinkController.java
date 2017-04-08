@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Liger on 05-Mar-17.
@@ -99,11 +100,24 @@ public class FoodAndDrinkController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @PutMapping(value = "/update")
-    public ResponseEntity<?> update(@Valid @RequestBody FoodAndDrink foodAndDrink){
-        FoodAndDrink oldFoodAndDrink = this.foodAndDrinkservice.findById(foodAndDrink.getId());
-        if (oldFoodAndDrink != null && !foodAndDrink.getName().isEmpty() && foodAndDrink.getPrice() != 0 && foodAndDrink.getFoodAndDrinkType() != null){
-            return new ResponseEntity<Object>("Updated FAD id: " + foodAndDrink.getId() + " successfully.", HttpStatus.CREATED);
-        } else {
+    public ResponseEntity<?> update(@RequestBody Map<String, String> data){
+        try {
+            Long foodAndDrinkId = Long.parseLong(data.get("foodAndDrinkId"));
+            String detail = data.get("detail");
+            String tags= data.get("tags");
+            FoodAndDrink oldFoodAndDrink = this.foodAndDrinkservice.findById(foodAndDrinkId);
+            if (oldFoodAndDrink != null
+                    && !oldFoodAndDrink.getDetail().equals(detail)
+                    && !oldFoodAndDrink.getTags().equals(tags)){
+                oldFoodAndDrink.setDetail(detail);
+                oldFoodAndDrink.setTags(tags);
+                oldFoodAndDrink = this.foodAndDrinkservice.update(oldFoodAndDrink);
+                return new ResponseEntity<Object>("Updated FAD id: " + oldFoodAndDrink.getId() + " successfully.", HttpStatus.CREATED);
+            } else {
+                return new ResponseEntity<Object>("Can't update due to error.", HttpStatus.NOT_ACCEPTABLE);
+            }
+        } catch (NumberFormatException e){
+            System.out.println(e.getMessage());
             return new ResponseEntity<Object>("Can't update due to error.", HttpStatus.NOT_ACCEPTABLE);
         }
     }

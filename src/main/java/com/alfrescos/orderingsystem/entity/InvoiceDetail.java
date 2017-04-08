@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -19,7 +23,7 @@ public class InvoiceDetail {
     private FoodAndDrink foodAndDrink;
     private int quantity;
     private float price;
-    private boolean isMade = false;
+//    private boolean isMade = false;
     private Date orderingTime;
     private boolean isVisible = true;
 
@@ -92,14 +96,14 @@ public class InvoiceDetail {
         this.orderingTime = orderingTime;
     }
 
-    @Column(name = "is_made", nullable = false)
-    public boolean isMade() {
-        return isMade;
-    }
-
-    public void setMade(boolean made) {
-        isMade = made;
-    }
+//    @Column(name = "is_made", nullable = false)
+//    public boolean isMade() {
+//        return isMade;
+//    }
+//
+//    public void setMade(boolean made) {
+//        isMade = made;
+//    }
 
     @Column(name = "is_visible", nullable = false)
     public boolean isVisible() {

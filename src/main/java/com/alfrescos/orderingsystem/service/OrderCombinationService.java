@@ -16,4 +16,5 @@ public interface OrderCombinationService {
     List<OrderCombination> findByDrinkOrDesertId(Long id);
     OrderCombination updateNumberOrderedTogether(OrderCombination orderCombination);
     OrderCombination createOrderCombination(OrderCombination orderCombination);
+    OrderCombination findByMainDishIdAndDrinkAndDesertId(Long mainDishId, Long drinkOrDesertId);
 }

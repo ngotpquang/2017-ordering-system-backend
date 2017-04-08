@@ -8,6 +8,7 @@ import com.alfrescos.orderingsystem.common.InvoiceDetailUtil;
 import com.alfrescos.orderingsystem.common.UserUtil;
 import com.alfrescos.orderingsystem.entity.*;
 import com.alfrescos.orderingsystem.service.*;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by Liger on 15-Mar-17.
@@ -39,6 +41,9 @@ public class InvoiceController {
 
     @Autowired
     private InvoiceDetailService invoiceDetailService;
+
+    @Autowired
+    private OrderCombinationService orderCombinationService;
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody Map<String, String> data) {
@@ -87,7 +92,7 @@ public class InvoiceController {
     public ResponseEntity<?> getInvoiceByInvoiceId(@PathVariable String invoiceId){
         Long loggedInUserId = UserUtil.getIdByAuthorization();
         Invoice invoice = invoiceService.findById(invoiceId);
-        if (invoice != null && loggedInUserId == invoice.getCustomerUser().getId()) {
+        if (invoice != null && loggedInUserId.equals(invoice.getCustomerUser().getId())) {
             return new ResponseEntity<>(invoice, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -122,6 +127,27 @@ public class InvoiceController {
     @PutMapping(value = "/confirm-paid/{invoiceId}")
     public ResponseEntity<?> confirmPaidInvoice(@PathVariable String invoiceId){
         Long staffId = UserUtil.getIdByAuthorization();
+        if (this.invoiceService.findById(invoiceId).isPaid()){
+            return new ResponseEntity<Object>("Invoice has been paid already!", HttpStatus.NOT_ACCEPTABLE);
+        }
+        List<InvoiceDetail> invoiceDetailList = this.invoiceDetailService.findAllInvoiceDetailsByInvoiceId(invoiceId);
+        List<InvoiceDetail> mainDishDetailList = invoiceDetailList.stream().filter(invoiceDetail -> invoiceDetail.getFoodAndDrink().getFoodAndDrinkType().isMainDish()).collect(Collectors.toList());
+        List<InvoiceDetail> drinkOrDesertDetailList = invoiceDetailList.stream().filter(invoiceDetail -> !invoiceDetail.getFoodAndDrink().getFoodAndDrinkType().isMainDish()).collect(Collectors.toList());
+        if (mainDishDetailList.isEmpty() || drinkOrDesertDetailList.isEmpty()){
+            return new ResponseEntity<Object>(this.invoiceService.setPaid(staffId, invoiceId), HttpStatus.CREATED);
+        }
+        for (InvoiceDetail id: mainDishDetailList){
+            for (InvoiceDetail id1: drinkOrDesertDetailList){
+                System.out.println(id.getFoodAndDrink().getId() + " - " + id1.getFoodAndDrink().getName());
+                OrderCombination orderCombination = this.orderCombinationService.findByMainDishIdAndDrinkAndDesertId(id.getFoodAndDrink().getId(), id1.getFoodAndDrink().getId());
+                if (orderCombination != null){
+                    orderCombination.setNumOfOrderedTogether(orderCombination.getNumOfOrderedTogether() + 1);
+                    this.orderCombinationService.updateNumberOrderedTogether(orderCombination);
+                } else {
+                    System.out.println("Error somewhere I don't know!");
+                }
+            }
+        }
         return new ResponseEntity<Object>(this.invoiceService.setPaid(staffId, invoiceId), HttpStatus.CREATED);
     }
 

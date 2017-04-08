@@ -24,9 +24,7 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public Permission create(User user, Role role) {
-        Permission permission = new Permission();
-        permission.setRole(role);
-        permission.setUser(user);
+        Permission permission = new Permission(role, user);
         return this.permissionRepository.save(permission);
     }
 }

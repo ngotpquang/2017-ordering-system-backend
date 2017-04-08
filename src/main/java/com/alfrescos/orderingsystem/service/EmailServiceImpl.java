@@ -66,7 +66,6 @@ public class EmailServiceImpl implements EmailService {
             mimeMessage.setContent(writer.toString(), "text/html; charset=utf-8");
             javaMailSender.send(mimeMessage);
             System.out.println("Email Sent!");
-
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         } catch (UnsupportedEncodingException e) {
