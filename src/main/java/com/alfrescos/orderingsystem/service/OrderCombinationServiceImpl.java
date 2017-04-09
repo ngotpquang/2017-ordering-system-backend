@@ -44,4 +44,13 @@ public class OrderCombinationServiceImpl implements OrderCombinationService{
     public OrderCombination findByMainDishIdAndDrinkAndDesertId(Long mainDishId, Long drinkOrDesertId) {
         return this.orderCombinationRepository.findByMainDishIdAndDrinkOrDesertId(mainDishId, drinkOrDesertId);
     }
+
+    @Override
+    public List<OrderCombination> findBestCombination(Long id, boolean isMainDish) {
+        if (isMainDish){
+            return this.orderCombinationRepository.findByMainDishId(id);
+        } else {
+            return this.orderCombinationRepository.findByDrinkOrDesertId(id);
+        }
+    }
 }
