@@ -35,11 +35,8 @@ public class OrderCombinationController {
 
     @GetMapping(value = "/{foodAndDrinkId}")
     public ResponseEntity<?> getOrderCombination(@PathVariable Long foodAndDrinkId){
-        List<OrderCombination> result = new ArrayList<>();
         FoodAndDrink foodAndDrink = this.foodAndDrinkService.findById(foodAndDrinkId);
         List<OrderCombination> orderCombinationList = this.orderCombinationService.findBestCombination(foodAndDrinkId, foodAndDrink.getFoodAndDrinkType().isMainDish()).stream().filter(orderCombination -> orderCombination.isVisible()).collect(Collectors.toList());
-        result.add(orderCombinationList.get(0));
-        result.add(orderCombinationList.get(1));
-        return new ResponseEntity<Object>(result, HttpStatus.OK);
+        return new ResponseEntity<Object>(orderCombinationList, HttpStatus.OK);
     }
 }
