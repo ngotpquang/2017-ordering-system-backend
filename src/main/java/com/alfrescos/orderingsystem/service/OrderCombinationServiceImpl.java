@@ -48,9 +48,9 @@ public class OrderCombinationServiceImpl implements OrderCombinationService{
     @Override
     public List<OrderCombination> findBestCombination(Long id, boolean isMainDish) {
         if (isMainDish){
-            return this.orderCombinationRepository.findByMainDishId(id);
+            return this.orderCombinationRepository.findTop2ByMainDishId(id);
         } else {
-            return this.orderCombinationRepository.findByDrinkOrDesertId(id);
+            return this.orderCombinationRepository.findTop2ByDrinkOrDesertId(id);
         }
     }
 

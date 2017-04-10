@@ -50,7 +50,6 @@ public class EmailServiceImpl implements EmailService {
         veInit();
         VelocityContext context = new VelocityContext();
         context.put("name", memberName);
-        context.put("email", recipientEmail);
         Template t = velocityEngine.getTemplate("templates/email/newRegister_html.vm", "UTF-8");
         StringWriter writer = new StringWriter();
         t.merge(context, writer);
@@ -59,7 +58,7 @@ public class EmailServiceImpl implements EmailService {
         try {
             Session session = getSession();
             MimeMessage mimeMessage = new MimeMessage(session);
-            mimeMessage.setFrom(new InternetAddress("orderingsystem@alfrescosrestaurant.com", "Alfresco's Restaurant Ordering System"));
+            mimeMessage.setFrom(new InternetAddress("noreply.orderingsystem@alfrescos.com", "Alfresco's Restaurant Ordering System"));
             mimeMessage.setRecipients(Message.RecipientType.TO,
                     InternetAddress.parse(recipientEmail));
             mimeMessage.setSubject("Thank you for using our Ordering System");
@@ -78,12 +77,7 @@ public class EmailServiceImpl implements EmailService {
         veInit();
         VelocityContext context = new VelocityContext();
         context.put("name", memberName);
-        context.put("email", recipientEmail);
-        context.put("password", newPassword);
         context.put("link", link);
-
-        System.out.println("Link to reset password: " + link);
-
         Template t = velocityEngine.getTemplate("templates/email/forgotPassword_html.vm", "UTF-8");
         StringWriter writer = new StringWriter();
         t.merge(context, writer);
@@ -94,10 +88,10 @@ public class EmailServiceImpl implements EmailService {
             Session session = getSession();
 
             MimeMessage mimeMessage = new MimeMessage(session);
-            mimeMessage.setFrom(new InternetAddress("orderingsystem@alfrescosrestaurant.com", "Alfresco's Restaurant Ordering System"));
+            mimeMessage.setFrom(new InternetAddress("noreply.orderingsystem@alfrescos.com", "Alfresco's Restaurant Ordering System"));
             mimeMessage.setRecipients(Message.RecipientType.TO,
                     InternetAddress.parse(recipientEmail));
-            mimeMessage.setSubject("Your login details for Alfresco's Restaurant Ordering System");
+            mimeMessage.setSubject("Reset your account's password in Alfresco's Restaurant Ordering System");
             mimeMessage.setContent(writer.toString(), "text/html; charset=utf-8");
             Transport.send(mimeMessage);
             System.out.println("Email Sent!");

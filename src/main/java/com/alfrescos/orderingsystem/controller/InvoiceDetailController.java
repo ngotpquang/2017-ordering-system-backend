@@ -122,12 +122,7 @@ public class InvoiceDetailController {
                 result.add(favouriteEntity);
             }
         }
-        Comparator<Map> comparator = new Comparator<Map>() {
-            @Override
-            public int compare(Map o1, Map o2) {
-                return Integer.parseInt((String) o2.get("quantity")) - Integer.parseInt((String) o1.get("quantity"));
-            }
-        };
+        Comparator<Map> comparator = (o1, o2) -> (Integer.parseInt((String) o2.get("quantity")) - Integer.parseInt((String) o1.get("quantity")));
         result.sort(comparator);
         return new ResponseEntity<Object>(result, HttpStatus.OK);
     }
