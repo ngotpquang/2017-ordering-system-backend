@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Liger on 09-Apr-17.
@@ -36,7 +37,7 @@ public class OrderCombinationController {
     public ResponseEntity<?> getOrderCombination(@PathVariable Long foodAndDrinkId){
         List<OrderCombination> result = new ArrayList<>();
         FoodAndDrink foodAndDrink = this.foodAndDrinkService.findById(foodAndDrinkId);
-        List<OrderCombination> orderCombinationList = this.orderCombinationService.findBestCombination(foodAndDrinkId, foodAndDrink.getFoodAndDrinkType().isMainDish());
+        List<OrderCombination> orderCombinationList = this.orderCombinationService.findBestCombination(foodAndDrinkId, foodAndDrink.getFoodAndDrinkType().isMainDish()).stream().filter(orderCombination -> orderCombination.isVisible()).collect(Collectors.toList());
         result.add(orderCombinationList.get(0));
         result.add(orderCombinationList.get(1));
         return new ResponseEntity<Object>(result, HttpStatus.OK);

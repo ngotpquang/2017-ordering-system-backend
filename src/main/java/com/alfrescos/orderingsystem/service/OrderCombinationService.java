@@ -13,9 +13,16 @@ import java.util.List;
  */
 public interface OrderCombinationService {
     List<OrderCombination> findByMainDishId(Long id);
+
     List<OrderCombination> findByDrinkOrDesertId(Long id);
+
     OrderCombination updateNumberOrderedTogether(OrderCombination orderCombination);
+
     OrderCombination createOrderCombination(OrderCombination orderCombination);
+
     OrderCombination findByMainDishIdAndDrinkAndDesertId(Long mainDishId, Long drinkOrDesertId);
+
     List<OrderCombination> findBestCombination(Long id, boolean isMainDish);
+
+    OrderCombination updateVisible(OrderCombination orderCombination);
 }

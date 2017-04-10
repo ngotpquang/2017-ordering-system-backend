@@ -53,4 +53,9 @@ public class OrderCombinationServiceImpl implements OrderCombinationService{
             return this.orderCombinationRepository.findByDrinkOrDesertId(id);
         }
     }
+
+    @Override
+    public OrderCombination updateVisible(OrderCombination orderCombination) {
+        return this.orderCombinationRepository.save(orderCombination);
+    }
 }

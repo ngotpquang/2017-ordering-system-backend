@@ -49,7 +49,7 @@ public class FoodAndDrinkController {
     @GetMapping(value = "/search")
     public ResponseEntity<?> getFoodAndDrinkByName(@RequestParam String name) {
         List<FoodAndDrink> foodAndDrinkList = foodAndDrinkservice.findByName(name);
-        if (foodAndDrinkList.isEmpty()){
+        if (foodAndDrinkList.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             return new ResponseEntity<>(foodAndDrinkList, HttpStatus.OK);
@@ -59,34 +59,34 @@ public class FoodAndDrinkController {
     @GetMapping(value = "/all")
     public ResponseEntity<?> getAllFoodAndDrink() {
         Iterable<FoodAndDrink> foodAndDrinkList = foodAndDrinkservice.findAll();
-        if (!foodAndDrinkList.iterator().hasNext()){
+        if (!foodAndDrinkList.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             return new ResponseEntity<>(foodAndDrinkList, HttpStatus.OK);
         }
     }
 
-//    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    //    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @PostMapping
-    public ResponseEntity<?> create(@Valid @RequestBody FoodAndDrink foodAndDrink){
+    public ResponseEntity<?> create(@Valid @RequestBody FoodAndDrink foodAndDrink) {
         FoodAndDrink createdFoodAndDrink = this.foodAndDrinkservice.create(foodAndDrink);
-        if (createdFoodAndDrink != null){
-            if (createdFoodAndDrink.getFoodAndDrinkType().isMainDish()){
+        if (createdFoodAndDrink != null) {
+            if (createdFoodAndDrink.getFoodAndDrinkType().isMainDish()) {
                 List<FoodAndDrinkType> drinkOrDesertTypeList = this.foodAndDrinkTypeService.findAllDrinkOrDesert();
-                if (!drinkOrDesertTypeList.isEmpty()){
-                    for (FoodAndDrinkType fadt: drinkOrDesertTypeList) {
+                if (!drinkOrDesertTypeList.isEmpty()) {
+                    for (FoodAndDrinkType fadt : drinkOrDesertTypeList) {
                         List<FoodAndDrink> drinkOrDesertList = this.foodAndDrinkservice.findByFoodAndDrinkTypeId(fadt.getId());
-                        for (FoodAndDrink fad: drinkOrDesertList){
+                        for (FoodAndDrink fad : drinkOrDesertList) {
                             this.orderCombinationService.createOrderCombination(new OrderCombination(createdFoodAndDrink, fad));
                         }
                     }
                 }
             } else {
                 List<FoodAndDrinkType> mainDishTypeList = this.foodAndDrinkTypeService.findAllMainDish();
-                if(!mainDishTypeList.isEmpty()){
-                    for (FoodAndDrinkType fadt: mainDishTypeList) {
+                if (!mainDishTypeList.isEmpty()) {
+                    for (FoodAndDrinkType fadt : mainDishTypeList) {
                         List<FoodAndDrink> mainDishList = this.foodAndDrinkservice.findByFoodAndDrinkTypeId(fadt.getId());
-                        for (FoodAndDrink fad: mainDishList){
+                        for (FoodAndDrink fad : mainDishList) {
                             this.orderCombinationService.createOrderCombination(new OrderCombination(fad, createdFoodAndDrink));
                         }
                     }
@@ -100,15 +100,15 @@ public class FoodAndDrinkController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @PutMapping(value = "/update")
-    public ResponseEntity<?> update(@RequestBody Map<String, String> data){
+    public ResponseEntity<?> update(@RequestBody Map<String, String> data) {
         try {
             Long foodAndDrinkId = Long.parseLong(data.get("foodAndDrinkId"));
             String detail = data.get("detail");
-            String tags= data.get("tags");
+            String tags = data.get("tags");
             FoodAndDrink oldFoodAndDrink = this.foodAndDrinkservice.findById(foodAndDrinkId);
             if (oldFoodAndDrink != null
                     && !oldFoodAndDrink.getDetail().equals(detail)
-                    && !oldFoodAndDrink.getTags().equals(tags)){
+                    && !oldFoodAndDrink.getTags().equals(tags)) {
                 oldFoodAndDrink.setDetail(detail);
                 oldFoodAndDrink.setTags(tags);
                 oldFoodAndDrink = this.foodAndDrinkservice.update(oldFoodAndDrink);
@@ -116,7 +116,7 @@ public class FoodAndDrinkController {
             } else {
                 return new ResponseEntity<Object>("Can't update due to error.", HttpStatus.NOT_ACCEPTABLE);
             }
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             System.out.println(e.getMessage());
             return new ResponseEntity<Object>("Can't update due to error.", HttpStatus.NOT_ACCEPTABLE);
         }
@@ -124,11 +124,27 @@ public class FoodAndDrinkController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @DeleteMapping(value = "/delete/{foodAndDrinkId}")
-    public ResponseEntity<?> delete(@PathVariable long foodAndDrinkId){
-        if (this.foodAndDrinkservice.findById(foodAndDrinkId) != null){
-            return new ResponseEntity<Object>("Visible status of FAD with id: " + foodAndDrinkId + " is: " + this.foodAndDrinkservice.switchVisible(foodAndDrinkId), HttpStatus.OK);
+    public ResponseEntity<?> delete(@PathVariable long foodAndDrinkId) {
+        FoodAndDrink foodAndDrink = this.foodAndDrinkservice.findById(foodAndDrinkId);
+        boolean result = this.foodAndDrinkservice.switchVisible(foodAndDrinkId);
+        if (foodAndDrink != null) {
+            List<OrderCombination> orderCombinationList;
+            if (foodAndDrink.getFoodAndDrinkType().isMainDish()) {
+                orderCombinationList = this.orderCombinationService.findByMainDishId(foodAndDrink.getId());
+            } else {
+                orderCombinationList = this.orderCombinationService.findByDrinkOrDesertId(foodAndDrink.getId());
+            }
+            for (OrderCombination o : orderCombinationList) {
+                boolean isVisible = o.getMainDish().isVisible() && o.getDrinkOrDesert().isVisible();
+                System.out.println("Main: " + o.getMainDish().getId() + " - " + o.getMainDish().isVisible());
+                System.out.println("Drink: " + o.getDrinkOrDesert().getId() + " - " + o.getDrinkOrDesert().isVisible());
+                System.out.println(isVisible);
+                o.setVisible(isVisible);
+                this.orderCombinationService.updateVisible(o);
+            }
+            return new ResponseEntity<Object>("Visible status of FAD has id: " + foodAndDrinkId + " is " + result, HttpStatus.OK);
         } else {
-            return new ResponseEntity<Object>("Can't find FAD with id: " + foodAndDrinkId, HttpStatus.NO_CONTENT);
+            return new ResponseEntity<Object>("Can't find FAD has id: " + foodAndDrinkId, HttpStatus.NO_CONTENT);
         }
     }
 }

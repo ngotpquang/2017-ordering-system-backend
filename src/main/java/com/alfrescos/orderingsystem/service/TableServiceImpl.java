@@ -9,6 +9,10 @@ import com.alfrescos.orderingsystem.repository.TableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Created by Liger on 15-Mar-17.
  */
@@ -20,7 +24,14 @@ public class TableServiceImpl implements TableService{
 
     @Override
     public Table findById(Long id) {
-        return this.tableRepository.findOne(id);
+        Table table = this.tableRepository.findOne(id);
+        return table.isVisible() ? table : null;
+    }
+
+    @Override
+    public List<Table> findAll() {
+        List<Table> tableList = (List<Table>) this.tableRepository.findAll();
+        return tableList.stream().filter(table -> table.isVisible()).collect(Collectors.toList());
     }
 
     @Override

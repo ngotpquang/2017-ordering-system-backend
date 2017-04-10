@@ -11,8 +11,8 @@ import java.util.List;
  */
 public interface EmailService {
 
-    public void sendWelcomeMailNewMember(String receptorEmail, String memberName);
+    void sendWelcomeMailNewMember(String receptorEmail, String memberName);
 
-    public void sendForgotPasswordMail(String receptorEmail, String memberName, String newPassword, String link);
+    void sendForgotPasswordMail(String receptorEmail, String memberName, String newPassword, String link);
 
 }

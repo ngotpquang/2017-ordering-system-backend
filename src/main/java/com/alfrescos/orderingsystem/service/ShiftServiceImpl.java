@@ -9,6 +9,10 @@ import com.alfrescos.orderingsystem.repository.ShiftRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Created by Liger on 19-Mar-17.
  */
@@ -35,11 +39,13 @@ public class ShiftServiceImpl implements ShiftService{
 
     @Override
     public Shift findById(Long shiftId) {
-        return this.shiftRepository.findOne(shiftId);
+        Shift shift = this.shiftRepository.findOne(shiftId);
+        return shift.isVisible() ? shift : null;
     }
 
     @Override
-    public Iterable<Shift> findAll() {
-        return this.shiftRepository.findAll();
+    public List<Shift> findAll() {
+        List<Shift> shiftList = (List<Shift>) this.shiftRepository.findAll();
+        return shiftList.stream().filter(shift -> shift.isVisible()).collect(Collectors.toList());
     }
 }

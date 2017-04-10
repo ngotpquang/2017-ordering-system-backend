@@ -39,22 +39,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(Long id) {
-        return userRepository.findOne(id);
+        User user = userRepository.findOne(id);
+        return user.isDeleted() ? null : user;
     }
 
     @Override
     public User findByAccountCode(String accountCode) {
-        return userRepository.findByAccountCode(accountCode);
+        User user = userRepository.findByAccountCode(accountCode);
+        return user.isDeleted() ? null : user;
     }
 
     @Override
     public User findByEmailAndPassword(String email, String password) {
-        return userRepository.findByEmailAndPassword(email, password);
+        User user = userRepository.findByEmailAndPassword(email, password);
+        return user.isDeleted() ? null : user;
     }
 
     @Override
     public User findByEmail(String email) {
-        return this.userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email);
+        return user.isDeleted() ? null : user;
     }
 
     @Override
@@ -85,7 +89,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAll() {
-        return (List<User>) this.userRepository.findAll();
+        List<User> userList = (List<User>) this.userRepository.findAll();
+        return userList.stream().filter(user -> !user.isDeleted()).collect(Collectors.toList());
     }
 
     @Override

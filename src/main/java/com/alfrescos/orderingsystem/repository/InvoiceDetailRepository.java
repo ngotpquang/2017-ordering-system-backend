@@ -17,9 +17,9 @@ import java.util.List;
 @Repository
 public interface InvoiceDetailRepository extends JpaRepository<InvoiceDetail, Long> {
 
-    @Query(value = "SELECT * FROM invoice_detail WHERE invoice_id = ?1", nativeQuery = true)
+    @Query(value = "SELECT * FROM invoice_detail WHERE invoice_id = ?1 AND is_visible = 1", nativeQuery = true)
     List<InvoiceDetail> findAllInvoiceDetailsByInvoiceId(String invoiceId);
 
-    @Query(value = "SELECT * FROM invoice_detail WHERE food_and_drink_id = ?1 AND invoice_id = ?2", nativeQuery = true)
+    @Query(value = "SELECT * FROM invoice_detail WHERE food_and_drink_id = ?1 AND invoice_id = ?2 AND is_visible = 1", nativeQuery = true)
     InvoiceDetail findByFoodAndDrinkId(Long foodAndDrinkId, String invoiceId);
 }

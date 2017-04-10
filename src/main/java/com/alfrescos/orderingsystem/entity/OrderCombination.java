@@ -16,6 +16,7 @@ public class OrderCombination {
     private FoodAndDrink mainDish;
     private FoodAndDrink drinkOrDesert;
     private int numOfOrderedTogether = 0;
+    private boolean isVisible = true;
 
     public OrderCombination() {
     }
@@ -62,5 +63,14 @@ public class OrderCombination {
 
     public void setNumOfOrderedTogether(int numOfOrderedTogether) {
         this.numOfOrderedTogether = numOfOrderedTogether;
+    }
+
+    @Column(name = "is_visible", nullable = false)
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public void setVisible(boolean visible) {
+        isVisible = visible;
     }
 }

@@ -13,9 +13,14 @@ import java.util.List;
  */
 public interface FoodAndDrinkTypeService {
     FoodAndDrinkType findById(Long foodAndDrinkTypeId);
+
     FoodAndDrinkType create(FoodAndDrinkType foodAndDrinkType);
+
     FoodAndDrinkType update(FoodAndDrinkType foodAndDrinkType);
+
     boolean switchVisible(Long foodAndDrinkTypeId);
+
     List<FoodAndDrinkType> findAllDrinkOrDesert();
+
     List<FoodAndDrinkType> findAllMainDish();
 }

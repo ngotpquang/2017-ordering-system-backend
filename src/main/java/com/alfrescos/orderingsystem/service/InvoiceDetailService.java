@@ -12,12 +12,19 @@ import java.util.List;
  * Created by Liger on 14-Mar-17.
  */
 public interface InvoiceDetailService {
-    public List<InvoiceDetail> findAllInvoiceDetailsByInvoiceId(String invoiceId);
-    public InvoiceDetail create(InvoiceDetail invoiceDetail);
-    public void delete(Long invoiceDetailId);
-    public void deleteByInvoiceId(String invoiceId);
-    public boolean setMade(Long invoiceDetailId);
+    List<InvoiceDetail> findAllInvoiceDetailsByInvoiceId(String invoiceId);
+
+    InvoiceDetail create(InvoiceDetail invoiceDetail);
+
+    void delete(Long invoiceDetailId);
+
+    void deleteByInvoiceId(String invoiceId);
+
+    boolean setMade(Long invoiceDetailId);
+
     InvoiceDetail findById(Long invoiceDetailId);
+
     InvoiceDetail findByDrinkAndFoodId(Long foodAndDrinkId, String invoiceId);
+
     InvoiceDetail update(InvoiceDetail invoiceDetail);
 }
