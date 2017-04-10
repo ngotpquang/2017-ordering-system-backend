@@ -23,4 +23,5 @@ dist/
 nbdist/
 .nb-gradle/
 
-/src/main/java/com/alfrescos/orderingsystem/common/CommonUtil.java
+src/main/java/com/alfrescos/orderingsystem/common/CommonUtil.java
+src/main/resources/local.yml
