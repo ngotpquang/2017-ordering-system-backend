@@ -9,6 +9,7 @@ import com.alfrescos.orderingsystem.common.UserUtil;
 import com.alfrescos.orderingsystem.entity.FoodAndDrink;
 import com.alfrescos.orderingsystem.entity.Invoice;
 import com.alfrescos.orderingsystem.entity.InvoiceDetail;
+import com.alfrescos.orderingsystem.entity.User;
 import com.alfrescos.orderingsystem.service.FoodAndDrinkService;
 import com.alfrescos.orderingsystem.service.InvoiceDetailService;
 import com.alfrescos.orderingsystem.service.InvoiceService;
@@ -19,9 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Liger on 16-Mar-17.
@@ -29,9 +28,6 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/api/invoice-detail")
 public class InvoiceDetailController {
-
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private InvoiceDetailService invoiceDetailService;
@@ -87,4 +83,53 @@ public class InvoiceDetailController {
             return new ResponseEntity<Object>("Can't delete due to some error.", HttpStatus.NO_CONTENT);
         }
     }
+
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @GetMapping(value = "/all")
+    public ResponseEntity<?> getAllInvoiceDetail(){
+        Long customerId = UserUtil.getIdByAuthorization();
+        List<Invoice> invoiceList = this.invoiceService.findAllInvoicesByCustomerId(customerId);
+        List<InvoiceDetail> result = new ArrayList<>();
+        for (Invoice i: invoiceList) {
+            result.addAll(this.invoiceDetailService.findAllInvoiceDetailsByInvoiceId(i.getId()));
+        }
+        return new ResponseEntity<Object>(result, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @GetMapping(value = "/favorite")
+    public ResponseEntity<?> getAllInvoiceDetailSortByFavorite(){
+        List<Map> result = new ArrayList<>();
+        Long customerId = UserUtil.getIdByAuthorization();
+        List<Invoice> invoiceList = this.invoiceService.findAllInvoicesByCustomerId(customerId);
+        List<InvoiceDetail> invoiceDetailList = new ArrayList<>();
+        for (Invoice i: invoiceList) {
+            invoiceDetailList.addAll(this.invoiceDetailService.findAllInvoiceDetailsByInvoiceId(i.getId()));
+        }
+        List<FoodAndDrink> foodAndDrinkList = (List<FoodAndDrink>) this.foodAndDrinkService.findAll();
+        for (FoodAndDrink fad: foodAndDrinkList) {
+            int quantity = 0;
+            for (InvoiceDetail id: invoiceDetailList) {
+                if(id.getFoodAndDrink().getId().equals(fad.getId())){
+                    quantity += id.getQuantity();
+                }
+            }
+            if (quantity > 0){
+                Map<String, String> favouriteEntity = new HashMap<>();
+                favouriteEntity.put("price", fad.getPrice() + "");
+                favouriteEntity.put("quantity", quantity + "");
+                favouriteEntity.put("name", fad.getName());
+                result.add(favouriteEntity);
+            }
+        }
+        Comparator<Map> comparator = new Comparator<Map>() {
+            @Override
+            public int compare(Map o1, Map o2) {
+                return Integer.parseInt((String) o2.get("quantity")) - Integer.parseInt((String) o1.get("quantity"));
+            }
+        };
+        result.sort(comparator);
+        return new ResponseEntity<Object>(result, HttpStatus.OK);
+    }
+
 }

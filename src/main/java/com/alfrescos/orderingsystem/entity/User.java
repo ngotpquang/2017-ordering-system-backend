@@ -36,7 +36,6 @@ public class User {
     private String avatar;
     private String detail;
     private float membershipPoint = 0;
-    private String token;
     private Set<WorkingTime> workingTimes;
     private List<Permission> permissionList = new ArrayList<>();
     private String accountCode;
@@ -147,15 +146,6 @@ public class User {
 
     public void setMembershipPoint(float membershipPoint) {
         this.membershipPoint = membershipPoint;
-    }
-
-    @Column(name = "token")
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 
     @JsonIgnore
