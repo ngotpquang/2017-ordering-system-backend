@@ -171,9 +171,9 @@ public class User {
 
     @Lob
 //    For PostgreSQL
-//    @Column(name = "avatar_content", columnDefinition = "oid")
+    @Column(name = "avatar_content", columnDefinition = "oid")
 //    For SQL Server
-    @Column(name = "avatar_content", columnDefinition = "varbinary(max)")
+//    @Column(name = "avatar_content", columnDefinition = "varbinary(max)")
     public byte[] getAvatarContent() {
         return avatarContent;
     }
