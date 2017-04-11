@@ -40,7 +40,7 @@ public class ShiftServiceImpl implements ShiftService{
     @Override
     public Shift findById(Long shiftId) {
         Shift shift = this.shiftRepository.findOne(shiftId);
-        return shift.isVisible() ? shift : null;
+        return shift != null ? (shift.isVisible() ? shift : null) : null;
     }
 
     @Override

@@ -55,6 +55,7 @@ public class InvoiceController {
             if (!customerAccountCode.equals("anonymousUser")) {
                 customer = userService.findByAccountCode(customerAccountCode);
             } else {
+                //TODO: Fix id of default customer
                 customer = userService.findById(new Long(1));
             }
             Table table = tableService.findById(tableId);
@@ -124,9 +125,13 @@ public class InvoiceController {
     }
 
     @PreAuthorize("hasAnyRole('MANAGER', 'STAFF')")
-    @PutMapping(value = "/confirm-paid/{invoiceId}")
-    public ResponseEntity<?> confirmPaidInvoice(@PathVariable String invoiceId){
+    @PutMapping(value = "/confirm-paid")
+    public ResponseEntity<?> confirmPaidInvoice(@RequestBody Map<String, String> data){
         Long staffId = UserUtil.getIdByAuthorization();
+        String invoiceId = data.get("invoiceId");
+        String paymentType = data.get("paymentType").toUpperCase();
+        System.out.println(staffId + " - " + invoiceId + " - " + paymentType);
+//        return null;
         if (this.invoiceService.findById(invoiceId).isPaid()){
             return new ResponseEntity<Object>("Invoice has been paid already!", HttpStatus.NOT_ACCEPTABLE);
         }
@@ -134,21 +139,23 @@ public class InvoiceController {
         List<InvoiceDetail> mainDishDetailList = invoiceDetailList.stream().filter(invoiceDetail -> invoiceDetail.getFoodAndDrink().getFoodAndDrinkType().isMainDish()).collect(Collectors.toList());
         List<InvoiceDetail> drinkOrDesertDetailList = invoiceDetailList.stream().filter(invoiceDetail -> !invoiceDetail.getFoodAndDrink().getFoodAndDrinkType().isMainDish()).collect(Collectors.toList());
         if (mainDishDetailList.isEmpty() || drinkOrDesertDetailList.isEmpty()){
-            return new ResponseEntity<Object>(this.invoiceService.setPaid(staffId, invoiceId), HttpStatus.CREATED);
-        }
-        for (InvoiceDetail id: mainDishDetailList){
-            for (InvoiceDetail id1: drinkOrDesertDetailList){
-                System.out.println(id.getFoodAndDrink().getId() + " - " + id1.getFoodAndDrink().getName());
-                OrderCombination orderCombination = this.orderCombinationService.findByMainDishIdAndDrinkAndDesertId(id.getFoodAndDrink().getId(), id1.getFoodAndDrink().getId());
-                if (orderCombination != null){
-                    orderCombination.setNumOfOrderedTogether(orderCombination.getNumOfOrderedTogether() + 1);
-                    this.orderCombinationService.updateNumberOrderedTogether(orderCombination);
-                } else {
-                    System.out.println("Error somewhere I don't know!");
+            return new ResponseEntity<Object>(this.invoiceService.setPaid(staffId, invoiceId, paymentType), HttpStatus.CREATED);
+        } else {
+            for (InvoiceDetail id : mainDishDetailList) {
+                for (InvoiceDetail id1 : drinkOrDesertDetailList) {
+                    System.out.println(id.getFoodAndDrink().getId() + " - " + id1.getFoodAndDrink().getId());
+                    OrderCombination orderCombination = this.orderCombinationService.findByMainDishIdAndDrinkAndDesertId(id.getFoodAndDrink().getId(), id1.getFoodAndDrink().getId());
+                    if (orderCombination != null) {
+                        orderCombination.setNumOfOrderedTogether(orderCombination.getNumOfOrderedTogether() + 1);
+                        this.orderCombinationService.updateNumberOrderedTogether(orderCombination);
+                    } else {
+                        System.out.println("Error somewhere I don't know!");
+                        return new ResponseEntity<Object>("Error somewhere I don't know!", HttpStatus.NOT_ACCEPTABLE);
+                    }
                 }
             }
+            return new ResponseEntity<Object>(this.invoiceService.setPaid(staffId, invoiceId, paymentType), HttpStatus.CREATED);
         }
-        return new ResponseEntity<Object>(this.invoiceService.setPaid(staffId, invoiceId), HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasAnyRole('MANAGER', 'STAFF')")
@@ -189,7 +196,7 @@ public class InvoiceController {
         }
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+//    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @GetMapping(value = "/date/{beginningDate}/to/{endDate}")
     public ResponseEntity<?> getInvoiceBetweenDates(@PathVariable String beginningDate, @PathVariable String endDate){
         List<Invoice> invoiceList = invoiceService.findAllInvoicesBetweenDates(beginningDate, endDate);

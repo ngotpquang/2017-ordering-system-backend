@@ -40,25 +40,25 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(Long id) {
         User user = userRepository.findOne(id);
-        return user.isDeleted() ? null : user;
+        return user != null ? (user.isDeleted() ? null : user) : null;
     }
 
     @Override
     public User findByAccountCode(String accountCode) {
         User user = userRepository.findByAccountCode(accountCode);
-        return user.isDeleted() ? null : user;
+        return user != null ? (user.isDeleted() ? null : user) : null;
     }
 
     @Override
     public User findByEmailAndPassword(String email, String password) {
         User user = userRepository.findByEmailAndPassword(email, password);
-        return user.isDeleted() ? null : user;
+        return user != null ? (user.isDeleted() ? null : user) : null;
     }
 
     @Override
     public User findByEmail(String email) {
         User user = userRepository.findByEmail(email);
-        return user.isDeleted() ? null : user;
+        return user != null ? (user.isDeleted() ? null : user) : null;
     }
 
     @Override

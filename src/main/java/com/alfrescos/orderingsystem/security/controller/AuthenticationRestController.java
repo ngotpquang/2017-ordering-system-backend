@@ -50,7 +50,7 @@ public class AuthenticationRestController {
 
     private Map<String, String> oldUsing = new HashMap<>();
 
-    BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @PostMapping(value = "/login")
     public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody JwtAuthenticationRequest authenticationRequest) throws AuthenticationException {
@@ -77,7 +77,7 @@ public class AuthenticationRestController {
             emailService.sendForgotPasswordMail(authenticationRequest.getEmail(), user.getName(), password, authenticationRequest.getUrlPath() + "/api/auth/forgotPassword?token=" + token);
         } catch (Exception e) {
             // catch error
-            System.out.println("Error Sending Email: " + e.getMessage());
+            System.out.println("Error while sending email: " + e.getMessage());
         }
         return new ResponseEntity<Object>(new JwtAuthenticationResponse(token), HttpStatus.OK);
     }

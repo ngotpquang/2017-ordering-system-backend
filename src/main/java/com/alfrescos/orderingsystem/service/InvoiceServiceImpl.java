@@ -58,14 +58,15 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public boolean setPaid(Long staffId, String invoiceId) {
+    public boolean setPaid(Long staffId, String invoiceId, String paymentType) {
         Invoice invoice = this.invoiceRepository.findOne(invoiceId);
         if (invoice != null){
             Date payTime = new Date();
             invoice.setPaid(true);
             invoice.setStaffUser(this.userRepository.findOne(staffId));
             invoice.setPayingTime(payTime);
-            System.out.println(invoiceId + " - " + invoice.isPaid() + " - " + invoice.getStaffUser().getAccountCode());
+            invoice.setPaymentType(paymentType);
+            System.out.println(invoiceId + " - " + invoice.isPaid() + " - " + invoice.getStaffUser().getAccountCode() + " - " + invoice.getPaymentType());
             return this.invoiceRepository.save(invoice).isPaid();
         } else {
             return false;

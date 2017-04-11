@@ -24,7 +24,7 @@ public interface InvoiceService {
 
     Invoice findById(String invoiceId);
 
-    boolean setPaid(Long staffId, String invoiceId);
+    boolean setPaid(Long staffId, String invoiceId, String paymentType);
 
     List<String> findOrderedTable();
 

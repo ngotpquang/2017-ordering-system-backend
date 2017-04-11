@@ -29,6 +29,7 @@ public class Invoice {
     private Date payingTime;
     private Set<InvoiceDetail> invoiceDetails;
     private boolean isVisible = true;
+    private String paymentType = "CASH";
 
     public Invoice() {
     }
@@ -125,6 +126,17 @@ public class Invoice {
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
     }
+
+    public String getPaymentType() {
+        return paymentType;
+    }
+
+    public void setPaymentType(String paymentType) {
+        this.paymentType = paymentType;
+    }
+
+    @Column(name = "payment_type", nullable = false)
+
 
     @Override
     public String toString() {

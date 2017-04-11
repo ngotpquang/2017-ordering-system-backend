@@ -16,18 +16,22 @@ import java.util.List;
  */
 @Repository
 public interface InvoiceRepository extends CrudRepository<Invoice, String>{
-    @Query(value = "SELECT * FROM invoice WHERE customer_user_id = ?1 AND is_visible = 1", nativeQuery = true)
-    public List<Invoice> findAllInvoicesByCustomerId(Long customerId);
+//    @Query(value = "SELECT * FROM invoice WHERE customer_user_id = ?1 AND is_visible = 1", nativeQuery = true)
+    @Query(value = "SELECT * FROM invoice WHERE customer_user_id = ?1 AND is_visible = TRUE", nativeQuery = true)
+    List<Invoice> findAllInvoicesByCustomerId(Long customerId);
 
-    @Query(value = "SELECT * FROM invoice WHERE staff_user_id = ?1 AND is_visible = 1", nativeQuery = true)
-    public List<Invoice> findAllInvoicesByStaffId(Long customerId);
+//    @Query(value = "SELECT * FROM invoice WHERE staff_user_id = ?1 AND is_visible = 1", nativeQuery = true)
+    @Query(value = "SELECT * FROM invoice WHERE staff_user_id = ?1 AND is_visible = TRUE", nativeQuery = true)
+    List<Invoice> findAllInvoicesByStaffId(Long customerId);
 
     @Query(value = "SELECT I.table_id FROM invoice as I WHERE I.paying_time IS NULL", nativeQuery = true)
-    public List<String> findAllOrderedTable();
+    List<String> findAllOrderedTable();
 
-    @Query(value = "SELECT * FROM invoice WHERE CONVERT(VARCHAR(25), paying_time, 126) LIKE ?1% AND is_visible = 1", nativeQuery = true)
-    public List<Invoice> findAllInvoicesByDate(String date);
+//    @Query(value = "SELECT * FROM invoice WHERE CONVERT(VARCHAR(25), paying_time, 126) LIKE ?1% AND is_visible = 1", nativeQuery = true)
+    @Query(value = "SELECT * FROM invoice WHERE TO_CHAR(paying_time, 'YYYY-MM-DD') LIKE ?1% AND is_visible = TRUE", nativeQuery = true)
+    List<Invoice> findAllInvoicesByDate(String date);
 
-    @Query(value = "SELECT * FROM invoice WHERE paying_time >= ?1 AND paying_time <= ?2 AND is_visible = 1", nativeQuery = true)
-    public List<Invoice> findAllInvoicesBetweenDates(String beginningDate, String endDate);
+//    @Query(value = "SELECT * FROM invoice WHERE paying_time >= ?1 AND paying_time <= ?2 AND is_visible = 1", nativeQuery = true)
+    @Query(value = "SELECT * FROM invoice WHERE paying_time BETWEEN TO_TIMESTAMP(?1 ,'YYYY-MM-DD HH24:MI:SS') AND TO_TIMESTAMP(?2 ,'YYYY-MM-DD HH24:MI:SS')", nativeQuery = true)
+    List<Invoice> findAllInvoicesBetweenDates(String beginningDate, String endDate);
 }
