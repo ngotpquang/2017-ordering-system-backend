@@ -27,4 +27,6 @@ public interface InvoiceDetailService {
     InvoiceDetail findByDrinkAndFoodId(Long foodAndDrinkId, String invoiceId);
 
     InvoiceDetail update(InvoiceDetail invoiceDetail);
+
+    float calculateTotalAmountForInvoice(String invoiceId);
 }

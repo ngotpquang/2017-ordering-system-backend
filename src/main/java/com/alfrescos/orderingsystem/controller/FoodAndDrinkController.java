@@ -66,7 +66,7 @@ public class FoodAndDrinkController {
         }
     }
 
-    //    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody FoodAndDrink foodAndDrink) {
         FoodAndDrink createdFoodAndDrink = this.foodAndDrinkservice.create(foodAndDrink);

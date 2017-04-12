@@ -71,4 +71,17 @@ public class InvoiceDetailServiceImpl implements InvoiceDetailService{
         return this.invoiceDetailRepository.save(invoiceDetail);
     }
 
+    @Override
+    public float calculateTotalAmountForInvoice(String invoiceId) {
+        System.out.println("InvoiceId: " + invoiceId);
+        float totalAmount = 0.0f;
+        List<InvoiceDetail> invoiceDetailList = this.invoiceDetailRepository.findAllInvoiceDetailsByInvoiceId(invoiceId);
+        for (InvoiceDetail id: invoiceDetailList) {
+            System.out.println(id.getPrice() + " - " + id.getQuantity());
+            totalAmount += id.getPrice() * id.getQuantity();
+        }
+        System.out.println(totalAmount);
+        return totalAmount;
+    }
+
 }

@@ -66,17 +66,17 @@ public class InvoiceController {
             } else {
                 return new ResponseEntity<>("Failed when created something. Please check again!", HttpStatus.BAD_REQUEST);
             }
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             return new ResponseEntity<>("Failed when created something. Please check again!", HttpStatus.BAD_REQUEST);
         }
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping(value = "/all")
-    public ResponseEntity<?> getAllInvoicesForUserLoggedIn(){
+    public ResponseEntity<?> getAllInvoicesForUserLoggedIn() {
         Long loggedInUserId = UserUtil.getIdByAuthorization();
         List<Invoice> invoiceList;
-        if (UserUtil.checkStaffAccount()){
+        if (UserUtil.checkStaffAccount()) {
             invoiceList = invoiceService.findAllInvoicesByStaffId(loggedInUserId);
         } else {
             invoiceList = invoiceService.findAllInvoicesByCustomerId(loggedInUserId);
@@ -90,7 +90,7 @@ public class InvoiceController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping(value = "/{invoiceId}")
-    public ResponseEntity<?> getInvoiceByInvoiceId(@PathVariable String invoiceId){
+    public ResponseEntity<?> getInvoiceByInvoiceId(@PathVariable String invoiceId) {
         Long loggedInUserId = UserUtil.getIdByAuthorization();
         Invoice invoice = invoiceService.findById(invoiceId);
         if (invoice != null && loggedInUserId.equals(invoice.getCustomerUser().getId())) {
@@ -102,7 +102,7 @@ public class InvoiceController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @GetMapping(value = "/all-invoices")
-    public ResponseEntity<?> getAllInvoices(){
+    public ResponseEntity<?> getAllInvoices() {
         Iterable<Invoice> invoiceList = invoiceService.findAll();
         if (invoiceList != null) {
             return new ResponseEntity<>(invoiceList, HttpStatus.OK);
@@ -113,9 +113,9 @@ public class InvoiceController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @DeleteMapping(value = "/delete/{invoiceId}")
-    public ResponseEntity<?> deleteInvoiceByInvoiceId(@PathVariable String invoiceId){
+    public ResponseEntity<?> deleteInvoiceByInvoiceId(@PathVariable String invoiceId) {
         Invoice invoice = invoiceService.findById(invoiceId);
-        if (invoice != null){
+        if (invoice != null) {
             invoiceService.switchVisible(invoiceId);
             return new ResponseEntity<Object>("Invoice id: " + invoiceId + " has been invisible successfully.", HttpStatus.OK);
         } else {
@@ -126,19 +126,19 @@ public class InvoiceController {
 
     @PreAuthorize("hasAnyRole('MANAGER', 'STAFF')")
     @PutMapping(value = "/confirm-paid")
-    public ResponseEntity<?> confirmPaidInvoice(@RequestBody Map<String, String> data){
+    public ResponseEntity<?> confirmPaidInvoice(@RequestBody Map<String, String> data) {
         Long staffId = UserUtil.getIdByAuthorization();
         String invoiceId = data.get("invoiceId");
         String paymentType = data.get("paymentType").toUpperCase();
         System.out.println(staffId + " - " + invoiceId + " - " + paymentType);
 //        return null;
-        if (this.invoiceService.findById(invoiceId).isPaid()){
+        if (this.invoiceService.findById(invoiceId).isPaid()) {
             return new ResponseEntity<Object>("Invoice has been paid already!", HttpStatus.NOT_ACCEPTABLE);
         }
         List<InvoiceDetail> invoiceDetailList = this.invoiceDetailService.findAllInvoiceDetailsByInvoiceId(invoiceId);
         List<InvoiceDetail> mainDishDetailList = invoiceDetailList.stream().filter(invoiceDetail -> invoiceDetail.getFoodAndDrink().getFoodAndDrinkType().isMainDish()).collect(Collectors.toList());
         List<InvoiceDetail> drinkOrDesertDetailList = invoiceDetailList.stream().filter(invoiceDetail -> !invoiceDetail.getFoodAndDrink().getFoodAndDrinkType().isMainDish()).collect(Collectors.toList());
-        if (mainDishDetailList.isEmpty() || drinkOrDesertDetailList.isEmpty()){
+        if (mainDishDetailList.isEmpty() || drinkOrDesertDetailList.isEmpty()) {
             return new ResponseEntity<Object>(this.invoiceService.setPaid(staffId, invoiceId, paymentType), HttpStatus.CREATED);
         } else {
             for (InvoiceDetail id : mainDishDetailList) {
@@ -154,24 +154,31 @@ public class InvoiceController {
                     }
                 }
             }
-            return new ResponseEntity<Object>(this.invoiceService.setPaid(staffId, invoiceId, paymentType), HttpStatus.CREATED);
+            User customer = this.userService.findById(this.invoiceService.findById(invoiceId).getCustomerUser().getId());
+            customer.setMembershipPoint(customer.getMembershipPoint() + Math.round((this.invoiceDetailService.calculateTotalAmountForInvoice(invoiceId) / 1000 * 0.05f)));
+            customer = this.userService.save(customer);
+            if (customer != null) {
+                return new ResponseEntity<Object>(this.invoiceService.setPaid(staffId, invoiceId, paymentType), HttpStatus.CREATED);
+            } else {
+                return new ResponseEntity<Object>("Error when update membership point for customer!", HttpStatus.NOT_ACCEPTABLE);
+            }
         }
     }
 
     @PreAuthorize("hasAnyRole('MANAGER', 'STAFF')")
     @PutMapping(value = "/update-table")
-    public ResponseEntity<?> updateTableId(@RequestBody Map<String, String> data){
+    public ResponseEntity<?> updateTableId(@RequestBody Map<String, String> data) {
         Invoice invoice = this.invoiceService.findById(data.get("invoiceId").trim());
-        if (invoice != null){
+        if (invoice != null) {
             try {
                 Long tableId = Long.parseLong(data.get("tableId").trim());
                 Table table = this.tableService.findById(tableId);
-                if (table != null){
+                if (table != null) {
                     invoice.setTable(table);
                     invoice = this.invoiceService.update(invoice);
                     return new ResponseEntity<Object>(invoice, HttpStatus.CREATED);
                 }
-            } catch (Exception e){
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
                 return new ResponseEntity<Object>("Can't update due to error", HttpStatus.NO_CONTENT);
             }
@@ -181,13 +188,13 @@ public class InvoiceController {
 
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'STAFF')")
     @GetMapping(value = "/table-ordered")
-    public ResponseEntity<?> getOrderedTable(){
+    public ResponseEntity<?> getOrderedTable() {
         return new ResponseEntity<Object>(this.invoiceService.findOrderedTable(), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @GetMapping(value = "/date/{date}")
-    public ResponseEntity<?> getInvoiceByDate(@PathVariable String date){
+    public ResponseEntity<?> getInvoiceByDate(@PathVariable String date) {
         List<Invoice> invoiceList = invoiceService.findAllInvoicesByDate(date);
         if (invoiceList != null) {
             return new ResponseEntity<>(invoiceList, HttpStatus.OK);
@@ -196,9 +203,9 @@ public class InvoiceController {
         }
     }
 
-//    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    //    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @GetMapping(value = "/date/{beginningDate}/to/{endDate}")
-    public ResponseEntity<?> getInvoiceBetweenDates(@PathVariable String beginningDate, @PathVariable String endDate){
+    public ResponseEntity<?> getInvoiceBetweenDates(@PathVariable String beginningDate, @PathVariable String endDate) {
         List<Invoice> invoiceList = invoiceService.findAllInvoicesBetweenDates(beginningDate, endDate);
         if (invoiceList != null) {
             return new ResponseEntity<>(invoiceList, HttpStatus.OK);
