@@ -20,6 +20,8 @@ public interface RateService {
 
     List<Rate> findAllRatesByUserId(long userId);
 
+    List<Rate> findAllRatesByScore(float score);
+
     Iterable<Rate> findAllRates();
 
     List<Rate> findAllRatesByRateTypeId(long rateTypeId);

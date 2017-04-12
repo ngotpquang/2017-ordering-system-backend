@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
+import org.springframework.mail.MailException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -93,7 +94,7 @@ public class UserController {
         String roleIds = data.get("roleId");
         System.out.println(email + " - " + password + " - " + name + " - " + roleIds);
         User existUser = userService.findByEmail(email);
-        if (existUser != null){
+        if (existUser != null) {
             return new ResponseEntity<>("Email has been registered already!", HttpStatus.CONFLICT);
         } else {
             try {
@@ -105,15 +106,19 @@ public class UserController {
                 user.setAccountCode(user.getEmail());
                 user.setAvatar("https://scontent.fdad3-2.fna.fbcdn.net/v/t1.0-9/14192786_1136070546471857_2394520358912381986_n.jpg?oh=43b61e721fa1960b009119b0551a4407&oe=5935E2AE");
                 User newUser = userService.create(user);
-                for (String roleId: roleIdList){
+                for (String roleId : roleIdList) {
                     Role role = roleService.findById(Long.parseLong(roleId.trim()));
                     permissionService.create(newUser, role);
                 }
                 String token = this.jwtTokenUtil.generateToken(this.userDetailsService.loadUserByUsername(user.getAccountCode()));
-//        emailService.sendWelcomeMailNewMember(newUser.getEmail(), newUser.getName());
+//                emailService.sendWelcomeMailNewMember(newUser.getEmail(), newUser.getName());
                 return new ResponseEntity<>(new JwtAuthenticationResponse(token), HttpStatus.CREATED);
-            } catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
+                System.out.println(e.getMessage());
                 return new ResponseEntity<>("Can't create user due to some error.", HttpStatus.NOT_ACCEPTABLE);
+            } catch (MailException e) {
+                System.out.println(e.getMessage());
+                return new ResponseEntity<>("Wrong email address.", HttpStatus.NOT_ACCEPTABLE);
             }
         }
     }
@@ -134,7 +139,7 @@ public class UserController {
             user.setName(name);
             User updatedUser = userService.update(user);
             return new ResponseEntity<>(updatedUser, HttpStatus.CREATED);
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             return new ResponseEntity<>("Can't update due to error.", HttpStatus.OK);
         }
@@ -144,7 +149,7 @@ public class UserController {
     @DeleteMapping(value = "/delete/{userId}")
     public ResponseEntity<?> delete(@PathVariable Long userId) {
         User user = userService.findById(userId);
-        if (user != null){
+        if (user != null) {
             userService.switchDeletedStatus(userId);
             return new ResponseEntity<>("User deleted successfully!", HttpStatus.OK);
         } else {

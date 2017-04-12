@@ -41,6 +41,11 @@ public class RateServiceImpl implements RateService {
     }
 
     @Override
+    public List<Rate> findAllRatesByScore(float score) {
+        return this.rateRepository.findAllRatesByScore(score);
+    }
+
+    @Override
     public Iterable<Rate> findAllRates() {
         return this.rateRepository.findAll();
     }

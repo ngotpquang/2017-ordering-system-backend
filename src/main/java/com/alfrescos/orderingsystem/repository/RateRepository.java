@@ -18,20 +18,23 @@ import java.util.List;
 public interface RateRepository extends CrudRepository<Rate, Long>{
 
     @Query(value = "SELECT * FROM rate WHERE user_id = ?1", nativeQuery = true)
-    public List<Rate> findAllRatesByUserId(long userId);
+    List<Rate> findAllRatesByUserId(long userId);
 
     @Query(value = "SELECT * FROM rate WHERE user_id = ?1 AND rate_type_id = ?2", nativeQuery = true)
-    public List<Rate> findAllRatesByUserIdAndRateTypeId(long userId, long rateTypeId);
+    List<Rate> findAllRatesByUserIdAndRateTypeId(long userId, long rateTypeId);
+
+    @Query(value = "SELECT * FROM rate WHERE score = ?1 ORDER BY rate_time DESC", nativeQuery = true)
+    List<Rate> findAllRatesByScore(float score);
 
     @Query(value = "SELECT * FROM rate WHERE invoice_id = ?1", nativeQuery = true)
-    public Rate findRateByInvoiceId(String invoiceId);
+    Rate findRateByInvoiceId(String invoiceId);
 
     @Query(value = "SELECT * FROM rate WHERE rate_type_id = ?1", nativeQuery = true)
-    public List<Rate> findAllRatesByRateTypeId(long rateTypeId);
+    List<Rate> findAllRatesByRateTypeId(long rateTypeId);
 
     @Query(value = "SELECT AVG(R.score) FROM rate as R WHERE R.rate_type_id = ?1", nativeQuery = true)
-    public float getAverageScoreByRateTypeId(long rateTypeId);
+    float getAverageScoreByRateTypeId(long rateTypeId);
 
     @Query(value = "SELECT COUNT(invoice_id) FROM rate WHERE score = ?1 AND rate_type_id = ?2", nativeQuery = true)
-    public int countNumOfPeopleByTypeAndScore(int score, int typeId);
+    int countNumOfPeopleByTypeAndScore(int score, int typeId);
 }

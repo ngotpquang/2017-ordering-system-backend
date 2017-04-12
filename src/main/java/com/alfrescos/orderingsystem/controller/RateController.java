@@ -48,6 +48,11 @@ public class RateController {
         User user = this.userService.findById(UserUtil.getIdByAuthorization());
         String invoiceId = data.get("invoiceId").trim();
         Invoice invoice = this.invoiceService.findById(invoiceId);
+        if (!user.getId().equals(invoice.getCustomerUser().getId())){
+            return new ResponseEntity<Object>("You can't rate for this invoice which you don't own!", HttpStatus.NOT_ACCEPTABLE);
+        } else if (this.rateService.findRateByInvoiceId(invoiceId) != null){
+            return new ResponseEntity<Object>("You've already rated for this invoice.", HttpStatus.NOT_ACCEPTABLE);
+        }
         try {
             float score = Float.parseFloat(data.get("score").trim());
             long rateTypeId = Long.parseLong(data.get("rateTypeId").trim());
@@ -84,6 +89,15 @@ public class RateController {
             return new ResponseEntity<>(rateList, HttpStatus.OK);
         }
         return new ResponseEntity<>("No rate was found for current user", HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping(value = "/all/{score}")
+    public ResponseEntity<?> getAllRatesByScore(@PathVariable float score){
+        List<Rate> rateList = this.rateService.findAllRatesByScore(score);
+        if (rateList != null){
+            return new ResponseEntity<>(rateList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>("No rate was found!", HttpStatus.NO_CONTENT);
     }
 
     @GetMapping(value = "/all-rates")
