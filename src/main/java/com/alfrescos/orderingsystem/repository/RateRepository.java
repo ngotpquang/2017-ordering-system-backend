@@ -23,11 +23,11 @@ public interface RateRepository extends CrudRepository<Rate, Long>{
     @Query(value = "SELECT * FROM rate WHERE user_id = ?1 AND rate_type_id = ?2", nativeQuery = true)
     List<Rate> findAllRatesByUserIdAndRateTypeId(long userId, long rateTypeId);
 
-    @Query(value = "SELECT * FROM rate WHERE score = ?1 ORDER BY rate_time DESC", nativeQuery = true)
-    List<Rate> findAllRatesByScore(float score);
+    @Query(value = "SELECT * FROM rate WHERE rate_type_id = ?1 AND score = ?2 ORDER BY rate_time DESC", nativeQuery = true)
+    List<Rate> findAllRatesByRateTypeAndScore(int typeId, float score);
 
-    @Query(value = "SELECT * FROM rate WHERE invoice_id = ?1", nativeQuery = true)
-    Rate findRateByInvoiceId(String invoiceId);
+    @Query(value = "SELECT * FROM rate WHERE invoice_id = ?1 AND rate_type_id = ?2", nativeQuery = true)
+    Rate findRateByInvoiceIdAndRateTypeId(String invoiceId, long rateTypeId);
 
     @Query(value = "SELECT * FROM rate WHERE rate_type_id = ?1", nativeQuery = true)
     List<Rate> findAllRatesByRateTypeId(long rateTypeId);

@@ -41,8 +41,8 @@ public class RateServiceImpl implements RateService {
     }
 
     @Override
-    public List<Rate> findAllRatesByScore(float score) {
-        return this.rateRepository.findAllRatesByScore(score);
+    public List<Rate> findAllRatesByRateTypeAndScore(int typeId, float score) {
+        return this.rateRepository.findAllRatesByRateTypeAndScore(typeId, score);
     }
 
     @Override
@@ -61,8 +61,8 @@ public class RateServiceImpl implements RateService {
     }
 
     @Override
-    public Rate findRateByInvoiceId(String invoiceId) {
-        return this.rateRepository.findRateByInvoiceId(invoiceId);
+    public Rate findRateByInvoiceIdAndRateTypeId(String invoiceId, long rateTypeId) {
+        return this.rateRepository.findRateByInvoiceIdAndRateTypeId(invoiceId, rateTypeId);
     }
 
     @Override

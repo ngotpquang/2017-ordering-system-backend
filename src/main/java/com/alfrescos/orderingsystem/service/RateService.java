@@ -20,7 +20,7 @@ public interface RateService {
 
     List<Rate> findAllRatesByUserId(long userId);
 
-    List<Rate> findAllRatesByScore(float score);
+    List<Rate> findAllRatesByRateTypeAndScore(int typeId, float score);
 
     Iterable<Rate> findAllRates();
 
@@ -28,7 +28,7 @@ public interface RateService {
 
     List<Rate> findAllRatesByUserIdAndRateTypeId(long userId, long rateTypeId);
 
-    Rate findRateByInvoiceId(String invoiceId);
+    Rate findRateByInvoiceIdAndRateTypeId(String invoiceId, long rateTypeId);
 
     Rate findById(Long rateId);
 
