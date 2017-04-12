@@ -157,7 +157,10 @@ public class InvoiceController {
             User customer = this.userService.findById(this.invoiceService.findById(invoiceId).getCustomerUser().getId());
             customer.setMembershipPoint(customer.getMembershipPoint() + Math.round((this.invoiceDetailService.calculateTotalAmountForInvoice(invoiceId) / 1000 * 0.05f)));
             customer = this.userService.save(customer);
-            if (customer != null) {
+            Invoice invoice = this.invoiceService.findById(invoiceId);
+            invoice.setTotalAmount(this.invoiceDetailService.calculateTotalAmountForInvoice(invoiceId));
+            invoice = this.invoiceService.update(invoice);
+            if (customer != null && invoice != null) {
                 return new ResponseEntity<Object>(this.invoiceService.setPaid(staffId, invoiceId, paymentType), HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<Object>("Error when update membership point for customer!", HttpStatus.NOT_ACCEPTABLE);

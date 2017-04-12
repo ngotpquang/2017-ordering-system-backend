@@ -29,6 +29,7 @@ public class Invoice {
     private Date payingTime;
     private Set<InvoiceDetail> invoiceDetails;
     private boolean isVisible = true;
+    private float totalAmount;
     private String paymentType = "CASH";
 
     public Invoice() {
@@ -135,7 +136,17 @@ public class Invoice {
         this.paymentType = paymentType;
     }
 
+    @Column(name = "total_amount")
+    public float getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(float totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
     @Column(name = "payment_type", nullable = false)
+
 
 
     @Override
