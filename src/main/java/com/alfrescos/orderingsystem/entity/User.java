@@ -47,6 +47,7 @@ public class User {
 //    private boolean ignoreJoin;
 
     public User() {
+        this.createdDate = new Date();
     }
 
     public User(String email, String name, String password) {

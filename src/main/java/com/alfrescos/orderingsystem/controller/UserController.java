@@ -77,11 +77,6 @@ public class UserController {
     @GetMapping(value = "/{userId}")
     public ResponseEntity<?> getById(@PathVariable Long userId) {
         User user = userService.findById(userId);
-//        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(user);
-//        FilterProvider filters = new SimpleFilterProvider()
-//                .addFilter("filter.User", SimpleBeanPropertyFilter
-//                        .serializeAllExcept("password"));
-//        mappingJacksonValue.setFilters(filters);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
@@ -161,11 +156,6 @@ public class UserController {
     @GetMapping(value = "/info")
     public ResponseEntity<?> getInformation() {
         User user = this.userService.findByAccountCode(UserUtil.getAccountCodeByAuthorization());
-//        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(user);
-//        FilterProvider filters = new SimpleFilterProvider()
-//                .addFilter("filter.User", SimpleBeanPropertyFilter
-//                        .serializeAllExcept("password"));
-//        mappingJacksonValue.setFilters(filters);
         return new ResponseEntity<Object>(user, HttpStatus.OK);
     }
 
