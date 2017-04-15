@@ -65,24 +65,24 @@ public class UserController {
     @GetMapping
     public ResponseEntity<?> getAll() {
         List<User> users = userService.getAll();
-        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(users);
-        FilterProvider filters = new SimpleFilterProvider()
-                .addFilter("filter.User", SimpleBeanPropertyFilter
-                        .serializeAllExcept("password"));
-        mappingJacksonValue.setFilters(filters);
-        return new ResponseEntity<>(mappingJacksonValue, HttpStatus.OK);
+//        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(users);
+//        FilterProvider filters = new SimpleFilterProvider()
+//                .addFilter("filter.User", SimpleBeanPropertyFilter
+//                        .serializeAllExcept("password"));
+//        mappingJacksonValue.setFilters(filters);
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping(value = "/{userId}")
-    public ResponseEntity<MappingJacksonValue> getById(@PathVariable Long userId) {
+    public ResponseEntity<?> getById(@PathVariable Long userId) {
         User user = userService.findById(userId);
-        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(user);
-        FilterProvider filters = new SimpleFilterProvider()
-                .addFilter("filter.User", SimpleBeanPropertyFilter
-                        .serializeAllExcept("password"));
-        mappingJacksonValue.setFilters(filters);
-        return new ResponseEntity<>(mappingJacksonValue, HttpStatus.OK);
+//        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(user);
+//        FilterProvider filters = new SimpleFilterProvider()
+//                .addFilter("filter.User", SimpleBeanPropertyFilter
+//                        .serializeAllExcept("password"));
+//        mappingJacksonValue.setFilters(filters);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     //TODO: Send welcome email
@@ -161,12 +161,12 @@ public class UserController {
     @GetMapping(value = "/info")
     public ResponseEntity<?> getInformation() {
         User user = this.userService.findByAccountCode(UserUtil.getAccountCodeByAuthorization());
-        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(user);
-        FilterProvider filters = new SimpleFilterProvider()
-                .addFilter("filter.User", SimpleBeanPropertyFilter
-                        .serializeAllExcept("password"));
-        mappingJacksonValue.setFilters(filters);
-        return new ResponseEntity<Object>(mappingJacksonValue, HttpStatus.OK);
+//        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(user);
+//        FilterProvider filters = new SimpleFilterProvider()
+//                .addFilter("filter.User", SimpleBeanPropertyFilter
+//                        .serializeAllExcept("password"));
+//        mappingJacksonValue.setFilters(filters);
+        return new ResponseEntity<Object>(user, HttpStatus.OK);
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -223,6 +223,13 @@ public class UserController {
             return new ResponseEntity<Object>("Current password is not correct", HttpStatus.BAD_REQUEST);
         }
 
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping(value = "/permission")
+    public ResponseEntity<?> getPermissionForLoggedInUser(){
+        User user = this.userService.findById(UserUtil.getIdByAuthorization());
+        return new ResponseEntity<Object>(user.getPermissionList(), HttpStatus.OK);
     }
 
 }
