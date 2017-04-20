@@ -7,6 +7,7 @@ package com.alfrescos.orderingsystem.socket;
 import com.alfrescos.orderingsystem.common.UserUtil;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 
@@ -28,7 +29,8 @@ public class MessageController {
     @SendTo("/request/admin")
     public String sendAdmin(String message) throws Exception {
         String time = new SimpleDateFormat("HH:mm:ss").format(new Date());
-        return time + " - Admin broadcast channel: " + message;
+        System.out.println(time + " - Admin broadcast channel: " + message);
+        return time + " - Al Fresco's channel for staff: " + message;
     }
 
     /*
