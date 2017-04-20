@@ -17,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -103,14 +104,20 @@ public class FoodAndDrinkController {
     public ResponseEntity<?> update(@RequestBody Map<String, String> data) {
         try {
             Long foodAndDrinkId = Long.parseLong(data.get("foodAndDrinkId"));
-            String detail = data.get("detail");
-            String tags = data.get("tags");
+            String detail = data.get("detail").trim();
+            float price = Float.parseFloat(data.get("price").trim());
+            String tags = data.get("tags").trim();
+            String name = data.get("name").trim();
             FoodAndDrink oldFoodAndDrink = this.foodAndDrinkservice.findById(foodAndDrinkId);
             if (oldFoodAndDrink != null
-                    && !oldFoodAndDrink.getDetail().equals(detail)
-                    && !oldFoodAndDrink.getTags().equals(tags)) {
+                    || !oldFoodAndDrink.getDetail().equals(detail)
+                    || !oldFoodAndDrink.getTags().equals(tags)
+                    || oldFoodAndDrink.getPrice() != price) {
                 oldFoodAndDrink.setDetail(detail);
                 oldFoodAndDrink.setTags(tags);
+                oldFoodAndDrink.setPrice(price);
+                oldFoodAndDrink.setName(name);
+                oldFoodAndDrink.setCreatedDate(new Date());
                 oldFoodAndDrink = this.foodAndDrinkservice.update(oldFoodAndDrink);
                 return new ResponseEntity<Object>("Updated FAD id: " + oldFoodAndDrink.getId() + " successfully.", HttpStatus.CREATED);
             } else {

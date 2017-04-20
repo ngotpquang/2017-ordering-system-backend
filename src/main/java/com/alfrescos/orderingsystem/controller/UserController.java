@@ -65,11 +65,6 @@ public class UserController {
     @GetMapping
     public ResponseEntity<?> getAll() {
         List<User> users = userService.getAll();
-//        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(users);
-//        FilterProvider filters = new SimpleFilterProvider()
-//                .addFilter("filter.User", SimpleBeanPropertyFilter
-//                        .serializeAllExcept("password"));
-//        mappingJacksonValue.setFilters(filters);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
