@@ -27,7 +27,7 @@ public class MessageController {
      */
     @MessageMapping(value = {"/admin"})
     @SendTo("/request/admin")
-    public String sendAdmin(String message) throws Exception {
+    public String sendAdmin(String message){
         String time = new SimpleDateFormat("HH:mm:ss").format(new Date());
         System.out.println(time + " - Admin broadcast channel: " + message);
         return time + " - Al Fresco's channel for staff: " + message;
@@ -40,7 +40,7 @@ public class MessageController {
      */
     @MessageMapping("/waiter")
     @SendTo("/request/waiter")
-    public String send(String message) throws Exception {
+    public String send(String message){
         String time = new SimpleDateFormat("HH:mm:ss").format(new Date());
         return time + " - Waiter broadcast channel: " + message;
     }
