@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.controller;
 
 import com.alfrescos.orderingsystem.entity.FoodAndDrinkType;
@@ -27,6 +31,12 @@ public class FoodAndDrinkTypeController {
         } else {
             return new ResponseEntity<Object>("Can't create due to some error.", HttpStatus.NOT_ACCEPTABLE);
         }
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    @GetMapping(value = "/all")
+    public ResponseEntity<?> getAllFoodAndDrinkType(){
+        return new ResponseEntity<Object>(this.foodAndDrinkTypeService.findAll(), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")

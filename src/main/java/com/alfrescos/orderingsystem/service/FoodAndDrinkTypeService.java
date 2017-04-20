@@ -20,6 +20,8 @@ public interface FoodAndDrinkTypeService {
 
     boolean switchVisible(Long foodAndDrinkTypeId);
 
+    List<FoodAndDrinkType> findAll();
+
     List<FoodAndDrinkType> findAllDrinkOrDesert();
 
     List<FoodAndDrinkType> findAllMainDish();
