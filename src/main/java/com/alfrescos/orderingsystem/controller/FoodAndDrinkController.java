@@ -59,7 +59,7 @@ public class FoodAndDrinkController {
 
     @GetMapping(value = "/all")
     public ResponseEntity<?> getAllFoodAndDrink() {
-        Iterable<FoodAndDrink> foodAndDrinkList = foodAndDrinkservice.findAll();
+        List<FoodAndDrink> foodAndDrinkList = foodAndDrinkservice.findAll();
         if (!foodAndDrinkList.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {

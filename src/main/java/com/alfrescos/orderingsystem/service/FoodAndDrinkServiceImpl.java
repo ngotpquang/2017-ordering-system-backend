@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Liger on 05-Mar-17.
@@ -46,8 +47,9 @@ public class FoodAndDrinkServiceImpl implements FoodAndDrinkService {
     }
 
     @Override
-    public Iterable<FoodAndDrink> findAll() {
-        return foodAndDrinkRepository.findAll();
+    public List<FoodAndDrink> findAll() {
+        List<FoodAndDrink> result = (List<FoodAndDrink>) this.foodAndDrinkRepository.findAll();
+        return result.stream().filter(foodAndDrink -> foodAndDrink.isVisible()).collect(Collectors.toList());
     }
 
     @Override

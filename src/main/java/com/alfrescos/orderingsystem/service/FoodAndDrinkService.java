@@ -22,7 +22,7 @@ public interface FoodAndDrinkService {
 
     List<FoodAndDrink> findByFoodAndDrinkTypeId(Long typeId);
 
-    Iterable<FoodAndDrink> findAll();
+    List<FoodAndDrink> findAll();
 
     boolean switchVisible(Long id);
 }
