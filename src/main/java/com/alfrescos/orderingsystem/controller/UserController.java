@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by Liger on 09-Mar-17.
@@ -62,9 +63,17 @@ public class UserController {
     private EmailService emailService;
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping
+    @GetMapping(value = "/all")
     public ResponseEntity<?> getAll() {
         List<User> users = userService.getAll();
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping(value = "/all/staff")
+    public ResponseEntity<?> getAllStaff() {
+        List<User> users = userService.getAll();
+        users.stream().filter(user -> UserUtil.checkStaffAccount(user)).collect(Collectors.toList());
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 

@@ -1,8 +1,16 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.common;
 
+import com.alfrescos.orderingsystem.entity.Permission;
+import com.alfrescos.orderingsystem.entity.User;
 import com.alfrescos.orderingsystem.security.JwtUser;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.List;
 
 /**
  * Created by Liger on 09-Mar-17.
@@ -23,6 +31,16 @@ public class UserUtil {
 
     public static boolean checkStaffAccount(){
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().contains("STAFF");
+    }
+
+    public static boolean checkStaffAccount(User user){
+        List<Permission> permissionList = user.getPermissionList();
+        for(Permission p : permissionList){
+            if (p.getRole().getName().contains("STAFF")){
+                return true;
+            }
+        }
+        return false;
     }
 
 }
