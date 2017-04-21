@@ -62,19 +62,19 @@ public class UserController {
     @Autowired
     private EmailService emailService;
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @GetMapping(value = "/all")
     public ResponseEntity<?> getAll() {
         List<User> users = userService.getAll();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @GetMapping(value = "/all/staff")
     public ResponseEntity<?> getAllStaff() {
         List<User> users = userService.getAll();
-        users.stream().filter(user -> UserUtil.checkStaffAccount(user)).collect(Collectors.toList());
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        List<User> result = users.stream().filter(user -> UserUtil.checkStaffAccount(user)).collect(Collectors.toList());
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PreAuthorize("isAuthenticated()")

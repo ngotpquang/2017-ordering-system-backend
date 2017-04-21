@@ -7,6 +7,7 @@ package com.alfrescos.orderingsystem.common;
 import com.alfrescos.orderingsystem.entity.Permission;
 import com.alfrescos.orderingsystem.entity.User;
 import com.alfrescos.orderingsystem.security.JwtUser;
+import com.alfrescos.orderingsystem.service.UserService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -36,8 +37,10 @@ public class UserUtil {
     public static boolean checkStaffAccount(User user){
         List<Permission> permissionList = user.getPermissionList();
         for(Permission p : permissionList){
-            if (p.getRole().getName().contains("STAFF")){
+            if (p.getRole().getName().equals("ROLE_STAFF")){
                 return true;
+            } else if (p.getRole().getName().equals("ROLE_ADMIN") || p.getRole().getName().equals("ROLE_MANAGER")){
+                return false;
             }
         }
         return false;
