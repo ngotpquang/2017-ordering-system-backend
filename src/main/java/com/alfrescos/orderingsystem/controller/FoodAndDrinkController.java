@@ -71,6 +71,8 @@ public class FoodAndDrinkController {
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody FoodAndDrink foodAndDrink) {
         FoodAndDrink createdFoodAndDrink = this.foodAndDrinkservice.create(foodAndDrink);
+        System.out.println(createdFoodAndDrink.getFoodAndDrinkType().getName());
+        System.out.println(createdFoodAndDrink.getFoodAndDrinkType().isMainDish());
         if (createdFoodAndDrink != null) {
             if (createdFoodAndDrink.getFoodAndDrinkType().isMainDish()) {
                 List<FoodAndDrinkType> drinkOrDesertTypeList = this.foodAndDrinkTypeService.findAllDrinkOrDesert();
@@ -86,8 +88,10 @@ public class FoodAndDrinkController {
                 List<FoodAndDrinkType> mainDishTypeList = this.foodAndDrinkTypeService.findAllMainDish();
                 if (!mainDishTypeList.isEmpty()) {
                     for (FoodAndDrinkType fadt : mainDishTypeList) {
+                        System.out.println(fadt.getName());
                         List<FoodAndDrink> mainDishList = this.foodAndDrinkservice.findByFoodAndDrinkTypeId(fadt.getId());
                         for (FoodAndDrink fad : mainDishList) {
+                            System.out.println(fad.getId());
                             this.orderCombinationService.createOrderCombination(new OrderCombination(fad, createdFoodAndDrink));
                         }
                     }
@@ -153,5 +157,11 @@ public class FoodAndDrinkController {
         } else {
             return new ResponseEntity<Object>("Can't find FAD has id: " + foodAndDrinkId, HttpStatus.NO_CONTENT);
         }
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    @GetMapping(value = "/type/{id}")
+    public ResponseEntity<?> getAllFoodAndDrinkByTypeId(@PathVariable long id){
+        return new ResponseEntity<Object>(this.foodAndDrinkservice.findByFoodAndDrinkTypeId(id), HttpStatus.OK);
     }
 }
