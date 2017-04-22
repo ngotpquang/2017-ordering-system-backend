@@ -26,11 +26,11 @@ public interface InvoiceService {
 
     boolean setPaid(Long staffId, String invoiceId, String paymentType);
 
-    List<String> findOrderedTable();
+    List<String> findAllUnpaidInvoice();
 
     List<Invoice> findAllInvoicesByDate(String date);
 
     List<Invoice> findAllInvoicesBetweenDates(String beginningDate, String endDate);
 
-    public Invoice update(Invoice invoice);
+    Invoice update(Invoice invoice);
 }

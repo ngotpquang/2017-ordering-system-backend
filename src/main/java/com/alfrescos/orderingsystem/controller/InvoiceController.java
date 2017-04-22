@@ -8,7 +8,6 @@ import com.alfrescos.orderingsystem.common.InvoiceDetailUtil;
 import com.alfrescos.orderingsystem.common.UserUtil;
 import com.alfrescos.orderingsystem.entity.*;
 import com.alfrescos.orderingsystem.service.*;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -190,9 +189,9 @@ public class InvoiceController {
     }
 
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'STAFF')")
-    @GetMapping(value = "/table-ordered")
-    public ResponseEntity<?> getOrderedTable() {
-        return new ResponseEntity<Object>(this.invoiceService.findOrderedTable(), HttpStatus.OK);
+    @GetMapping(value = "/unpaid-invoice")
+    public ResponseEntity<?> getUnpaidInvoice() {
+        return new ResponseEntity<Object>(this.invoiceService.findAllUnpaidInvoice(), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")

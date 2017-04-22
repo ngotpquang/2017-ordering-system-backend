@@ -74,8 +74,8 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public List<String> findOrderedTable() {
-        return this.invoiceRepository.findAllOrderedTable();
+    public List<String> findAllUnpaidInvoice() {
+        return this.invoiceRepository.findAllUnpaidInvoice();
     }
 
     @Override
