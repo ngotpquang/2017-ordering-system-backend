@@ -45,7 +45,6 @@ public class FoodAndDrinkTypeController {
         }
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @GetMapping(value = "/all")
     public ResponseEntity<?> getAllFoodAndDrinkType(){
         return new ResponseEntity<Object>(this.foodAndDrinkTypeService.findAll(), HttpStatus.OK);
