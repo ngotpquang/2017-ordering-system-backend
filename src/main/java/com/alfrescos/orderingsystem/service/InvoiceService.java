@@ -26,7 +26,7 @@ public interface InvoiceService {
 
     boolean setPaid(Long staffId, String invoiceId, String paymentType);
 
-    List<String> findAllUnpaidInvoice();
+    List<Invoice> findAllUnpaidInvoice();
 
     List<Invoice> findAllInvoicesByDate(String date);
 

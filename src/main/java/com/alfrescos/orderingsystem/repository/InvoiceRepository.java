@@ -25,7 +25,7 @@ public interface InvoiceRepository extends CrudRepository<Invoice, String>{
     List<Invoice> findAllInvoicesByStaffId(Long customerId);
 
     @Query(value = "SELECT * FROM invoice WHERE paying_time IS NULL", nativeQuery = true)
-    List<String> findAllUnpaidInvoice();
+    List<Invoice> findAllUnpaidInvoice();
 
 //    @Query(value = "SELECT * FROM invoice WHERE CONVERT(VARCHAR(25), paying_time, 126) LIKE ?1% AND is_visible = 1", nativeQuery = true)
     @Query(value = "SELECT * FROM invoice WHERE TO_CHAR(paying_time, 'YYYY-MM-DD') LIKE ?1% AND is_visible = TRUE AND is_paid = TRUE", nativeQuery = true)
