@@ -11,13 +11,14 @@ import com.alfrescos.orderingsystem.service.FoodAndDrinkService;
 import com.alfrescos.orderingsystem.service.InvoiceDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
 /**
  * Created by Liger on 16-Mar-17.
  */
-public class InvoiceDetailUtil {
+public class InvoiceUtil {
     public static boolean addInvoiceDetail(Map<String, String> data, Invoice invoice, Date timeOrdered, FoodAndDrinkService foodAndDrinkService, InvoiceDetailService invoiceDetailService) {
         boolean isInvoiceDetailAllCreated = true;
         try {
@@ -55,5 +56,12 @@ public class InvoiceDetailUtil {
             System.out.println(e.getMessage());
         }
         return isInvoiceDetailAllCreated;
+    }
+
+    public static boolean checkMonthAndYear(Invoice invoice, int month, int year){
+        Date payingTime = invoice.getPayingTime();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(payingTime);
+        return ((cal.get(Calendar.MONTH) + 1) == month) && (cal.get(Calendar.YEAR) == year);
     }
 }

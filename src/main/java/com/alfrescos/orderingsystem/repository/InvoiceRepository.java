@@ -34,4 +34,7 @@ public interface InvoiceRepository extends CrudRepository<Invoice, String>{
 //    @Query(value = "SELECT * FROM invoice WHERE paying_time >= ?1 AND paying_time <= ?2 AND is_visible = 1", nativeQuery = true)
     @Query(value = "SELECT * FROM invoice WHERE paying_time BETWEEN TO_TIMESTAMP(?1 ,'YYYY-MM-DD HH24:MI:SS') AND TO_TIMESTAMP(?2 ,'YYYY-MM-DD HH24:MI:SS') AND is_paid = TRUE", nativeQuery = true)
     List<Invoice> findAllInvoicesBetweenDates(String beginningDate, String endDate);
+
+    @Query(value = "SELECT * FROM invoice WHERE is_paid = TRUE ORDER BY paying_time ASC", nativeQuery = true)
+    List<Invoice> findAllInvoicesSortByDateAscending();
 }

@@ -4,7 +4,7 @@
 
 package com.alfrescos.orderingsystem.controller;
 
-import com.alfrescos.orderingsystem.common.InvoiceDetailUtil;
+import com.alfrescos.orderingsystem.common.InvoiceUtil;
 import com.alfrescos.orderingsystem.common.UserUtil;
 import com.alfrescos.orderingsystem.entity.*;
 import com.alfrescos.orderingsystem.service.*;
@@ -60,7 +60,7 @@ public class InvoiceController {
             Table table = tableService.findById(tableId);
             Invoice invoice = invoiceService.create(new Invoice(invoiceId, customer, customer, table));
             Date timeOrdered = new Date();
-            if (invoice != null && InvoiceDetailUtil.addInvoiceDetail(data, invoice, timeOrdered, foodAndDrinkService, invoiceDetailService)) {
+            if (invoice != null && InvoiceUtil.addInvoiceDetail(data, invoice, timeOrdered, foodAndDrinkService, invoiceDetailService)) {
                 return new ResponseEntity<>(invoice.getId(), HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>("Failed when created something. Please check again!", HttpStatus.BAD_REQUEST);
@@ -137,9 +137,7 @@ public class InvoiceController {
         List<InvoiceDetail> invoiceDetailList = this.invoiceDetailService.findAllInvoiceDetailsByInvoiceId(invoiceId);
         List<InvoiceDetail> mainDishDetailList = invoiceDetailList.stream().filter(invoiceDetail -> invoiceDetail.getFoodAndDrink().getFoodAndDrinkType().isMainDish()).collect(Collectors.toList());
         List<InvoiceDetail> drinkOrDesertDetailList = invoiceDetailList.stream().filter(invoiceDetail -> !invoiceDetail.getFoodAndDrink().getFoodAndDrinkType().isMainDish()).collect(Collectors.toList());
-        if (mainDishDetailList.isEmpty() || drinkOrDesertDetailList.isEmpty()) {
-            return new ResponseEntity<Object>(this.invoiceService.setPaid(staffId, invoiceId, paymentType), HttpStatus.CREATED);
-        } else {
+        if (!mainDishDetailList.isEmpty() && !drinkOrDesertDetailList.isEmpty()) {
             for (InvoiceDetail id : mainDishDetailList) {
                 for (InvoiceDetail id1 : drinkOrDesertDetailList) {
                     System.out.println(id.getFoodAndDrink().getId() + " - " + id1.getFoodAndDrink().getId());
@@ -153,17 +151,17 @@ public class InvoiceController {
                     }
                 }
             }
-            User customer = this.userService.findById(this.invoiceService.findById(invoiceId).getCustomerUser().getId());
-            customer.setMembershipPoint(customer.getMembershipPoint() + Math.round((this.invoiceDetailService.calculateTotalAmountForInvoice(invoiceId) / 1000 * 0.05f)));
-            customer = this.userService.save(customer);
-            Invoice invoice = this.invoiceService.findById(invoiceId);
-            invoice.setTotalAmount(this.invoiceDetailService.calculateTotalAmountForInvoice(invoiceId));
-            invoice = this.invoiceService.update(invoice);
-            if (customer != null && invoice != null) {
-                return new ResponseEntity<Object>(this.invoiceService.setPaid(staffId, invoiceId, paymentType), HttpStatus.CREATED);
-            } else {
-                return new ResponseEntity<Object>("Error when update membership point for customer!", HttpStatus.NOT_ACCEPTABLE);
-            }
+        }
+        User customer = this.userService.findById(this.invoiceService.findById(invoiceId).getCustomerUser().getId());
+        customer.setMembershipPoint(customer.getMembershipPoint() + Math.round((this.invoiceDetailService.calculateTotalAmountForInvoice(invoiceId) / 1000 * 0.05f)));
+        customer = this.userService.save(customer);
+        Invoice invoice = this.invoiceService.findById(invoiceId);
+        invoice.setTotalAmount(this.invoiceDetailService.calculateTotalAmountForInvoice(invoiceId));
+        invoice = this.invoiceService.update(invoice);
+        if (customer != null && invoice != null) {
+            return new ResponseEntity<Object>(this.invoiceService.setPaid(staffId, invoiceId, paymentType), HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<Object>("Error when update membership point for customer!", HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
@@ -211,6 +209,16 @@ public class InvoiceController {
         List<Invoice> invoiceList = invoiceService.findAllInvoicesBetweenDates(beginningDate, endDate);
         if (invoiceList != null) {
             return new ResponseEntity<>(invoiceList, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+    }
+
+    @GetMapping(value = "/total-monthly")
+    public ResponseEntity<?> getTotalMonthly() {
+        List<?> result = invoiceService.getTotalAmountByMonthAndYear();
+        if (result != null) {
+            return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }

@@ -4,16 +4,14 @@
 
 package com.alfrescos.orderingsystem.controller;
 
-import com.alfrescos.orderingsystem.common.InvoiceDetailUtil;
+import com.alfrescos.orderingsystem.common.InvoiceUtil;
 import com.alfrescos.orderingsystem.common.UserUtil;
 import com.alfrescos.orderingsystem.entity.FoodAndDrink;
 import com.alfrescos.orderingsystem.entity.Invoice;
 import com.alfrescos.orderingsystem.entity.InvoiceDetail;
-import com.alfrescos.orderingsystem.entity.User;
 import com.alfrescos.orderingsystem.service.FoodAndDrinkService;
 import com.alfrescos.orderingsystem.service.InvoiceDetailService;
 import com.alfrescos.orderingsystem.service.InvoiceService;
-import com.alfrescos.orderingsystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -63,7 +61,7 @@ public class InvoiceDetailController {
         }
         try {
             Date timeOrdered = new Date();
-            if (InvoiceDetailUtil.addInvoiceDetail(data, invoice, timeOrdered, foodAndDrinkService, invoiceDetailService)){
+            if (InvoiceUtil.addInvoiceDetail(data, invoice, timeOrdered, foodAndDrinkService, invoiceDetailService)){
                 return new ResponseEntity<Object>("Added successfully.", HttpStatus.CREATED);
             }
         } catch (Exception e){

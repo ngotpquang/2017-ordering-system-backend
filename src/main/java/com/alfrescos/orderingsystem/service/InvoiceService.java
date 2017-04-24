@@ -32,5 +32,7 @@ public interface InvoiceService {
 
     List<Invoice> findAllInvoicesBetweenDates(String beginningDate, String endDate);
 
+    List<?> getTotalAmountByMonthAndYear();
+
     Invoice update(Invoice invoice);
 }

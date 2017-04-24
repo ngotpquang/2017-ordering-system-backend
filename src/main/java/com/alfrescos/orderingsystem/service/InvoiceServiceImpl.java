@@ -4,14 +4,15 @@
 
 package com.alfrescos.orderingsystem.service;
 
+import com.alfrescos.orderingsystem.common.InvoiceUtil;
 import com.alfrescos.orderingsystem.entity.Invoice;
 import com.alfrescos.orderingsystem.repository.InvoiceRepository;
 import com.alfrescos.orderingsystem.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by Liger on 15-Mar-17.
@@ -60,7 +61,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public boolean setPaid(Long staffId, String invoiceId, String paymentType) {
         Invoice invoice = this.invoiceRepository.findOne(invoiceId);
-        if (invoice != null){
+        if (invoice != null) {
             Date payTime = new Date();
             invoice.setPaid(true);
             invoice.setStaffUser(this.userRepository.findOne(staffId));
@@ -88,6 +89,50 @@ public class InvoiceServiceImpl implements InvoiceService {
         beginningDate = beginningDate + " 00:00:00";
         endDate = endDate + " 23:59:59";
         return this.invoiceRepository.findAllInvoicesBetweenDates(beginningDate, endDate);
+    }
+
+    @Override
+    public List<?> getTotalAmountByMonthAndYear() {
+        List<Map> result = new ArrayList<>();
+        List<Invoice> invoiceList = this.invoiceRepository.findAllInvoicesSortByDateAscending();
+        Date beginDate = invoiceList.get(0).getPayingTime();
+        Date endDate = invoiceList.get(invoiceList.size() - 1).getPayingTime();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(beginDate);
+        int beginMonth = calendar.get(Calendar.MONTH) + 1;
+        int beginYear = calendar.get(Calendar.YEAR);
+        calendar.setTime(endDate);
+        int endMonth = calendar.get(Calendar.MONTH) + 1;
+        int endYear = calendar.get(Calendar.YEAR);
+        int b, e;
+        for (int i = beginYear; i <= endYear; i++) {
+            if (i == beginYear) {
+                b = beginMonth;
+            } else {
+                b = 1;
+            }
+            if (i == endYear) {
+                e = endMonth;
+            } else {
+                e = 12;
+            }
+            for (int k = b; k <= e; k++) {
+                int month = k;
+                int year = i;
+                List<Invoice> temp = invoiceList.stream().filter(invoice -> InvoiceUtil.checkMonthAndYear(invoice, month, year)).collect(Collectors.toList());
+                int total = 0;
+                for (Invoice invoice : temp) {
+                    total += invoice.getTotalAmount();
+                }
+                Map<String, String> data = new HashMap<>();
+                data.put("month", month + "");
+                data.put("year", year + "");
+                data.put("total", total + "");
+                result.add(data);
+                System.out.println("Data in a month: " + data);
+            }
+        }
+        return result;
     }
 
     @Override

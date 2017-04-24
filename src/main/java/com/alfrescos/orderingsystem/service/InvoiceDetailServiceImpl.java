@@ -80,7 +80,7 @@ public class InvoiceDetailServiceImpl implements InvoiceDetailService{
             System.out.println(id.getPrice() + " - " + id.getQuantity());
             totalAmount += id.getPrice() * id.getQuantity();
         }
-        System.out.println(totalAmount);
+        System.out.println("Total amount: " + totalAmount);
         return totalAmount;
     }
 
