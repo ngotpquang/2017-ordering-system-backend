@@ -28,6 +28,7 @@ public class Invoice {
     private Date createdDate;
     private Date payingTime;
     private float totalAmount = 0.0f;
+    private boolean isMade = false;
     private Set<InvoiceDetail> invoiceDetails;
     private boolean isVisible = true;
     private String paymentType = "CASH";
@@ -144,6 +145,15 @@ public class Invoice {
 
     public void setTotalAmount(float totalAmount) {
         this.totalAmount = totalAmount;
+    }
+
+    @Column(name = "is_made", nullable = false)
+    public boolean isMade() {
+        return isMade;
+    }
+
+    public void setMade(boolean made) {
+        isMade = made;
     }
 
     @Override

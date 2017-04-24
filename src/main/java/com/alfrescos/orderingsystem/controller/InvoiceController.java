@@ -8,6 +8,7 @@ import com.alfrescos.orderingsystem.common.InvoiceUtil;
 import com.alfrescos.orderingsystem.common.UserUtil;
 import com.alfrescos.orderingsystem.entity.*;
 import com.alfrescos.orderingsystem.service.*;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -221,6 +222,22 @@ public class InvoiceController {
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+    }
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    @PutMapping(value = "/is-made/{invoiceId}")
+    public ResponseEntity<?> updateIsMadeStatus(@PathVariable String invoiceId){
+        Invoice invoice = this.invoiceService.findById(invoiceId);
+        if (invoice != null){
+            if (invoice.isMade()){
+                return new ResponseEntity<Object>("All drinks are already made", HttpStatus.NOT_MODIFIED);
+            } else {
+                invoice.setMade(true);
+                this.invoiceService.update(invoice);
+                return new ResponseEntity<Object>("Invoice id: " + invoiceId + " is made", HttpStatus.CREATED);
+            }
+        } else {
+            return new ResponseEntity<Object>("Couldn't find invoice with id: " + invoiceId, HttpStatus.NOT_ACCEPTABLE);
         }
     }
 }
