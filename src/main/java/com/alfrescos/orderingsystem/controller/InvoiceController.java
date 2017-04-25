@@ -51,6 +51,12 @@ public class InvoiceController {
         String invoiceId = "INV" + new Date().getTime();
         try {
             Long tableId = Long.parseLong(data.get("tableId").trim());
+            List<Invoice> invoiceList = this.invoiceService.findAllUnpaidInvoice();
+            for (Invoice invoice: invoiceList){
+                if (invoice.getTable().equals(tableId)){
+                    return new ResponseEntity<Object>("Table is in ordering process. You can't create invoice with this table", HttpStatus.NOT_ACCEPTABLE);
+                }
+            }
             String customerAccountCode = UserUtil.getAccountCodeByAuthorization();
             User customer;
             if (!customerAccountCode.equals("anonymousUser")) {
