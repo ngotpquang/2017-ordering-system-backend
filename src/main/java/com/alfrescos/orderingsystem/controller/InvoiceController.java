@@ -53,7 +53,7 @@ public class InvoiceController {
             Long tableId = Long.parseLong(data.get("tableId").trim());
             List<Invoice> invoiceList = this.invoiceService.findAllUnpaidInvoice();
             for (Invoice invoice: invoiceList){
-                if (invoice.getTable().equals(tableId)){
+                if (invoice.getTable().getId().equals(tableId)){
                     return new ResponseEntity<Object>("Table is in ordering process. You can't create invoice with this table", HttpStatus.NOT_ACCEPTABLE);
                 }
             }
