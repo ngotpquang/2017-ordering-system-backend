@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +32,9 @@ public class TableServiceImpl implements TableService{
     @Override
     public List<Table> findAll() {
         List<Table> tableList = (List<Table>) this.tableRepository.findAll();
-        return tableList.stream().filter(table -> table.isVisible()).collect(Collectors.toList());
+        tableList =  tableList.stream().filter(table -> table.isVisible()).collect(Collectors.toList());
+        tableList.sort(Comparator.comparing(table -> table.getId()));
+        return tableList;
     }
 
     @Override
