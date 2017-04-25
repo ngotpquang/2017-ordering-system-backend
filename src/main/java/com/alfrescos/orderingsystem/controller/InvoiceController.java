@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -190,7 +191,18 @@ public class InvoiceController {
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'STAFF')")
     @GetMapping(value = "/unpaid-invoice")
     public ResponseEntity<?> getUnpaidInvoice() {
-        return new ResponseEntity<Object>(this.invoiceService.findAllUnpaidInvoice(), HttpStatus.OK);
+        List<Invoice> invoices = this.invoiceService.findAllUnpaidInvoice();
+        List<Table> tableList = this.tableService.findAll();
+        List<Invoice> invoiceList = new ArrayList<>();
+        for (Table table: tableList){
+            for (Invoice invoice: invoices){
+                if (invoice.getTable().getId().equals(table.getId())){
+                    invoiceList.add((invoice));
+                    break;
+                }
+            }
+        }
+        return new ResponseEntity<Object>(invoiceList, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
