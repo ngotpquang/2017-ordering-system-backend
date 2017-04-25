@@ -24,6 +24,9 @@ public class InvoiceUtil {
         try {
             String[] foodAndDrinkIdList = data.get("foodAndDrinkId").trim().split(",");
             String[] quantityList = data.get("quantity").trim().split(",");
+            if (data.get("foodAndDrinkId").trim().equals("") || data.get("quantity").trim().equals("")){
+                return false;
+            }
             FoodAndDrink foodAndDrink;
             int quantity;
             if (foodAndDrinkIdList.length == quantityList.length) {

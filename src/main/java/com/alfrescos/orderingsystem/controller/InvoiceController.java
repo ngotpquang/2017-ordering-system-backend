@@ -259,7 +259,7 @@ public class InvoiceController {
         }
     }
 
-//    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    //    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @GetMapping(value = "/table/{tableId}")
     public ResponseEntity<?> getTheLastUnpaidInvoiceOfTable(@PathVariable long tableId){
         System.out.println("Table Id: " + tableId);
