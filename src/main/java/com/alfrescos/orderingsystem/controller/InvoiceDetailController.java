@@ -12,6 +12,7 @@ import com.alfrescos.orderingsystem.entity.InvoiceDetail;
 import com.alfrescos.orderingsystem.service.FoodAndDrinkService;
 import com.alfrescos.orderingsystem.service.InvoiceDetailService;
 import com.alfrescos.orderingsystem.service.InvoiceService;
+import com.alfrescos.orderingsystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,9 @@ public class InvoiceDetailController {
     @Autowired
     private InvoiceService invoiceService;
 
+    @Autowired
+    private UserService userService;
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping(value = "/{invoiceId}")
     public ResponseEntity<?> getInvoiceDetailByInvoiceId(@PathVariable String invoiceId){
@@ -47,14 +51,18 @@ public class InvoiceDetailController {
         }
     }
 
-    @PreAuthorize("isAuthenticated()")
+//    @PreAuthorize("isAuthenticated()")
     @PostMapping(value = "/update")
     public ResponseEntity<?> addInvoiceDetailToInvoice(@RequestBody Map<String, String> data){
         String invoiceId = data.get("invoiceId").trim();
         Invoice invoice = invoiceService.findById(invoiceId);
+        String accountCode = UserUtil.getAccountCodeByAuthorization();
+        if (accountCode.equals("anonymousUser")){
+            accountCode = this.userService.findById(1L).getAccountCode();
+        }
         if (invoice == null){
             return new ResponseEntity<Object>("Can't find invoice with id: " + invoiceId, HttpStatus.NOT_ACCEPTABLE);
-        } else if (!invoice.getCustomerUser().getAccountCode().equals(UserUtil.getAccountCodeByAuthorization())){
+        } else if (!invoice.getCustomerUser().getAccountCode().equals(accountCode)){
             return new ResponseEntity<Object>("You can't modify this invoice as you're not the owner.", HttpStatus.NOT_ACCEPTABLE);
         } else if(invoice.isPaid()){
             return new ResponseEntity<Object>("Can't modify invoice after paid", HttpStatus.NOT_ACCEPTABLE);
