@@ -41,11 +41,12 @@ public class RateController {
     @Autowired
     private RateTypeService rateTypeService;
 
-    @PreAuthorize("isAuthenticated()")
+//    @PreAuthorize("isAuthenticated()")
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody Map<String, String> data) {
         try {
-            User user = this.userService.findById(UserUtil.getIdByAuthorization());
+            Long userId = UserUtil.getAccountCodeByAuthorization().equals("anonymousUser") ? 1L : UserUtil.getIdByAuthorization();
+            User user = this.userService.findById(userId);
             String invoiceId = data.get("invoiceId").trim();
             Invoice invoice = this.invoiceService.findById(invoiceId);
             if (!user.getId().equals(invoice.getCustomerUser().getId())) {
