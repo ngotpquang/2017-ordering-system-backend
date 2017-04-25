@@ -95,44 +95,47 @@ public class InvoiceServiceImpl implements InvoiceService {
     public List<?> getTotalAmountByMonthAndYear() {
         List<Map> result = new ArrayList<>();
         List<Invoice> invoiceList = this.invoiceRepository.findAllInvoicesSortByDateAscending();
-        Date beginDate = invoiceList.get(0).getPayingTime();
-        Date endDate = invoiceList.get(invoiceList.size() - 1).getPayingTime();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(beginDate);
-        int beginMonth = calendar.get(Calendar.MONTH) + 1;
-        int beginYear = calendar.get(Calendar.YEAR);
-        calendar.setTime(endDate);
-        int endMonth = calendar.get(Calendar.MONTH) + 1;
-        int endYear = calendar.get(Calendar.YEAR);
-        int b, e;
-        for (int i = beginYear; i <= endYear; i++) {
-            if (i == beginYear) {
-                b = beginMonth;
-            } else {
-                b = 1;
-            }
-            if (i == endYear) {
-                e = endMonth;
-            } else {
-                e = 12;
-            }
-            for (int k = b; k <= e; k++) {
-                int month = k;
-                int year = i;
-                List<Invoice> temp = invoiceList.stream().filter(invoice -> InvoiceUtil.checkMonthAndYear(invoice, month, year)).collect(Collectors.toList());
-                int total = 0;
-                for (Invoice invoice : temp) {
-                    total += invoice.getTotalAmount();
+        if (invoiceList.size() > 0) {
+            Date beginDate = invoiceList.get(0).getPayingTime();
+            Date endDate = invoiceList.get(invoiceList.size() - 1).getPayingTime();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(beginDate);
+            int beginMonth = calendar.get(Calendar.MONTH) + 1;
+            int beginYear = calendar.get(Calendar.YEAR);
+            calendar.setTime(endDate);
+            int endMonth = calendar.get(Calendar.MONTH) + 1;
+            int endYear = calendar.get(Calendar.YEAR);
+            int b, e;
+            for (int i = beginYear; i <= endYear; i++) {
+                if (i == beginYear) {
+                    b = beginMonth;
+                } else {
+                    b = 1;
                 }
-                Map<String, String> data = new HashMap<>();
-                data.put("month", month + "");
-                data.put("year", year + "");
-                data.put("total", total + "");
-                result.add(data);
-                System.out.println("Data in a month: " + data);
+                if (i == endYear) {
+                    e = endMonth;
+                } else {
+                    e = 12;
+                }
+                for (int k = b; k <= e; k++) {
+                    int month = k;
+                    int year = i;
+                    List<Invoice> temp = invoiceList.stream().filter(invoice -> InvoiceUtil.checkMonthAndYear(invoice, month, year)).collect(Collectors.toList());
+                    int total = 0;
+                    for (Invoice invoice : temp) {
+                        total += invoice.getTotalAmount();
+                    }
+                    Map<String, String> data = new HashMap<>();
+                    data.put("month", month + "");
+                    data.put("year", year + "");
+                    data.put("total", total + "");
+                    result.add(data);
+                    System.out.println("Data in a month: " + data);
+                }
             }
+            return result;
         }
-        return result;
+        return null;
     }
 
     @Override
