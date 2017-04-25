@@ -240,4 +240,18 @@ public class InvoiceController {
             return new ResponseEntity<Object>("Couldn't find invoice with id: " + invoiceId, HttpStatus.NOT_ACCEPTABLE);
         }
     }
+
+//    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    @GetMapping(value = "/table/{tableId}")
+    public ResponseEntity<?> getTheLastUnpaidInvoiceOfTable(@PathVariable long tableId){
+        System.out.println("Table Id: " + tableId);
+        List<Invoice> invoiceList = this.invoiceService.findAllUnpaidInvoice();
+        for (Invoice invoice: invoiceList){
+            System.out.println("Table Id in Invoice: " + invoice.getTable().getId());
+            if(invoice.getTable().getId().equals(tableId)){
+                return new ResponseEntity<Object>(invoice, HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<Object>("Can't find any unpaid invoice for table id: " + tableId, HttpStatus.NO_CONTENT);
+    }
 }

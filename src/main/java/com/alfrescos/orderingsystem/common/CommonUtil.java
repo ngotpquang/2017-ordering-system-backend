@@ -22,8 +22,10 @@ public class CommonUtil {
 
 
 //    public static void main(String[] args) {
-//        System.out.println(Math.round(101.4f));
-//        System.out.println(Math.round(101.5f));
-//        System.out.println(Math.round(101.6f));
+//        Date date = new Date();
+//        Calendar cal = Calendar.getInstance();
+//        cal.setTime(date);
+//        System.out.println(cal.get(Calendar.MONTH) + 1 + " - " + cal.get(Calendar.YEAR));
+//        System.out.println(date.getMonth() + ?" - " + date.getYear());
 //    }
 }
