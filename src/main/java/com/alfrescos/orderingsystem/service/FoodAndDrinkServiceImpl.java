@@ -66,7 +66,7 @@ public class FoodAndDrinkServiceImpl implements FoodAndDrinkService {
 
     @Override
     public List<FoodAndDrink> findByTag(String tag) {
-        String[] tagList = tag.trim().split(",");
+        String[] tagList = tag.trim().split(" ");
         Map<FoodAndDrink, Integer> data = new HashMap<>();
         List<FoodAndDrink> allFAD = (List<FoodAndDrink>) this.foodAndDrinkRepository.findAll();
         for (FoodAndDrink fad : allFAD) {
