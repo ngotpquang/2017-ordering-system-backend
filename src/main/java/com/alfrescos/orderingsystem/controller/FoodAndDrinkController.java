@@ -57,6 +57,16 @@ public class FoodAndDrinkController {
         }
     }
 
+    @GetMapping(value = "/search/tag")
+    public ResponseEntity<?> getFoodAndDrinkByTag(@RequestParam String tag) {
+        List<FoodAndDrink> foodAndDrinkList = foodAndDrinkservice.findByTag(tag);
+        if (foodAndDrinkList.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(foodAndDrinkList, HttpStatus.OK);
+        }
+    }
+
     @GetMapping(value = "/all")
     public ResponseEntity<?> getAllFoodAndDrink() {
         List<FoodAndDrink> foodAndDrinkList = foodAndDrinkservice.findAll();

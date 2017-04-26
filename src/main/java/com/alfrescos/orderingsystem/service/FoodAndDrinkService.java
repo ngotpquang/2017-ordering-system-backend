@@ -25,4 +25,6 @@ public interface FoodAndDrinkService {
     List<FoodAndDrink> findAll();
 
     boolean switchVisible(Long id);
+
+    List<FoodAndDrink> findByTag(String tag);
 }

@@ -63,7 +63,7 @@ public class InvoiceController {
                 customer = userService.findByAccountCode(customerAccountCode);
             } else {
                 //TODO: Fix id of default customer
-                customer = userService.findById(new Long(1));
+                customer = userService.findById(1L);
             }
             Table table = tableService.findById(tableId);
             Invoice invoice = invoiceService.create(new Invoice(invoiceId, customer, customer, table));
@@ -131,7 +131,7 @@ public class InvoiceController {
 
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER', 'STAFF')")
+    @PreAuthorize("hasAnyRole('MANAGER', 'STAFF', 'ADMIN')")
     @PutMapping(value = "/confirm-paid")
     public ResponseEntity<?> confirmPaidInvoice(@RequestBody Map<String, String> data) {
         Long staffId = UserUtil.getIdByAuthorization();
