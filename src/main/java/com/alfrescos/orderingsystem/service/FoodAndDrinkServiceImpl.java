@@ -83,8 +83,9 @@ public class FoodAndDrinkServiceImpl implements FoodAndDrinkService {
         List<Map.Entry<FoodAndDrink, Integer>> collect = data.entrySet().stream().sorted(Map.Entry.<FoodAndDrink, Integer>comparingByValue().reversed()).collect(Collectors.toList());
         List<FoodAndDrink> result = new ArrayList<>();
         for (Map.Entry<FoodAndDrink, Integer> entry : collect) {
-            System.out.println(entry.getValue() + " - " + entry.getKey());
-            result.add(entry.getKey());
+            if(entry.getValue() > 1){
+                result.add(entry.getKey());
+            }
         }
         return result;
     }
