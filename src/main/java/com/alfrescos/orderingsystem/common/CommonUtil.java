@@ -21,6 +21,12 @@ public class CommonUtil {
         return simpleDateFormat.format(date);
     }
 
+    public static String getLocalTime(){
+        Calendar cal = Calendar.getInstance(Locale.getDefault());
+        cal.getTime();
+        return new SimpleDateFormat("HH:mm:ss").format(cal.getTime());
+    }
+
     public static List<FoodAndDrink> changePosition(List<FoodAndDrink> foodAndDrinkList, FoodAndDrink foodAndDrink1, FoodAndDrink foodAndDrink2) {
         int index1 = 0;
         int index2 = 0;
@@ -36,39 +42,8 @@ public class CommonUtil {
         return foodAndDrinkList;
     }
 
-//    public static void main(String[] args) {
-//        FoodAndDrink foodAndDrink1 = new FoodAndDrink();
-//        foodAndDrink1.setName("1");
-//        FoodAndDrink foodAndDrink2 = new FoodAndDrink();
-//        foodAndDrink2.setName("2");
-//        FoodAndDrink foodAndDrink3 = new FoodAndDrink();
-//        foodAndDrink3.setName("3");
-//        FoodAndDrink foodAndDrink4 = new FoodAndDrink();
-//        foodAndDrink4.setName("4");
-//        List<FoodAndDrink> list = new ArrayList<>();
-//        list.add(foodAndDrink1);
-//        list.add(foodAndDrink2);
-//        list.add(foodAndDrink3);
-//        list.add(foodAndDrink4);
-//        for (FoodAndDrink fad: list){
-//            System.out.println(fad.getName());
-//        }
-//        list = changePosition(list, foodAndDrink2, foodAndDrink4);
-//        for (FoodAndDrink fad: list){
-//            System.out.println(fad.getName());
-//        }
-//        list = changePosition(list, foodAndDrink2, foodAndDrink3);
-//        for (FoodAndDrink fad: list){
-//            System.out.println(fad.getName());
-//        }
-//    }
+    public static void main(String[] args) {
+        getLocalTime();
+    }
 
-
-//    public static void main(String[] args) {
-//        Date date = new Date();
-//        Calendar cal = Calendar.getInstance();
-//        cal.setTime(date);
-//        System.out.println(cal.get(Calendar.MONTH) + 1 + " - " + cal.get(Calendar.YEAR));
-//        System.out.println(date.getMonth() + ?" - " + date.getYear());
-//    }
 }

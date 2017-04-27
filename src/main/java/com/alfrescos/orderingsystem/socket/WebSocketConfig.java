@@ -26,7 +26,5 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // Endpoint for Admin broadcast channel
         registry.addEndpoint("/admin").setAllowedOrigins("*");
-        // Endpoint for Staff broadcast channel
-        registry.addEndpoint("/staff").setAllowedOrigins("*");
     }
 }

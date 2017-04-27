@@ -73,7 +73,7 @@ public class FoodAndDrinkServiceImpl implements FoodAndDrinkService {
             data.put(fad, 1);
         }
         for (String s : tagList) {
-            List<FoodAndDrink> foodAndDrinkList = this.foodAndDrinkRepository.findByTags(s.trim());
+            List<FoodAndDrink> foodAndDrinkList = this.foodAndDrinkRepository.findByTags(s.trim().toLowerCase());
             for (FoodAndDrink fad : foodAndDrinkList) {
                 data.put(fad, data.get(fad) + 1);
             }
