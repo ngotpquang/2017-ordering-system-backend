@@ -70,7 +70,9 @@ public class FoodAndDrinkServiceImpl implements FoodAndDrinkService {
         Map<FoodAndDrink, Integer> data = new HashMap<>();
         List<FoodAndDrink> allFAD = (List<FoodAndDrink>) this.foodAndDrinkRepository.findAll();
         for (FoodAndDrink fad : allFAD) {
-            data.put(fad, 1);
+            if(fad.isVisible()){
+                data.put(fad, 1);
+            }
         }
         for (String s : tagList) {
             List<FoodAndDrink> foodAndDrinkList = this.foodAndDrinkRepository.findByTags(s.trim().toLowerCase());
