@@ -22,9 +22,12 @@ public class CommonUtil {
     }
 
     public static String getLocalTime(){
-        Calendar cal = Calendar.getInstance(Locale.getDefault());
-        cal.getTime();
-        return new SimpleDateFormat("HH:mm:ss").format(cal.getTime());
+        Date date = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int hour = cal.get(Calendar.HOUR_OF_DAY);
+        hour = (hour < 17) ? hour + 7 : hour + 7 - 24;
+        return hour + ":" + cal.get(Calendar.MINUTE) + ":" + cal.get(Calendar.SECOND);
     }
 
     public static List<FoodAndDrink> changePosition(List<FoodAndDrink> foodAndDrinkList, FoodAndDrink foodAndDrink1, FoodAndDrink foodAndDrink2) {
@@ -43,7 +46,7 @@ public class CommonUtil {
     }
 
     public static void main(String[] args) {
-        getLocalTime();
+        System.out.println(getLocalTime());;
     }
 
 }
