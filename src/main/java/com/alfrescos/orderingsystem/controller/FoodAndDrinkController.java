@@ -81,8 +81,6 @@ public class FoodAndDrinkController {
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody FoodAndDrink foodAndDrink) {
         FoodAndDrink createdFoodAndDrink = this.foodAndDrinkservice.create(foodAndDrink);
-        System.out.println(createdFoodAndDrink.getFoodAndDrinkType().getName());
-        System.out.println(createdFoodAndDrink.getFoodAndDrinkType().isMainDish());
         if (createdFoodAndDrink != null) {
             if (createdFoodAndDrink.getFoodAndDrinkType().isMainDish()) {
                 List<FoodAndDrinkType> drinkOrDesertTypeList = this.foodAndDrinkTypeService.findAllDrinkOrDesert();
@@ -107,6 +105,8 @@ public class FoodAndDrinkController {
                     }
                 }
             }
+            foodAndDrink.setTags(foodAndDrink.getTags().trim().toLowerCase());
+            this.foodAndDrinkservice.update(foodAndDrink);
             return new ResponseEntity<Object>("Created FAD name: " + createdFoodAndDrink.getName() + " successfully.", HttpStatus.CREATED);
         } else {
             return new ResponseEntity<Object>("Can't create due to error.", HttpStatus.NOT_ACCEPTABLE);
