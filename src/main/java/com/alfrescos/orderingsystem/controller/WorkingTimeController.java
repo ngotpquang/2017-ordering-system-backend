@@ -44,6 +44,9 @@ public class WorkingTimeController {
         try {
             Long userId = Long.parseLong(data.get("userId"));
             System.out.println(userId);
+            if(userId.equals(0L)){
+                userId = UserUtil.getIdByAuthorization();
+            }
             Long shiftId = Long.parseLong(data.get("shiftId"));
             Long date = Long.parseLong(data.get("date"));
             Date workingDate = new Date(date);
