@@ -6,7 +6,6 @@ package com.alfrescos.orderingsystem.service;
 
 import com.alfrescos.orderingsystem.entity.WorkingTime;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,4 +29,6 @@ public interface WorkingTimeService {
     List<WorkingTime> findAllByShiftIdAndDate(Long shiftId, String date);
 
     List<WorkingTime> findAllByUserIdAndDate(Long userId, String date);
+
+    WorkingTime findLastWorkingTimeByUserId(Long userId);
 }

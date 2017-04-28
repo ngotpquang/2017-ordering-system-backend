@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UTFDataFormatException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -37,16 +38,13 @@ public class WorkingTimeController {
     @Autowired
     private ShiftService shiftService;
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAnyRole('STAFF', 'MANAGER', 'ADMIN')")
     @PostMapping
     public ResponseEntity<?> create(@RequestBody Map<String, String> data) {
 //        User user = this.userService.findById(UserUtil.getIdByAuthorization())
         try {
             Long userId = Long.parseLong(data.get("userId"));
             System.out.println(userId);
-            if(userId.equals(0L)){
-                userId = UserUtil.getIdByAuthorization();
-            }
             Long shiftId = Long.parseLong(data.get("shiftId"));
             Long date = Long.parseLong(data.get("date"));
             Date workingDate = new Date(date);
@@ -105,7 +103,7 @@ public class WorkingTimeController {
         }
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAnyRole('STAFF', 'MANAGER', 'ADMIN')")
     @GetMapping(value = "/all/user/{userId}")
     public ResponseEntity<?> getAllWorkingTimesByUserId(@PathVariable Long userId){
         User user;
@@ -122,7 +120,7 @@ public class WorkingTimeController {
         }
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    @PreAuthorize("hasAnyRole('STAFF', 'MANAGER', 'ADMIN')")
     @GetMapping(value = "/all/date/{date}")
     public ResponseEntity<?> getAllWorkingTimesByDate(@PathVariable String date){
         try {
@@ -135,7 +133,7 @@ public class WorkingTimeController {
         }
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    @PreAuthorize("hasAnyRole('STAFF', 'MANAGER', 'ADMIN')")
     @GetMapping(value = "/all/date/{date}/shift/{shiftId}")
     public ResponseEntity<?> getAllWorkingTimesByDateAndShiftId(@PathVariable String date, @PathVariable Long shiftId){
         try {
@@ -147,7 +145,7 @@ public class WorkingTimeController {
         }
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    @PreAuthorize("hasAnyRole('STAFF', 'MANAGER', 'ADMIN')")
     @GetMapping(value = "/all/shift/{shiftId}")
     public ResponseEntity<?> getAllWorkingTimesByShiftId(@PathVariable Long shiftId){
         try {
@@ -159,7 +157,7 @@ public class WorkingTimeController {
         }
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAnyRole('STAFF', 'MANAGER', 'ADMIN')")
     @GetMapping(value = "/all/user/{userId}/date/{date}")
     public ResponseEntity<?> getAllWorkingTimesByUserIdAndDate(@PathVariable Long userId, @PathVariable String date){
         System.out.println(userId + " - " + date);
@@ -175,6 +173,18 @@ public class WorkingTimeController {
             return new ResponseEntity<Object>(workingTimeList, HttpStatus.OK);
         } else {
             return new ResponseEntity<Object>("Can't find due to some error.", HttpStatus.NO_CONTENT);
+        }
+    }
+
+    @PreAuthorize("hasAnyRole('STAFF', 'MANAGER', 'ADMIN')")
+    @GetMapping(value = "/last")
+    public ResponseEntity<?> getTheLastWorkingTime(){
+        Long userId = UserUtil.getIdByAuthorization();
+        WorkingTime workingTime = this.workingTimeService.findLastWorkingTimeByUserId(userId);
+        if (workingTime != null){
+            return new ResponseEntity<Object>(workingTime, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<Object>("User hasn't worked.", HttpStatus.NO_CONTENT);
         }
     }
 }

@@ -64,4 +64,9 @@ public class WorkingTimeServiceImpl implements WorkingTimeService{
     public List<WorkingTime> findAllByUserIdAndDate(Long userId, String date) {
         return this.workingTimeRepository.findAllByUserIdAndDate(userId, date);
     }
+
+    @Override
+    public WorkingTime findLastWorkingTimeByUserId(Long userId) {
+        return this.workingTimeRepository.findLastWorkingTimeByUserId(userId);
+    }
 }
