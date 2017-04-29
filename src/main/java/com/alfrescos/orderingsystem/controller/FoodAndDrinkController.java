@@ -105,8 +105,8 @@ public class FoodAndDrinkController {
                     }
                 }
             }
-            foodAndDrink.setTags(foodAndDrink.getTags().trim().toLowerCase());
-            this.foodAndDrinkservice.update(foodAndDrink);
+            createdFoodAndDrink.setTags(foodAndDrink.getTags().trim().toLowerCase());
+            this.foodAndDrinkservice.update(createdFoodAndDrink);
             return new ResponseEntity<Object>("Created FAD name: " + createdFoodAndDrink.getName() + " successfully.", HttpStatus.CREATED);
         } else {
             return new ResponseEntity<Object>("Can't create due to error.", HttpStatus.NOT_ACCEPTABLE);

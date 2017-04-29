@@ -71,10 +71,10 @@ public class InvoiceController {
             if (invoice != null && InvoiceUtil.addInvoiceDetail(data, invoice, timeOrdered, foodAndDrinkService, invoiceDetailService)) {
                 return new ResponseEntity<>(invoice.getId(), HttpStatus.CREATED);
             } else {
-                return new ResponseEntity<>("Failed when created something. Please check again!", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("Failed when created something. Please check again!", HttpStatus.NOT_ACCEPTABLE);
             }
         } catch (NumberFormatException e) {
-            return new ResponseEntity<>("Failed when created something. Please check again!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Failed when created something. Please check again!", HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
