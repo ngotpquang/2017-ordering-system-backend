@@ -70,7 +70,13 @@ public class InvoiceDetailController {
         try {
             Date timeOrdered = new Date();
             if (InvoiceUtil.addInvoiceDetail(data, invoice, timeOrdered, foodAndDrinkService, invoiceDetailService)){
-                return new ResponseEntity<Object>("Added successfully.", HttpStatus.CREATED);
+                invoice.setMade(false);
+                invoice = this.invoiceService.update(invoice);
+                if (invoice != null) {
+                    return new ResponseEntity<Object>("Added successfully.", HttpStatus.CREATED);
+                } else {
+                    return new ResponseEntity<Object>("Couldn't update is made status.", HttpStatus.NOT_MODIFIED);
+                }
             }
         } catch (Exception e){
             return new ResponseEntity<Object>("Couldn't add new invoice detail due to errors.", HttpStatus.NO_CONTENT);
