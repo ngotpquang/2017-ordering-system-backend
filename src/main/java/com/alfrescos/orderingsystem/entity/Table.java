@@ -18,6 +18,7 @@ import java.util.Set;
 public class Table {
     private Long id;
     private int size;
+    private int tableNumber;
     private Set<Invoice> invoices;
     private boolean isVisible = true;
     private Date createdDate;
@@ -25,15 +26,10 @@ public class Table {
     public Table() {
     }
 
-    public Table(int size) {
+    public Table(int size, int tableNumber) {
         this.size = size;
+        this.tableNumber = tableNumber;
         this.createdDate = new Date();
-    }
-
-    public Table(Long id, int size, Set<Invoice> invoices) {
-        this.id = id;
-        this.size = size;
-        this.invoices = invoices;
     }
 
     @Id
@@ -81,6 +77,15 @@ public class Table {
 
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
+    }
+
+    @Column(name = "table_number", nullable = false)
+    public int getTableNumber() {
+        return tableNumber;
+    }
+
+    public void setTableNumber(int tableNumber) {
+        this.tableNumber = tableNumber;
     }
 }
 

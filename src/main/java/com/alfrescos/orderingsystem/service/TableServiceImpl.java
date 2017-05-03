@@ -43,4 +43,16 @@ public class TableServiceImpl implements TableService{
         table.setVisible(!table.isVisible());
         return this.tableRepository.save(table).isVisible();
     }
+
+    @Override
+    public Table create(Table table) {
+        return this.tableRepository.save(table);
+    }
+
+    @Override
+    public Table findLastTable() {
+        return this.tableRepository.findLastTable();
+    }
+
+
 }

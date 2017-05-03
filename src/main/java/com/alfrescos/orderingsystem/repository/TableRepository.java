@@ -5,6 +5,7 @@
 package com.alfrescos.orderingsystem.repository;
 
 import com.alfrescos.orderingsystem.entity.Table;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,4 +14,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface TableRepository extends CrudRepository<Table, Long>{
+    @Query(value = "SELECT * FROM \"table\" ORDER BY table_number DESC LIMIT 1", nativeQuery = true)
+    Table findLastTable();
 }

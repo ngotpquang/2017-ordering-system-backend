@@ -17,4 +17,8 @@ public interface TableService {
     List<Table> findAll();
 
     boolean switchVisible(Long id);
+
+    Table create(Table table);
+
+    Table findLastTable();
 }
