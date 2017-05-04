@@ -97,7 +97,7 @@ public class SocialAccountController {
             }
             user.setGender((byte) (userSocial.getGender().equals("male") ? 0 : 1));
             user.setName(userSocial.getName());
-            user.setAvatar("http://graph.facebook.com/" + userSocial.getId() + "/picture?type=square");
+            user.setAvatar("http://graph.facebook.com/" + userSocial.getId() + "/picture?width=961");
             BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
             String password = bCryptPasswordEncoder.encode(userSocial.getId());
             user.setPassword(password);
@@ -139,6 +139,11 @@ public class SocialAccountController {
                 String password = bCryptPasswordEncoder.encode(payload.getEmail());
                 User user = new User(payload.getEmail(), (String) payload.get("name"), password);
                 user.setAccountCode(user.getEmail());
+                String pictureUrl = (String) payload.get("picture");
+                if (pictureUrl == null){
+                    pictureUrl = "https://scontent.fdad3-2.fna.fbcdn.net/v/t1.0-9/14192786_1136070546471857_2394520358912381986_n.jpg?oh=43b61e721fa1960b009119b0551a4407&oe=5935E2AE";
+                }
+                user.setAvatar(pictureUrl);
                 System.out.println(user.getAccountCode() + " - " + user.getEmail());
                 User newUser = this.userService.create(user);
                 System.out.println(newUser.getAccountCode() + " - " + newUser.getEmail() + " - " + newUser.getPassword());
