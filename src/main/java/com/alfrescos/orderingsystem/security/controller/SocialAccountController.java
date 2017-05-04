@@ -141,7 +141,7 @@ public class SocialAccountController {
                 user.setAccountCode(user.getEmail());
                 String pictureUrl = (String) payload.get("picture");
                 if (pictureUrl == null){
-                    pictureUrl = "https://scontent.fdad3-2.fna.fbcdn.net/v/t1.0-9/14192786_1136070546471857_2394520358912381986_n.jpg?oh=43b61e721fa1960b009119b0551a4407&oe=5935E2AE";
+                    pictureUrl = "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQ8SO68-LJq2RJdIs7EQAPP1OFbO7Fo50YO_2TLx11iNK8pdYLO";
                 }
                 user.setAvatar(pictureUrl);
                 System.out.println(user.getAccountCode() + " - " + user.getEmail());
