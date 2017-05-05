@@ -21,6 +21,7 @@ public class Table {
     private int tableNumber;
     private Set<Invoice> invoices;
     private boolean isVisible = true;
+    private int tableStatus;
     private Date createdDate;
 
     public Table() {
@@ -29,6 +30,7 @@ public class Table {
     public Table(int size, int tableNumber) {
         this.size = size;
         this.tableNumber = tableNumber;
+        this.tableStatus = 0;
         this.createdDate = new Date();
     }
 
@@ -86,6 +88,15 @@ public class Table {
 
     public void setTableNumber(int tableNumber) {
         this.tableNumber = tableNumber;
+    }
+
+    @Column(name = "table_status", nullable = false)
+    public int getTableStatus() {
+        return tableStatus;
+    }
+
+    public void setTableStatus(int tableStatus) {
+        this.tableStatus = tableStatus;
     }
 }
 
