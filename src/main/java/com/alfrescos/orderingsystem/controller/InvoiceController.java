@@ -5,6 +5,7 @@
 package com.alfrescos.orderingsystem.controller;
 
 import com.alfrescos.orderingsystem.common.InvoiceUtil;
+import com.alfrescos.orderingsystem.common.TableStatus;
 import com.alfrescos.orderingsystem.common.UserUtil;
 import com.alfrescos.orderingsystem.entity.*;
 import com.alfrescos.orderingsystem.service.*;
@@ -51,11 +52,12 @@ public class InvoiceController {
         String invoiceId = "INV" + new Date().getTime();
         try {
             Long tableId = Long.parseLong(data.get("tableId").trim());
-            List<Invoice> invoiceList = this.invoiceService.findAllUnpaidInvoice();
-            for (Invoice invoice: invoiceList){
-                if (invoice.getTable().getId().equals(tableId)){
-                    return new ResponseEntity<Object>("Table is in ordering process. You can't create invoice with this table", HttpStatus.NOT_ACCEPTABLE);
-                }
+            Table table = this.tableService.findById(tableId);
+            if (table.getTableStatus() != TableStatus.FREE) {
+                return new ResponseEntity<Object>("Table is in ordering process. You can't create invoice with this table", HttpStatus.NOT_ACCEPTABLE);
+            } else {
+                table.setTableStatus(TableStatus.ORDERING);
+                this.tableService.update(table);
             }
             String customerAccountCode = UserUtil.getAccountCodeByAuthorization();
             User customer;
@@ -65,7 +67,6 @@ public class InvoiceController {
                 //TODO: Fix id of default customer
                 customer = userService.findById(1L);
             }
-            Table table = tableService.findById(tableId);
             Invoice invoice = invoiceService.create(new Invoice(invoiceId, customer, customer, table));
             Date timeOrdered = new Date();
             if (invoice != null && InvoiceUtil.addInvoiceDetail(data, invoice, timeOrdered, foodAndDrinkService, invoiceDetailService)) {
@@ -137,8 +138,6 @@ public class InvoiceController {
         Long staffId = UserUtil.getIdByAuthorization();
         String invoiceId = data.get("invoiceId");
         String paymentType = data.get("paymentType").toUpperCase();
-        System.out.println(staffId + " - " + invoiceId + " - " + paymentType);
-//        return null;
         if (this.invoiceService.findById(invoiceId).isPaid()) {
             return new ResponseEntity<Object>("Invoice has been paid already!", HttpStatus.NOT_ACCEPTABLE);
         }
@@ -166,7 +165,10 @@ public class InvoiceController {
         Invoice invoice = this.invoiceService.findById(invoiceId);
         invoice.setTotalAmount(this.invoiceDetailService.calculateTotalAmountForInvoice(invoiceId));
         invoice = this.invoiceService.update(invoice);
-        if (customer != null && invoice != null) {
+        Table table = invoice.getTable();
+        table.setTableStatus(TableStatus.CLEANING);
+        table = this.tableService.update(table);
+        if (customer != null && invoice != null && table != null) {
             return new ResponseEntity<Object>(this.invoiceService.setPaid(staffId, invoiceId, paymentType), HttpStatus.CREATED);
         } else {
             return new ResponseEntity<Object>("Error when update membership point for customer!", HttpStatus.NOT_ACCEPTABLE);
@@ -200,9 +202,9 @@ public class InvoiceController {
         List<Invoice> invoices = this.invoiceService.findAllUnpaidInvoice();
         List<Table> tableList = this.tableService.findAll();
         List<Invoice> invoiceList = new ArrayList<>();
-        for (Table table: tableList){
-            for (Invoice invoice: invoices){
-                if (invoice.getTable().getId().equals(table.getId())){
+        for (Table table : tableList) {
+            for (Invoice invoice : invoices) {
+                if (invoice.getTable().getId().equals(table.getId())) {
                     invoiceList.add((invoice));
                     break;
                 }
@@ -242,12 +244,16 @@ public class InvoiceController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }
+
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @PutMapping(value = "/is-made/{invoiceId}")
-    public ResponseEntity<?> updateIsMadeStatus(@PathVariable String invoiceId){
+    public ResponseEntity<?> updateIsMadeStatus(@PathVariable String invoiceId) {
         Invoice invoice = this.invoiceService.findById(invoiceId);
-        if (invoice != null){
-            if (invoice.isMade()){
+        if (invoice != null) {
+            Table table = invoice.getTable();
+            table.setTableStatus(TableStatus.FOOD_IS_MADE);
+            this.tableService.update(table);
+            if (invoice.isMade()) {
                 return new ResponseEntity<Object>("All drinks are already made", HttpStatus.NOT_MODIFIED);
             } else {
                 invoice.setMade(true);
@@ -261,12 +267,12 @@ public class InvoiceController {
 
     //    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @GetMapping(value = "/table/{tableId}")
-    public ResponseEntity<?> getTheLastUnpaidInvoiceOfTable(@PathVariable long tableId){
+    public ResponseEntity<?> getTheLastUnpaidInvoiceOfTable(@PathVariable long tableId) {
         System.out.println("Table Id: " + tableId);
         List<Invoice> invoiceList = this.invoiceService.findAllUnpaidInvoice();
-        for (Invoice invoice: invoiceList){
+        for (Invoice invoice : invoiceList) {
             System.out.println("Table Id in Invoice: " + invoice.getTable().getId());
-            if(invoice.getTable().getId().equals(tableId)){
+            if (invoice.getTable().getId().equals(tableId)) {
                 return new ResponseEntity<Object>(invoice, HttpStatus.OK);
             }
         }

@@ -30,7 +30,8 @@ public class TableServiceImpl implements TableService{
     }
 
     @Override
-    public List<Table> findAll() {
+    public List<Table>
+    findAll() {
         List<Table> tableList = (List<Table>) this.tableRepository.findAll();
         tableList =  tableList.stream().filter(table -> table.isVisible()).collect(Collectors.toList());
         tableList.sort(Comparator.comparing(table -> table.getId()));
@@ -52,6 +53,11 @@ public class TableServiceImpl implements TableService{
     @Override
     public Table findLastTable() {
         return this.tableRepository.findLastTable();
+    }
+
+    @Override
+    public Table update(Table table) {
+        return this.tableRepository.save(table);
     }
 
 

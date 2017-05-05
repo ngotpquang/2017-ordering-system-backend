@@ -21,4 +21,6 @@ public interface TableService {
     Table create(Table table);
 
     Table findLastTable();
+
+    Table update(Table table);
 }
