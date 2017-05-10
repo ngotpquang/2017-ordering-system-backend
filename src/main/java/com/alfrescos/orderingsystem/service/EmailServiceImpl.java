@@ -88,7 +88,7 @@ public class EmailServiceImpl implements EmailService {
             Session session = getSession();
 
             MimeMessage mimeMessage = new MimeMessage(session);
-            mimeMessage.setFrom(new InternetAddress("noreply.orderingsystem@alfrescos.com", "Alfresco's Restaurant Ordering System"));
+            mimeMessage.setFrom(new InternetAddress("ngotruongphamquang@yahoo.com", "Alfresco's Restaurant Ordering System"));
             mimeMessage.setRecipients(Message.RecipientType.TO,
                     InternetAddress.parse(recipientEmail));
             mimeMessage.setSubject("Reset your account's password in Alfresco's Restaurant Ordering System");
@@ -105,14 +105,21 @@ public class EmailServiceImpl implements EmailService {
 
     private Session getSession() {
 
-        final String username = "quangghost262@gmail.com";
-        final String password = "ngoquang20575485";
+//        final String username = "quangghost262@gmail.com";
+//        final String password = "ngoquang20575485";
+        final String username = "ngotruongphamquang@yahoo.com";
+        final String password = "NGO46478264";
 
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.socketFactory.port","465");
+        props.put("mail.smtp.socketFactory.class","javax.net.ssl.SSLSocketFactory");
+        props.put("mail.smtp.host","smtp.mail.yahoo.com");
+        props.put("mail.smtp.port","465");
+//        props.put("mail.smtp.auth", "true");
+//        props.put("mail.smtp.starttls.enable", "true");
+//        props.put("mail.smtp.host", "smtp.gmail.com");
+//        props.put("mail.smtp.port", "587");
 
         Session session = Session.getInstance(props,
                 new javax.mail.Authenticator() {

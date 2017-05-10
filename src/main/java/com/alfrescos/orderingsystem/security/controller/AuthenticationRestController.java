@@ -75,14 +75,14 @@ public class AuthenticationRestController {
 
         String password = RandomStringUtils.randomAlphanumeric(10);
         final String token = this.jwtTokenUtil.generateToken(email, password, urlPath);
-
         try {
             emailService.sendForgotPasswordMail(email, user.getName(), password, serverPath + "api/auth/reset-password?token=" + token);
+            return new ResponseEntity<Object>(new JwtAuthenticationResponse(token), HttpStatus.OK);
         } catch (Exception e) {
             // catch error
             System.out.println("Error while sending email: " + e.getMessage());
+            return new ResponseEntity<Object>("Can't send email due to error.", HttpStatus.NOT_ACCEPTABLE);
         }
-        return new ResponseEntity<Object>(new JwtAuthenticationResponse(token), HttpStatus.OK);
     }
 
     @GetMapping(value = "/reset-password")
