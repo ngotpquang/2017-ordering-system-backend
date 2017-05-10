@@ -34,16 +34,20 @@ public class UserUtil {
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().contains("STAFF");
     }
 
-    public static boolean checkStaffAccount(User user){
+    public static int checkAccountType(User user){
         List<Permission> permissionList = user.getPermissionList();
         for(Permission p : permissionList){
-            if (p.getRole().getName().equals("ROLE_STAFF")){
-                return true;
-            } else if (p.getRole().getName().equals("ROLE_ADMIN") || p.getRole().getName().equals("ROLE_MANAGER")){
-                return false;
+            if (p.getRole().getName().equals("ROLE_ADMIN") || p.getRole().getName().equals("ROLE_MANAGER")){
+                return 2;
+            } else if (p.getRole().getName().equals("ROLE_STAFF")){
+                return 3;
+            } else if (p.getRole().getName().equals("ROLE_CUSTOMER")){
+                return 4;
             }
         }
-        return false;
+        return 0;
     }
+
+
 
 }

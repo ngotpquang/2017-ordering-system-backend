@@ -69,11 +69,19 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+//    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    @GetMapping(value = "/all/customer")
+    public ResponseEntity<?> getAllCustomer() {
+        List<User> users = userService.getAll();
+        List<User> result = users.stream().filter(user -> UserUtil.checkAccountType(user) == 4).collect(Collectors.toList());
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+//    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @GetMapping(value = "/all/staff")
     public ResponseEntity<?> getAllStaff() {
         List<User> users = userService.getAll();
-        List<User> result = users.stream().filter(user -> UserUtil.checkStaffAccount(user)).collect(Collectors.toList());
+        List<User> result = users.stream().filter(user -> UserUtil.checkAccountType(user) == 3).collect(Collectors.toList());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -84,7 +92,6 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    //TODO: Send welcome email
     @PostMapping()
     public ResponseEntity<?> create(@RequestBody Map<String, String> data) {
         String email = data.get("email");
