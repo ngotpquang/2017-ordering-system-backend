@@ -4,6 +4,7 @@
 
 package com.alfrescos.orderingsystem.service;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -13,6 +14,6 @@ public interface EmailService {
 
     void sendWelcomeMailNewMember(String receptorEmail, String memberName);
 
-    void sendForgotPasswordMail(String receptorEmail, String memberName, String newPassword, String link);
+    void sendForgotPasswordMail(String receptorEmail, String memberName, String newPassword, String link) throws IOException;
 
 }

@@ -17,9 +17,11 @@ import org.springframework.stereotype.Service;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
+import com.sendgrid.*;
 
 /**
  * Created by Liger on 28-Feb-17.
@@ -73,7 +75,7 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Async
-    public void sendForgotPasswordMail(String recipientEmail, String memberName, String newPassword, String link) throws MailException {
+    public void sendForgotPasswordMail(String recipientEmail, String memberName, String newPassword, String link) throws MailException, IOException {
         veInit();
         VelocityContext context = new VelocityContext();
         context.put("name", memberName);
@@ -83,43 +85,62 @@ public class EmailServiceImpl implements EmailService {
         t.merge(context, writer);
 
         System.out.println("Sending email...");
-        try {
+//        try {
+            SendGrid sendGrid = new SendGrid("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");
+            Email from = new Email("no-reply.ordering@alfrescos.com");
+            from.setName("Alfresco's Restaurant Ordering System");
+            String subject = "Reset your account's password in Alfresco's Restaurant Ordering System";
+            Email to = new Email(recipientEmail);
+            Content content = new Content("text/html", writer.toString());
+            Mail mail = new Mail(from, subject, to, content);
+            Request request = new Request();
+            try {
+                request.method = Method.POST;
+                request.endpoint = "mail/send";
+                request.body = mail.build();
+                Response response = sendGrid.api(request);
+                System.out.println(response.statusCode);
+                System.out.println(response.body);
+                System.out.println(response.headers);
+            } catch (IOException ex) {
+                throw new IOException(ex);
+            }
+//            Session session = getSession();
+//            MimeMessage mimeMessage = new MimeMessage(session);
+//            mimeMessage.setFrom(new InternetAddress("noreply.orderingsystem@alfrescos.com", "Alfresco's Restaurant Ordering System"));
+//            mimeMessage.setRecipients(Message.RecipientType.TO,
+//                    InternetAddress.parse(recipientEmail));
+//            mimeMessage.setSubject("Reset your account's password in Alfresco's Restaurant Ordering System");
+//            mimeMessage.setContent(writer.toString(), "text/html; charset=utf-8");
+//            Transport.send(mimeMessage);
+//            System.out.println("Email Sent!");
 
-            Session session = getSession();
-
-            MimeMessage mimeMessage = new MimeMessage(session);
-            mimeMessage.setFrom(new InternetAddress("ngotruongphamquang@yahoo.com", "Alfresco's Restaurant Ordering System"));
-            mimeMessage.setRecipients(Message.RecipientType.TO,
-                    InternetAddress.parse(recipientEmail));
-            mimeMessage.setSubject("Reset your account's password in Alfresco's Restaurant Ordering System");
-            mimeMessage.setContent(writer.toString(), "text/html; charset=utf-8");
-            Transport.send(mimeMessage);
-            System.out.println("Email Sent!");
-
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+//        } catch (MessagingException e) {
+//            throw new RuntimeException(e);
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
     }
 
     private Session getSession() {
 
-//        final String username = "quangghost262@gmail.com";
-//        final String password = "ngoquang20575485";
-        final String username = "ngotruongphamquang@yahoo.com";
-        final String password = "NGO46478264";
+//        final String username = "alfrescos.res.ordering@gmail.com";
+//        final String password = "NGOquang20575485";
+        final String username = "quangghost262@gmail.com";
+        final String password = "ngoquang20575485";
+//        final String username = "ngotruongphamquang@yahoo.com";
+//        final String password = "NGO46478264";
 
         Properties props = new Properties();
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.socketFactory.port","465");
-        props.put("mail.smtp.socketFactory.class","javax.net.ssl.SSLSocketFactory");
-        props.put("mail.smtp.host","smtp.mail.yahoo.com");
-        props.put("mail.smtp.port","465");
 //        props.put("mail.smtp.auth", "true");
-//        props.put("mail.smtp.starttls.enable", "true");
-//        props.put("mail.smtp.host", "smtp.gmail.com");
-//        props.put("mail.smtp.port", "587");
+//        props.put("mail.smtp.socketFactory.port","465");
+//        props.put("mail.smtp.socketFactory.class","javax.net.ssl.SSLSocketFactory");
+//        props.put("mail.smtp.host","smtp.mail.yahoo.com");
+//        props.put("mail.smtp.port","465");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
 
         Session session = Session.getInstance(props,
                 new javax.mail.Authenticator() {
