@@ -48,7 +48,7 @@ public class FoodAndDrinkController {
     }
 
     @GetMapping(value = "/search")
-    public ResponseEntity<?> getFoodAndDrinkByName(@RequestParam String name) {
+    public ResponseEntity<?> getFoodAndDrinkByNameOrDetail(@RequestParam String name) {
         List<FoodAndDrink> foodAndDrinkList = foodAndDrinkservice.findByName(name);
         if (foodAndDrinkList.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

@@ -39,7 +39,7 @@ public class User {
     private Set<WorkingTime> workingTimes;
     private List<Permission> permissionList = new ArrayList<>();
     private String accountCode;
-    private byte[] avatarContent;
+//    private byte[] avatarContent;
     private Set<Invoice> customerInvoices;
     private Set<Invoice> staffInvoices;
     private Date createdDate;
@@ -170,18 +170,18 @@ public class User {
         this.permissionList = permissionList;
     }
 
-    @Lob
+//    @Lob
 //    For PostgreSQL
-    @Column(name = "avatar_content", columnDefinition = "oid")
+//    @Column(name = "avatar_content", columnDefinition = "oid")
 //    For SQL Server
 //    @Column(name = "avatar_content", columnDefinition = "varbinary(max)")
-    public byte[] getAvatarContent() {
-        return avatarContent;
-    }
-
-    public void setAvatarContent(byte[] avatarContent) {
-        this.avatarContent = avatarContent;
-    }
+//    public byte[] getAvatarContent() {
+//        return avatarContent;
+//    }
+//
+//    public void setAvatarContent(byte[] avatarContent) {
+//        this.avatarContent = avatarContent;
+//    }
 
 //    @JsonIgnore
 //    public boolean isIgnoreJoin() {

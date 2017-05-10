@@ -31,7 +31,7 @@ public class TableController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @PostMapping
-    public ResponseEntity<?> createTable(@RequestBody Map<String, String> data) {
+    public ResponseEntity<?> create(@RequestBody Map<String, String> data) {
         try {
             Table table = this.tableService.findLastTable();
             int tableNumber = table.getTableNumber() + 1;

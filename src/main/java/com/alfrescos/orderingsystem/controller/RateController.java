@@ -84,7 +84,7 @@ public class RateController {
     }
 
     @GetMapping(value = "/{invoiceId}/{rateTypeId}")
-    public ResponseEntity<?> getRateByRateId(@PathVariable String invoiceId, @PathVariable long rateTypeId) {
+    public ResponseEntity<?> getRateByRateTypeId(@PathVariable String invoiceId, @PathVariable long rateTypeId) {
         Rate rate = this.rateService.findRateByInvoiceIdAndRateTypeId(invoiceId, rateTypeId);
         if (rate != null) {
             return new ResponseEntity<Object>(rate, HttpStatus.OK);

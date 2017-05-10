@@ -100,6 +100,7 @@ public class UserController {
                 String[] roleIdList = roleIds.split(",");
                 BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
                 String passwordEncoded = passwordEncoder.encode(password);
+                emailService.sendWelcomeMailNewMember(email, name);
                 User user = new User(email, name, passwordEncoded);
                 System.out.println("Created date: " + user.getCreatedDate());
                 user.setAccountCode(user.getEmail());
@@ -110,7 +111,6 @@ public class UserController {
                     permissionService.create(newUser, role);
                 }
                 String token = this.jwtTokenUtil.generateToken(this.userDetailsService.loadUserByUsername(user.getAccountCode()));
-//                emailService.sendWelcomeMailNewMember(newUser.getEmail(), newUser.getName());
                 return new ResponseEntity<>(new JwtAuthenticationResponse(token), HttpStatus.CREATED);
             } catch (NumberFormatException e) {
                 System.out.println(e.getMessage());
@@ -171,28 +171,28 @@ public class UserController {
     }
 
     //TODO: Check later
-    @PreAuthorize("isAuthenticated()")
-    @PutMapping(value = "/profile", consumes = {"multipart/form-data"})
-    public ResponseEntity<Object> update(@RequestPart("profile") String profile, @RequestPart(name = "avatar", required = false) MultipartFile avatar) throws IOException {
-        String accountCode = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = new ObjectMapper().readValue(profile, User.class);
-        user.setAccountCode(accountCode);
-        if (avatar != null) {
-            user.setAvatarContent(avatar.getBytes());
-        }
-        User updatedUser = userService.update(user);
-        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(updatedUser);
-        FilterProvider filters = new SimpleFilterProvider()
-                .addFilter("filter.User", SimpleBeanPropertyFilter
-                        .serializeAllExcept("password"));
-        mappingJacksonValue.setFilters(filters);
-
-        if (updatedUser != null) {
-            return new ResponseEntity<Object>(mappingJacksonValue, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<Object>("Failed", HttpStatus.BAD_REQUEST);
-        }
-    }
+//    @PreAuthorize("isAuthenticated()")
+//    @PutMapping(value = "/profile", consumes = {"multipart/form-data"})
+//    public ResponseEntity<Object> update(@RequestPart("profile") String profile, @RequestPart(name = "avatar", required = false) MultipartFile avatar) throws IOException {
+//        String accountCode = SecurityContextHolder.getContext().getAuthentication().getName();
+//        User user = new ObjectMapper().readValue(profile, User.class);
+//        user.setAccountCode(accountCode);
+//        if (avatar != null) {
+//            user.setAvatarContent(avatar.getBytes());
+//        }
+//        User updatedUser = userService.update(user);
+//        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(updatedUser);
+//        FilterProvider filters = new SimpleFilterProvider()
+//                .addFilter("filter.User", SimpleBeanPropertyFilter
+//                        .serializeAllExcept("password"));
+//        mappingJacksonValue.setFilters(filters);
+//
+//        if (updatedUser != null) {
+//            return new ResponseEntity<Object>(mappingJacksonValue, HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<Object>("Failed", HttpStatus.BAD_REQUEST);
+//        }
+//    }
 
 
     @PreAuthorize("isAuthenticated()")
@@ -200,12 +200,12 @@ public class UserController {
     public ResponseEntity<?> changePassword(@Valid @RequestBody Map<String, String> passwordMap) {
         String currentPassword = passwordMap.get("currentPassword");
         String newPassword = passwordMap.get("newPassword");
-        String confirmPassword = passwordMap.get("confirmPassword");
+//        String confirmPassword = passwordMap.get("confirmPassword");
         String accountCode = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findByAccountCode(accountCode);
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         if (passwordEncoder.matches(currentPassword, user.getPassword())) {
-            if (newPassword != null && confirmPassword != null && newPassword.equals(confirmPassword)) {
+            if (newPassword != null) {
                 user.setPassword(passwordEncoder.encode(newPassword));
                 userService.updatePassword(user);
                 return new ResponseEntity<Object>("Change password successfully", HttpStatus.OK);
@@ -221,7 +221,7 @@ public class UserController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping(value = "/permission")
-    public ResponseEntity<?> getPermissionForLoggedInUser(){
+    public ResponseEntity<?> getPermissionForLoggedInUser() {
         User user = this.userService.findById(UserUtil.getIdByAuthorization());
         return new ResponseEntity<Object>(user.getPermissionList(), HttpStatus.OK);
     }
