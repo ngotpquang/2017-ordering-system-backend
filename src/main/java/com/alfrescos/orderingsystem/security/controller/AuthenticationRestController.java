@@ -63,18 +63,21 @@ public class AuthenticationRestController {
         return new ResponseEntity<Object>(new JwtAuthenticationResponse(token), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/auth/forgotPassword", method = RequestMethod.POST)
-    public ResponseEntity<?> createForgotPasswordToken(@Valid @RequestBody JwtAuthenticationRequest authenticationRequest) throws javax.naming.AuthenticationException {
-        User user = userService.findByEmail(authenticationRequest.getEmail());
+    @PostMapping(value = "/forgot-password")
+    public ResponseEntity<?> createForgotPasswordToken(@RequestBody Map<String, String> data) {
+        String urlPath = data.get("urlPath").trim();
+        String serverPath = "https://backend-os-v2.herokuapp.com/";
+        String email = data.get("email").trim();
+        User user = userService.findByEmail(email);
         if (user == null) {
             return new ResponseEntity<Object>(HttpStatus.NOT_FOUND);
         }
 
         String password = RandomStringUtils.randomAlphanumeric(10);
-        final String token = this.jwtTokenUtil.generateToken(authenticationRequest.getEmail(), password, authenticationRequest.getUrlPath());
+        final String token = this.jwtTokenUtil.generateToken(email, password, urlPath);
 
         try {
-            emailService.sendForgotPasswordMail(authenticationRequest.getEmail(), user.getName(), password, authenticationRequest.getUrlPath() + "/api/auth/forgotPassword?token=" + token);
+            emailService.sendForgotPasswordMail(email, user.getName(), password, serverPath + "/api/auth/reset-password?token=" + token);
         } catch (Exception e) {
             // catch error
             System.out.println("Error while sending email: " + e.getMessage());
@@ -82,23 +85,40 @@ public class AuthenticationRestController {
         return new ResponseEntity<Object>(new JwtAuthenticationResponse(token), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/forgotPassword", method = RequestMethod.GET)
+    @GetMapping(value = "/reset-password")
     void generatePassword(HttpServletResponse response, @RequestParam("token") String token) throws IOException {
         System.out.println(token);
         String email = this.jwtTokenUtil.getEmailFromToken(token);
         String password = this.jwtTokenUtil.getPasswordFromToken(token);
         String urlPath = this.jwtTokenUtil.getUrlFromToken(token);
 
-        if (email == null || password == null || urlPath == null || oldUsing.containsKey(email)) {
-            response.sendRedirect(urlPath + "?mod=login&act=fail");
+        if (email == null || password == null || urlPath == null) {
+            response.sendRedirect(urlPath);
             System.out.println("Can't reset password");
         } else {
-            oldUsing.put(email, token);
             User user = userService.findByAccountCode(email);
             user.setPassword(passwordEncoder.encode(password));
             userService.save(user);
             System.out.println(user.getAccountCode());
-            response.sendRedirect(urlPath + "?mod=login&act=success&email=" + email);
+            response.sendRedirect(urlPath + "reset-password?token=" + token);
+        }
+    }
+
+    @PostMapping(value = "/reset-password")
+    ResponseEntity<?> resetPassword(@RequestBody Map<String, String> data){
+        String token = data.get("token").trim();
+        String newPassword = data.get("newPassword").trim();
+        String email = this.jwtTokenUtil.getEmailFromToken(token);
+        String currentPassword = this.jwtTokenUtil.getPasswordFromToken(token);
+        User user = this.userService.findByEmail(email);
+        if (passwordEncoder.encode(currentPassword).equals(user.getPassword())){
+            user.setPassword(newPassword);
+            this.userService.save(user);
+            final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getAccountCode());
+            final String tokenNew = this.jwtTokenUtil.generateToken(userDetails);
+            return new ResponseEntity<Object>(new JwtAuthenticationResponse(tokenNew), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<Object>("Error some where", HttpStatus.NOT_MODIFIED);
         }
     }
 }
