@@ -77,7 +77,7 @@ public class AuthenticationRestController {
         final String token = this.jwtTokenUtil.generateToken(email, password, urlPath);
 
         try {
-            emailService.sendForgotPasswordMail(email, user.getName(), password, serverPath + "/api/auth/reset-password?token=" + token);
+            emailService.sendForgotPasswordMail(email, user.getName(), password, serverPath + "api/auth/reset-password?token=" + token);
         } catch (Exception e) {
             // catch error
             System.out.println("Error while sending email: " + e.getMessage());
