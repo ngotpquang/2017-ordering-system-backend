@@ -35,7 +35,7 @@ public class EmailServiceImpl implements EmailService {
     private Properties properties;
 
     @Autowired
-    public EmailServiceImpl(JavaMailSender javaMailSender) {
+    public EmailServiceImpl() {
         this.javaMailSender = javaMailSender;
     }
 
@@ -143,34 +143,34 @@ public class EmailServiceImpl implements EmailService {
 //        }
     }
 
-    private Session getSession() {
-
-//        final String username = "alfrescos.res.ordering@gmail.com";
-//        final String password = "NGOquang20575485";
-        final String username = "quangghost262@gmail.com";
-        final String password = "ngoquang20575485";
-//        final String username = "ngotruongphamquang@yahoo.com";
-//        final String password = "NGO46478264";
-
-        Properties props = new Properties();
+//    private Session getSession() {
+//
+////        final String username = "alfrescos.res.ordering@gmail.com";
+////        final String password = "NGOquang20575485";
+//        final String username = "quangghost262@gmail.com";
+//        final String password = "ngoquang20575485";
+////        final String username = "ngotruongphamquang@yahoo.com";
+////        final String password = "NGO46478264";
+//
+//        Properties props = new Properties();
+////        props.put("mail.smtp.auth", "true");
+////        props.put("mail.smtp.socketFactory.port","465");
+////        props.put("mail.smtp.socketFactory.class","javax.net.ssl.SSLSocketFactory");
+////        props.put("mail.smtp.host","smtp.mail.yahoo.com");
+////        props.put("mail.smtp.port","465");
 //        props.put("mail.smtp.auth", "true");
-//        props.put("mail.smtp.socketFactory.port","465");
-//        props.put("mail.smtp.socketFactory.class","javax.net.ssl.SSLSocketFactory");
-//        props.put("mail.smtp.host","smtp.mail.yahoo.com");
-//        props.put("mail.smtp.port","465");
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "587");
-
-        Session session = Session.getInstance(props,
-                new javax.mail.Authenticator() {
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(username, password);
-                    }
-                });
-
-        return session;
-    }
+//        props.put("mail.smtp.starttls.enable", "true");
+//        props.put("mail.smtp.host", "smtp.gmail.com");
+//        props.put("mail.smtp.port", "587");
+//
+//        Session session = Session.getInstance(props,
+//                new javax.mail.Authenticator() {
+//                    protected PasswordAuthentication getPasswordAuthentication() {
+//                        return new PasswordAuthentication(username, password);
+//                    }
+//                });
+//
+//        return session;
+//    }
 
 }

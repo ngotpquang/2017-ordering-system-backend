@@ -115,7 +115,7 @@ public class UserController {
             } catch (NumberFormatException e) {
                 System.out.println(e.getMessage());
                 return new ResponseEntity<>("Can't create user due to some error.", HttpStatus.NOT_ACCEPTABLE);
-            } catch (MailException e) {
+            } catch (IOException e) {
                 System.out.println(e.getMessage());
                 return new ResponseEntity<>("Wrong email address.", HttpStatus.NOT_ACCEPTABLE);
             }

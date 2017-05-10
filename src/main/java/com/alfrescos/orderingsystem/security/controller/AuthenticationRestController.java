@@ -78,7 +78,7 @@ public class AuthenticationRestController {
         try {
             emailService.sendForgotPasswordMail(email, user.getName(), password, serverPath + "api/auth/reset-password?token=" + token);
             return new ResponseEntity<Object>(new JwtAuthenticationResponse(token), HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (IOException e) {
             // catch error
             System.out.println("Error while sending email: " + e.getMessage());
             return new ResponseEntity<Object>("Can't send email due to error.", HttpStatus.NOT_ACCEPTABLE);
