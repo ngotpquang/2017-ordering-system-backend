@@ -48,7 +48,7 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Async
-    public void sendWelcomeMailNewMember(String recipientEmail, String memberName) throws MailException {
+    public void sendWelcomeMailNewMember(String recipientEmail, String memberName) throws IOException {
         veInit();
         VelocityContext context = new VelocityContext();
         context.put("name", memberName);
@@ -57,25 +57,45 @@ public class EmailServiceImpl implements EmailService {
         t.merge(context, writer);
 
         System.out.println("Sending email...");
+        SendGrid sendGrid = new SendGrid("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");
+        Email from = new Email("no-reply.ordering@alfrescos.com");
+        from.setName("Alfresco's Restaurant Ordering System");
+        String subject = "Thank you for using our Ordering System";
+        Email to = new Email(recipientEmail);
+        Content content = new Content("text/html", writer.toString());
+        Mail mail = new Mail(from, subject, to, content);
+        Request request = new Request();
         try {
-            Session session = getSession();
-            MimeMessage mimeMessage = new MimeMessage(session);
-            mimeMessage.setFrom(new InternetAddress("noreply.orderingsystem@alfrescos.com", "Alfresco's Restaurant Ordering System"));
-            mimeMessage.setRecipients(Message.RecipientType.TO,
-                    InternetAddress.parse(recipientEmail));
-            mimeMessage.setSubject("Thank you for using our Ordering System");
-            mimeMessage.setContent(writer.toString(), "text/html; charset=utf-8");
-            javaMailSender.send(mimeMessage);
-            System.out.println("Email Sent!");
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            request.method = Method.POST;
+            request.endpoint = "mail/send";
+            request.body = mail.build();
+            Response response = sendGrid.api(request);
+            System.out.println(response.statusCode);
+            System.out.println(response.body);
+            System.out.println(response.headers);
+            System.out.println("Sent welcome email successfully!");
+        } catch (IOException ex) {
+            throw new IOException(ex);
         }
+//        try {
+//            Session session = getSession();
+//            MimeMessage mimeMessage = new MimeMessage(session);
+//            mimeMessage.setFrom(new InternetAddress("noreply.orderingsystem@alfrescos.com", "Alfresco's Restaurant Ordering System"));
+//            mimeMessage.setRecipients(Message.RecipientType.TO,
+//                    InternetAddress.parse(recipientEmail));
+//            mimeMessage.setSubject("Thank you for using our Ordering System");
+//            mimeMessage.setContent(writer.toString(), "text/html; charset=utf-8");
+//            javaMailSender.send(mimeMessage);
+//            System.out.println("Email Sent!");
+//        } catch (MessagingException e) {
+//            throw new RuntimeException(e);
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Async
-    public void sendForgotPasswordMail(String recipientEmail, String memberName, String newPassword, String link) throws MailException, IOException {
+    public void sendForgotPasswordMail(String recipientEmail, String memberName, String newPassword, String link) throws IOException {
         veInit();
         VelocityContext context = new VelocityContext();
         context.put("name", memberName);
@@ -85,26 +105,27 @@ public class EmailServiceImpl implements EmailService {
         t.merge(context, writer);
 
         System.out.println("Sending email...");
+        SendGrid sendGrid = new SendGrid("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");
+        Email from = new Email("no-reply.ordering@alfrescos.com");
+        from.setName("Alfresco's Restaurant Ordering System");
+        String subject = "Reset your account's password in Alfresco's Restaurant Ordering System";
+        Email to = new Email(recipientEmail);
+        Content content = new Content("text/html", writer.toString());
+        Mail mail = new Mail(from, subject, to, content);
+        Request request = new Request();
+        try {
+            request.method = Method.POST;
+            request.endpoint = "mail/send";
+            request.body = mail.build();
+            Response response = sendGrid.api(request);
+            System.out.println(response.statusCode);
+            System.out.println(response.body);
+            System.out.println(response.headers);
+            System.out.println("Sent successfully reset password email!");
+        } catch (IOException ex) {
+            throw new IOException(ex);
+        }
 //        try {
-            SendGrid sendGrid = new SendGrid("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");
-            Email from = new Email("no-reply.ordering@alfrescos.com");
-            from.setName("Alfresco's Restaurant Ordering System");
-            String subject = "Reset your account's password in Alfresco's Restaurant Ordering System";
-            Email to = new Email(recipientEmail);
-            Content content = new Content("text/html", writer.toString());
-            Mail mail = new Mail(from, subject, to, content);
-            Request request = new Request();
-            try {
-                request.method = Method.POST;
-                request.endpoint = "mail/send";
-                request.body = mail.build();
-                Response response = sendGrid.api(request);
-                System.out.println(response.statusCode);
-                System.out.println(response.body);
-                System.out.println(response.headers);
-            } catch (IOException ex) {
-                throw new IOException(ex);
-            }
 //            Session session = getSession();
 //            MimeMessage mimeMessage = new MimeMessage(session);
 //            mimeMessage.setFrom(new InternetAddress("noreply.orderingsystem@alfrescos.com", "Alfresco's Restaurant Ordering System"));

@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface EmailService {
 
-    void sendWelcomeMailNewMember(String receptorEmail, String memberName);
+    void sendWelcomeMailNewMember(String receptorEmail, String memberName) throws IOException;
 
     void sendForgotPasswordMail(String receptorEmail, String memberName, String newPassword, String link) throws IOException;
 
