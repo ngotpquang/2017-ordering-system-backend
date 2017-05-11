@@ -80,11 +80,17 @@ public class SocialAccountController {
             UserDetails userDetails = userDetailsService.loadUserByUsername(userSocial.getId());
             String token = this.jwtTokenUtil.generateToken(userDetails);
             System.out.println("Facebook: Registered already");
+            User user = this.userService.findByAccountCode(userSocial.getId());
+            user.setLastAccess(new Date());
+            this.userService.updateLastAccess(user);
             return new ResponseEntity<Object>(new JwtAuthenticationResponse(token), HttpStatus.OK);
         } else if ((userSocial.getEmail() != null && userService.findByEmail(userSocial.getEmail()) != null)){
             UserDetails userDetails = userDetailsService.loadUserByUsername(userSocial.getEmail());
             String token = this.jwtTokenUtil.generateToken(userDetails);
             System.out.println("Facebook: Registered already");
+            User user = this.userService.findByEmail(userSocial.getEmail());
+            user.setLastAccess(new Date());
+            this.userService.updateLastAccess(user);
             return new ResponseEntity<Object>(new JwtAuthenticationResponse(token), HttpStatus.OK);
         }
         else {
@@ -134,6 +140,9 @@ public class SocialAccountController {
                 String accountCode = this.userService.findByEmail(payload.getEmail()).getAccountCode();
                 userDetails = userDetailsService.loadUserByUsername(accountCode);
                 token = this.jwtTokenUtil.generateToken(userDetails);
+                User user = this.userService.findByEmail(payload.getEmail());
+                user.setLastAccess(new Date());
+                this.userService.updateLastAccess(user);
                 System.out.println("Google: Registered already");
             } else {
                 System.out.println(payload.getEmail());
