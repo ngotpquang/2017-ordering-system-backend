@@ -45,8 +45,8 @@ public class CommonUtil {
         return foodAndDrinkList;
     }
 
-    public static void main(String[] args) {
-        System.out.println(getLocalTime());;
-    }
+//    public static boolean checkValidEmail(String email){
+//
+//    }
 
 }

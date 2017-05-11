@@ -15,12 +15,14 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.mail.*;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Properties;
+
 import com.sendgrid.*;
 
 /**
@@ -33,6 +35,9 @@ public class EmailServiceImpl implements EmailService {
     private JavaMailSender javaMailSender;
     private VelocityEngine velocityEngine;
     private Properties properties;
+    private static final String ApiUrl = "https://api1.27hub.com/api/emh/a/v2";
+    private static final String QueryFormatString = "%1$s?e=%2$s&k=%3$s";
+    private static final String YourAPIKey = "EE6855E0";
 
     @Autowired
     public EmailServiceImpl() {
@@ -61,19 +66,45 @@ public class EmailServiceImpl implements EmailService {
         Email from = new Email("no-reply.ordering@alfrescos.com");
         from.setName("Alfresco's Restaurant Ordering System");
         String subject = "Thank you for using our Ordering System";
+
         Email to = new Email(recipientEmail);
         Content content = new Content("text/html", writer.toString());
         Mail mail = new Mail(from, subject, to, content);
         Request request = new Request();
         try {
-            request.method = Method.POST;
-            request.endpoint = "mail/send";
-            request.body = mail.build();
-            Response response = sendGrid.api(request);
-            System.out.println(response.statusCode);
-            System.out.println(response.body);
-            System.out.println(response.headers);
-            System.out.println("Sent welcome email successfully!");
+            URL requestUrl = new URL(String.format(QueryFormatString, ApiUrl, recipientEmail, YourAPIKey));
+            System.out.println(requestUrl.toString());
+            HttpURLConnection httpURLConnection = (HttpURLConnection) requestUrl.openConnection();
+            httpURLConnection.setRequestMethod("GET");
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(httpURLConnection.getInputStream()));
+
+            String inputLine;
+            StringBuilder responseHippo = new StringBuilder();
+
+            // Read in the response line from the server
+            while ((inputLine = reader.readLine()) != null) {
+                responseHippo.append(inputLine);
+                System.out.println(inputLine);
+            }
+
+            // Close the reader
+            reader.close();
+
+            // Output the result to console
+            System.out.println("Response from Hippo: " + responseHippo.toString());
+            if(!responseHippo.toString().contains("Bad")){
+                request.method = Method.POST;
+                request.endpoint = "mail/send";
+                request.body = mail.build();
+                Response response = sendGrid.api(request);
+                System.out.println(response.statusCode);
+                System.out.println(response.body);
+                System.out.println(response.headers);
+                System.out.println("Sent welcome email successfully!");
+            } else {
+                throw new IOException();
+            }
         } catch (IOException ex) {
             throw new IOException(ex);
         }
@@ -114,14 +145,37 @@ public class EmailServiceImpl implements EmailService {
         Mail mail = new Mail(from, subject, to, content);
         Request request = new Request();
         try {
-            request.method = Method.POST;
-            request.endpoint = "mail/send";
-            request.body = mail.build();
-            Response response = sendGrid.api(request);
-            System.out.println(response.statusCode);
-            System.out.println(response.body);
-            System.out.println(response.headers);
-            System.out.println("Sent successfully reset password email!");
+            URL requestUrl = new URL(String.format(QueryFormatString, ApiUrl, recipientEmail, YourAPIKey));
+            HttpURLConnection httpURLConnection = (HttpURLConnection) requestUrl.openConnection();
+            httpURLConnection.setRequestMethod("GET");
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(httpURLConnection.getInputStream()));
+
+            String inputLine;
+            StringBuilder responseHippo = new StringBuilder();
+
+            // Read in the response line from the server
+            while ((inputLine = reader.readLine()) != null) {
+                responseHippo.append(inputLine);
+            }
+
+            // Close the reader
+            reader.close();
+
+            // Output the result to console
+            System.out.println("Response from Hippo: " + responseHippo.toString());
+            if (!responseHippo.toString().contains("Bad")) {
+                request.method = Method.POST;
+                request.endpoint = "mail/send";
+                request.body = mail.build();
+                Response response = sendGrid.api(request);
+                System.out.println(response.statusCode);
+                System.out.println(response.body);
+                System.out.println(response.headers);
+                System.out.println("Sent successfully reset password email!");
+            } else {
+                throw new IOException();
+            }
         } catch (IOException ex) {
             throw new IOException(ex);
         }
