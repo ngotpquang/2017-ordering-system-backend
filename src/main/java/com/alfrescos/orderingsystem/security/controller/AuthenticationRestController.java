@@ -70,6 +70,8 @@ public class AuthenticationRestController {
     public ResponseEntity<?> createForgotPasswordToken(@RequestBody Map<String, String> data) {
         String urlPath = data.get("urlPath").trim();
         String serverPath = "https://backend-os-v2.herokuapp.com/";
+//        String serverPath = "http://localhost:8080/";
+
         String email = data.get("email").trim();
         User user = userService.findByEmail(email);
         if (user == null) {
@@ -79,7 +81,7 @@ public class AuthenticationRestController {
         String password = RandomStringUtils.randomAlphanumeric(10);
         final String token = this.jwtTokenUtil.generateToken(email, password, urlPath);
         try {
-            emailService.sendForgotPasswordMail(email, user.getName(), password, serverPath + "api/auth/reset-password?token=" + token);
+            emailService.sendForgotPasswordMail(email, user.getName(), password, serverPath + "api/auth/reset-pass?token=" + token);
             return new ResponseEntity<Object>(new JwtAuthenticationResponse(token), HttpStatus.OK);
         } catch (IOException e) {
             // catch error
@@ -88,13 +90,12 @@ public class AuthenticationRestController {
         }
     }
 
-    @GetMapping(value = "/reset-password")
+    @GetMapping(value = "/reset-pass")
     void generatePassword(HttpServletResponse response, @RequestParam("token") String token) throws IOException {
         System.out.println(token);
         String email = this.jwtTokenUtil.getEmailFromToken(token);
         String password = this.jwtTokenUtil.getPasswordFromToken(token);
         String urlPath = this.jwtTokenUtil.getUrlFromToken(token);
-
         if (email == null || password == null || urlPath == null) {
             response.sendRedirect(urlPath);
             System.out.println("Can't reset password");
@@ -114,7 +115,8 @@ public class AuthenticationRestController {
         String email = this.jwtTokenUtil.getEmailFromToken(token);
         String currentPassword = this.jwtTokenUtil.getPasswordFromToken(token);
         User user = this.userService.findByEmail(email);
-        if (passwordEncoder.encode(currentPassword).equals(user.getPassword())){
+        System.out.println(currentPassword);
+        if (passwordEncoder.matches(currentPassword, user.getPassword())){
             user.setPassword(newPassword);
             this.userService.save(user);
             final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getAccountCode());
