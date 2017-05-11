@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017. All rights reserved.
+ */
+
 package com.alfrescos.orderingsystem.service;
 
 import com.alfrescos.orderingsystem.entity.Role;
@@ -20,6 +24,8 @@ public interface UserService {
     User findByEmail(String email);
 
     User update(User user);
+
+    User updateLastAccess(User user);
 
     boolean switchDeletedStatus(Long id);
 

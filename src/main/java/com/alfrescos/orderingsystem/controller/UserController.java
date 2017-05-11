@@ -118,6 +118,8 @@ public class UserController {
                     permissionService.create(newUser, role);
                 }
                 String token = this.jwtTokenUtil.generateToken(this.userDetailsService.loadUserByUsername(user.getAccountCode()));
+                user.setLastAccess(new Date());
+                this.userService.updateLastAccess(user);
                 return new ResponseEntity<>(new JwtAuthenticationResponse(token), HttpStatus.CREATED);
             } catch (NumberFormatException e) {
                 System.out.println(e.getMessage());
@@ -135,10 +137,10 @@ public class UserController {
     public ResponseEntity<?> update(@Valid @RequestBody Map<String, String> data) {
         User user = this.userService.findById(UserUtil.getIdByAuthorization());
         try {
-            Long dateOfBirth = Long.parseLong(data.get("dateOfBirth"));
-            String detail = data.get("detail");
+            Long dateOfBirth = Long.parseLong(data.get("dateOfBirth").trim());
+            String detail = data.get("detail").trim();
             byte gender = Byte.parseByte(data.get("gender"));
-            String name = data.get("name");
+            String name = data.get("name").trim();
             user.setDateOfBirth(new Date(dateOfBirth));
             user.setDetail(detail);
             user.setGender(gender);

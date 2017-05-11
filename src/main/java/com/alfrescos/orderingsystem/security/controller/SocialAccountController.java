@@ -97,7 +97,7 @@ public class SocialAccountController {
             }
             user.setGender((byte) (userSocial.getGender().equals("male") ? 0 : 1));
             user.setName(userSocial.getName());
-            user.setAvatar("http://graph.facebook.com/" + userSocial.getId() + "/picture?width=961");
+            user.setAvatar("http://graph.facebook.com/" + userSocial.getId() + "/picture?type=large");
             BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
             String password = bCryptPasswordEncoder.encode(userSocial.getId());
             user.setPassword(password);
@@ -106,6 +106,8 @@ public class SocialAccountController {
             permissionService.create(newUser, role);
             UserDetails userDetails = userDetailsService.loadUserByUsername(newUser.getAccountCode());
             String token = this.jwtTokenUtil.generateToken(userDetails);
+            user.setLastAccess(new Date());
+            this.userService.updateLastAccess(user);
             return new ResponseEntity<Object>(new JwtAuthenticationResponse(token), HttpStatus.OK);
         }
     }
@@ -151,6 +153,8 @@ public class SocialAccountController {
                 permissionService.create(newUser, role);
                 userDetails = userDetailsService.loadUserByUsername(newUser.getEmail());
                 token = this.jwtTokenUtil.generateToken(userDetails);
+                user.setLastAccess(new Date());
+                this.userService.updateLastAccess(user);
             }
         }
         return new ResponseEntity<Object>(new JwtAuthenticationResponse(token), HttpStatus.OK);

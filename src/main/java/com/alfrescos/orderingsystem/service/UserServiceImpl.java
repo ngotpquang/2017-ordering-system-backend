@@ -57,7 +57,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByEmail(String email) {
+        System.out.println("Email to find: " + email);
         User user = userRepository.findByEmail(email);
+        if (user == null){
+            System.out.println("NULLLLLLLL");
+        }
         return user != null ? (user.isDeleted() ? null : user) : null;
     }
 
@@ -78,6 +82,11 @@ public class UserServiceImpl implements UserService {
             oldUser.setDetail(user.getDetail());
         }
         return this.userRepository.save(oldUser);
+    }
+
+    @Override
+    public User updateLastAccess(User user) {
+        return this.userRepository.save(user);
     }
 
     @Override

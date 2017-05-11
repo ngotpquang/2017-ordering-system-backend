@@ -44,6 +44,7 @@ public class User {
     private Set<Invoice> staffInvoices;
     private Date createdDate;
     private boolean isDeleted = false;
+    private Date lastAccess;
 //    private boolean ignoreJoin;
 
     public User() {
@@ -229,9 +230,18 @@ public class User {
         this.createdDate = createdDate;
     }
 
+    @Column(name = "lass_access")
+    public Date getLastAccess() {
+        return lastAccess;
+    }
+
+    public void setLastAccess(Date lastAccess) {
+        this.lastAccess = lastAccess;
+    }
+
     @Override
     public String toString() {
         return this.id + "\t" + this.email + "\t" + this.name + "\t" + this.gender + "\t"
-                + this.dateOfBirth + "\t" + this.password + "\t" + this.accountCode + "\n";
+                + this.dateOfBirth + "\t" + this.password + "\t" + this.accountCode + "\t" + this.lastAccess + "\n";
     }
 }
