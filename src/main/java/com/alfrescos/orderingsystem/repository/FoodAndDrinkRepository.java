@@ -21,7 +21,7 @@ public interface FoodAndDrinkRepository extends CrudRepository<FoodAndDrink, Lon
 //    @Query(value = "SELECT * FROM food_and_drink as fad WHERE fad.name like %:name% OR fad.name = :name OR fad.detail like %:name% AND is_visible = 1", nativeQuery = true)
     @Query(value = "SELECT * FROM food_and_drink AS fad WHERE fad.name LIKE %:name% OR fad.name = :name OR fad.detail like %:name% AND is_visible = TRUE", nativeQuery = true)
     List<FoodAndDrink> findByName(@Param("name") String name);
-
+//    @Query(value = "SELECT * FROM food_and_drink AS fad WHERE fad.tags LIKE %:tag% AND is_visible = 1", nativeQuery = true)
     @Query(value = "SELECT * FROM food_and_drink AS fad WHERE fad.tags LIKE %:tag% AND is_visible = TRUE", nativeQuery = true)
     List<FoodAndDrink> findByTags(@Param("tag") String tag);
 

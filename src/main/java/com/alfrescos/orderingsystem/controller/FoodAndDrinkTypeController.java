@@ -17,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Liger on 16-Mar-17.
@@ -36,9 +37,9 @@ public class FoodAndDrinkTypeController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody FoodAndDrinkType foodAndDrinkType){
+    public ResponseEntity<?> create(@RequestBody FoodAndDrinkType foodAndDrinkType) {
         FoodAndDrinkType foodAndDrinkType1 = this.foodAndDrinkTypeService.create(foodAndDrinkType);
-        if (foodAndDrinkType1 != null){
+        if (foodAndDrinkType1 != null) {
             return new ResponseEntity<Object>("Created successfully.", HttpStatus.CREATED);
         } else {
             return new ResponseEntity<Object>("Can't create due to some error.", HttpStatus.NOT_ACCEPTABLE);
@@ -46,15 +47,20 @@ public class FoodAndDrinkTypeController {
     }
 
     @GetMapping(value = "/all")
-    public ResponseEntity<?> getAllFoodAndDrinkType(){
-        return new ResponseEntity<Object>(this.foodAndDrinkTypeService.findAll(), HttpStatus.OK);
+    public ResponseEntity<?> getAllFoodAndDrinkType() {
+        List<FoodAndDrinkType> foodAndDrinkTypeList = this.foodAndDrinkTypeService.findAll();
+//        foodAndDrinkTypeList = foodAndDrinkTypeList.stream().filter(foodAndDrinkType -> {
+//            if (this.foodAndDrinkService.findByFoodAndDrinkTypeId(foodAndDrinkType.getId()).size() > 0) return true;
+//            else return false;
+//        }).collect(Collectors.toList());
+        return new ResponseEntity<Object>(foodAndDrinkTypeList, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @PutMapping(value = "/update")
-    public ResponseEntity<?> update(@RequestBody FoodAndDrinkType foodAndDrinkType){
+    public ResponseEntity<?> update(@RequestBody FoodAndDrinkType foodAndDrinkType) {
         FoodAndDrinkType foodAndDrinkType1 = this.foodAndDrinkTypeService.findById(foodAndDrinkType.getId());
-        if (foodAndDrinkType1 != null && !foodAndDrinkType.getName().isEmpty() && !foodAndDrinkType.getDetail().isEmpty()){
+        if (foodAndDrinkType1 != null && !foodAndDrinkType.getName().isEmpty() && !foodAndDrinkType.getDetail().isEmpty()) {
             foodAndDrinkType1 = this.foodAndDrinkTypeService.update(foodAndDrinkType);
             return new ResponseEntity<Object>("Updated FADT with id: " + foodAndDrinkType1.getId() + " successfully.", HttpStatus.CREATED);
         } else {
@@ -64,10 +70,10 @@ public class FoodAndDrinkTypeController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @DeleteMapping(value = "/delete/{foodAndDrinkTypeId}")
-    public ResponseEntity<?> delete(@PathVariable Long foodAndDrinkTypeId){
+    public ResponseEntity<?> delete(@PathVariable Long foodAndDrinkTypeId) {
         FoodAndDrinkType foodAndDrinkType = this.foodAndDrinkTypeService.findById(foodAndDrinkTypeId);
         List<FoodAndDrink> foodAndDrinkList = this.foodAndDrinkService.findByFoodAndDrinkTypeId(foodAndDrinkTypeId);
-        for (FoodAndDrink foodAndDrink: foodAndDrinkList) {
+        for (FoodAndDrink foodAndDrink : foodAndDrinkList) {
             List<OrderCombination> orderCombinationList;
             foodAndDrink.setVisible(!foodAndDrink.isVisible());
             this.foodAndDrinkService.update(foodAndDrink);
@@ -82,7 +88,7 @@ public class FoodAndDrinkTypeController {
                 this.orderCombinationService.updateVisible(o);
             }
         }
-        if (foodAndDrinkType != null){
+        if (foodAndDrinkType != null) {
             return new ResponseEntity<Object>("Visible status of FADT with id: " + foodAndDrinkTypeId + " is: " + this.foodAndDrinkTypeService.switchVisible(foodAndDrinkTypeId), HttpStatus.OK);
         }
         return new ResponseEntity<Object>("Can't find FADT with id: " + foodAndDrinkTypeId, HttpStatus.NO_CONTENT);

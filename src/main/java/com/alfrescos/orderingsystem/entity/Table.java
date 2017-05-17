@@ -23,6 +23,7 @@ public class Table {
     private boolean isVisible = true;
     private int tableStatus;
     private Date createdDate;
+    private Set<ReservedTable> reservedTableSet;
 
     public Table() {
     }
@@ -97,6 +98,16 @@ public class Table {
 
     public void setTableStatus(int tableStatus) {
         this.tableStatus = tableStatus;
+    }
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "table")
+    public Set<ReservedTable> getReservedTableSet() {
+        return reservedTableSet;
+    }
+
+    public void setReservedTableSet(Set<ReservedTable> reservedTableSet) {
+        this.reservedTableSet = reservedTableSet;
     }
 }
 

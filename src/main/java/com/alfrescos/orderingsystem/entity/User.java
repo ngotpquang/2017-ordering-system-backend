@@ -45,6 +45,7 @@ public class User {
     private Date createdDate;
     private boolean isDeleted = false;
     private Date lastAccess;
+    private Set<ReservedTable> reservedTableSet;
 //    private boolean ignoreJoin;
 
     public User() {
@@ -237,6 +238,16 @@ public class User {
 
     public void setLastAccess(Date lastAccess) {
         this.lastAccess = lastAccess;
+    }
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    public Set<ReservedTable> getReservedTableSet() {
+        return reservedTableSet;
+    }
+
+    public void setReservedTableSet(Set<ReservedTable> reservedTableSet) {
+        this.reservedTableSet = reservedTableSet;
     }
 
     @Override

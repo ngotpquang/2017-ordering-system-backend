@@ -17,15 +17,15 @@ import java.util.List;
 @Repository
 public interface OrderCombinationRepository extends CrudRepository<OrderCombination, Long> {
 
-    //    @Query(value = "SELECT * FROM order_combination WHERE main_dish_id = ?1 AND is_visible = 1 ORDER BY num_of_ordered_together DESC", nativeQuery = true)
+//        @Query(value = "SELECT * FROM order_combination WHERE main_dish_id = ?1 AND is_visible = 1 ORDER BY num_of_ordered_together DESC", nativeQuery = true)
     @Query(value = "SELECT * FROM order_combination WHERE main_dish_id = ?1 AND is_visible = TRUE ORDER BY num_of_ordered_together DESC", nativeQuery = true)
     List<OrderCombination> findByMainDishId(Long id);
 
-    //    @Query(value = "SELECT * FROM order_combination WHERE drink_or_desert_id = ?1 AND is_visible = 1 ORDER BY num_of_ordered_together DESC", nativeQuery = true)
+//        @Query(value = "SELECT * FROM order_combination WHERE drink_or_desert_id = ?1 AND is_visible = 1 ORDER BY num_of_ordered_together DESC", nativeQuery = true)
     @Query(value = "SELECT * FROM order_combination WHERE drink_or_desert_id = ?1 AND is_visible = TRUE ORDER BY num_of_ordered_together DESC", nativeQuery = true)
     List<OrderCombination> findByDrinkOrDesertId(Long id);
 
-    //    @Query(value = "SELECT * FROM order_combination WHERE main_dish_id = ?1 AND drink_or_desert_id = ?2 AND is_visible = 1", nativeQuery = true)
+//        @Query(value = "SELECT * FROM order_combination WHERE main_dish_id = ?1 AND drink_or_desert_id = ?2 AND is_visible = 1", nativeQuery = true)
     @Query(value = "SELECT * FROM order_combination WHERE main_dish_id = ?1 AND drink_or_desert_id = ?2 AND is_visible = TRUE", nativeQuery = true)
     OrderCombination findByMainDishIdAndDrinkOrDesertId(Long mainDishId, Long drinkOrDesertId);
 

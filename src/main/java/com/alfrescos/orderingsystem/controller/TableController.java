@@ -31,10 +31,13 @@ public class TableController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody Map<String, String> data) {
+    public ResponseEntity<?> create (@RequestBody Map<String, String> data) {
         try {
             Table table = this.tableService.findLastTable();
-            int tableNumber = table.getTableNumber() + 1;
+            int tableNumber = 1;
+            if(table != null){
+                tableNumber = table.getTableNumber() + 1;
+            }
             int size = Integer.parseInt(data.get("size").trim());
             Table table1 = new Table(size, tableNumber);
             table1 = this.tableService.create(table1);

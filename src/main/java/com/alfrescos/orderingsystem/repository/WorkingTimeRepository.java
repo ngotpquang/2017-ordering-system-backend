@@ -31,6 +31,7 @@ public interface WorkingTimeRepository extends CrudRepository<WorkingTime, Long>
     @Query(value = "SELECT * FROM working_time WHERE (shift_id = ?1 AND CONVERT(VARCHAR(25), date, 126) LIKE ?2%)", nativeQuery = true)
     List<WorkingTime> findAllByShiftIdAndDate(Long shiftId, String date);
 
+//    @Query(value = "SELECT TOP 1 * FROM working_time WHERE user_id = ?1 ORDER BY date DESC", nativeQuery = true)
     @Query(value = "SELECT * FROM working_time WHERE user_id = ?1 ORDER BY date DESC LIMIT 1", nativeQuery = true)
     WorkingTime findLastWorkingTimeByUserId(Long userId);
 }

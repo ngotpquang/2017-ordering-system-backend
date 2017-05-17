@@ -107,7 +107,7 @@ public class UserController {
                 String[] roleIdList = roleIds.split(",");
                 BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
                 String passwordEncoded = passwordEncoder.encode(password);
-                emailService.sendWelcomeMailNewMember(email, name);
+//                emailService.sendWelcomeMailNewMember(email, name);
                 User user = new User(email, name, passwordEncoded);
                 System.out.println("Created date: " + user.getCreatedDate());
                 user.setAccountCode(user.getEmail());
@@ -124,7 +124,7 @@ public class UserController {
             } catch (NumberFormatException e) {
                 System.out.println(e.getMessage());
                 return new ResponseEntity<>("Can't create user due to some error.", HttpStatus.NOT_ACCEPTABLE);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
                 return new ResponseEntity<>("Wrong email address.", HttpStatus.NOT_ACCEPTABLE);
             }
