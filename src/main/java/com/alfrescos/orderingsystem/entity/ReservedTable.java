@@ -22,17 +22,19 @@ public class ReservedTable {
     private int finalStatus;
     private Date reservingTime;
     private String detail;
+    private int travelingTime;
 
     public ReservedTable(){
 
     }
 
-    public ReservedTable(Table table, User user, String detail) {
+    public ReservedTable(Table table, User user, String detail, int travelingTime) {
         this.table = table;
         this.user = user;
         this.finalStatus = TableStatus.RESERVING;
         this.reservingTime = new Date();
         this.detail = detail;
+        this.travelingTime = travelingTime;
     }
 
     @Id
@@ -90,5 +92,14 @@ public class ReservedTable {
 
     public void setDetail(String detail) {
         this.detail = detail;
+    }
+
+    @Column(name = "traveling_time")
+    public int getTravelingTime() {
+        return travelingTime;
+    }
+
+    public void setTravelingTime(int travelingTime) {
+        this.travelingTime = travelingTime;
     }
 }

@@ -49,10 +49,16 @@ public class FoodAndDrinkTypeController {
     @GetMapping(value = "/all")
     public ResponseEntity<?> getAllFoodAndDrinkType() {
         List<FoodAndDrinkType> foodAndDrinkTypeList = this.foodAndDrinkTypeService.findAll();
-//        foodAndDrinkTypeList = foodAndDrinkTypeList.stream().filter(foodAndDrinkType -> {
-//            if (this.foodAndDrinkService.findByFoodAndDrinkTypeId(foodAndDrinkType.getId()).size() > 0) return true;
-//            else return false;
-//        }).collect(Collectors.toList());
+        return new ResponseEntity<Object>(foodAndDrinkTypeList, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/all/not-empty")
+    public ResponseEntity<?> getAllUnEmptyFoodAndDrinkType() {
+        List<FoodAndDrinkType> foodAndDrinkTypeList = this.foodAndDrinkTypeService.findAll();
+        foodAndDrinkTypeList = foodAndDrinkTypeList.stream().filter(foodAndDrinkType -> {
+            if (this.foodAndDrinkService.findByFoodAndDrinkTypeId(foodAndDrinkType.getId()).size() > 0) return true;
+            else return false;
+        }).collect(Collectors.toList());
         return new ResponseEntity<Object>(foodAndDrinkTypeList, HttpStatus.OK);
     }
 

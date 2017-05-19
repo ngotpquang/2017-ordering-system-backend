@@ -47,8 +47,9 @@ public class ReservedTableController {
             long tableId = Long.parseLong(data.get("tableId").trim());
             Table table = this.tableService.findById(tableId);
             String detail = data.get("detail");
+            int travelingTime = Integer.parseInt(data.get("travelingTime").trim());
             if(user != null && table != null && table.getTableStatus() != TableStatus.ORDERING){
-                ReservedTable reservedTable = new ReservedTable(table, user, detail);
+                ReservedTable reservedTable = new ReservedTable(table, user, detail, travelingTime);
                 reservedTable = this.reservedTableService.create(reservedTable);
                 if (reservedTable != null){
                     table.setTableStatus(TableStatus.RESERVED);
