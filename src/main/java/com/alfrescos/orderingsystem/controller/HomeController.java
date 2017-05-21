@@ -28,4 +28,9 @@ public class HomeController {
     public ResponseEntity<?> getLocation(){
         return new ResponseEntity<Object>("16.0653281,108.2212667", HttpStatus.OK);
     }
+
+    @GetMapping(value = "/location-test")
+    public ResponseEntity<?> getLocationTest(){
+        return new ResponseEntity<Object>("16.0749896,108.1606557", HttpStatus.OK);
+    }
 }

@@ -15,10 +15,8 @@ import java.util.List;
  * Created by Liger on 16-Mar-17.
  */
 @Repository
-public interface FoodAndDrinkTypeRepository extends CrudRepository<FoodAndDrinkType, Long>{
-//    SQL Server
+public interface FoodAndDrinkTypeRepository extends CrudRepository<FoodAndDrinkType, Long> {
 //    @Query(value = "SELECT * FROM food_and_drink_type WHERE is_main_dish = 1 AND is_visible = 1", nativeQuery = true)
-//    PostgreSQL
     @Query(value = "SELECT * FROM food_and_drink_type WHERE is_main_dish = TRUE AND is_visible = TRUE", nativeQuery = true)
     List<FoodAndDrinkType> findAllMainDish();
 

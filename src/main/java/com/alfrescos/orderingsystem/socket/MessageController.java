@@ -28,7 +28,9 @@ public class MessageController {
      */
     @MessageMapping(value = {"/admin"})
     @SendTo("/request/admin")
-    public String sendAdmin(String message) throws Exception{
+    public String sendAdmin(String message) throws Exception {
         return CommonUtil.getLocalTime() + " - Al Fresco's channel for staff: " + message;
+//        return new Date() + " - Al Fresco's channel for staff: " + message;
+
     }
 }
