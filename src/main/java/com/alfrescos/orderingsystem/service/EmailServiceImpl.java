@@ -32,7 +32,8 @@ public class EmailServiceImpl implements EmailService {
     private Properties properties;
     private static final String ApiUrl = "https://api1.27hub.com/api/emh/a/v2";
     private static final String QueryFormatString = "%1$s?e=%2$s&k=%3$s";
-    private static final String YourAPIKey = "EE6855E0";
+    // API Key of verifying email of Hippo
+    private static final String YourAPIKey = "xxx";
 
     @Autowired
     public EmailServiceImpl() {
@@ -57,7 +58,8 @@ public class EmailServiceImpl implements EmailService {
         t.merge(context, writer);
 
         System.out.println("Sending email...");
-        SendGrid sendGrid = new SendGrid("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");
+        // API Key of SendGrid
+        SendGrid sendGrid = new SendGrid("API_KEY");
         Email from = new Email("no-reply.ordering@alfrescos.com");
         from.setName("Alfresco's Restaurant Ordering System");
         String subject = "Thank you for using our Ordering System";
@@ -131,7 +133,8 @@ public class EmailServiceImpl implements EmailService {
         t.merge(context, writer);
 
         System.out.println("Sending email...");
-        SendGrid sendGrid = new SendGrid("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");
+        // API Key of SendGrid
+        SendGrid sendGrid = new SendGrid("API_KEY");
         Email from = new Email("no-reply.ordering@alfrescos.com");
         from.setName("Alfresco's Restaurant Ordering System");
         String subject = "Reset your account's password in Alfresco's Restaurant Ordering System";

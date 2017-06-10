@@ -69,8 +69,8 @@ public class AuthenticationRestController {
     @PostMapping(value = "/forgot-password")
     public ResponseEntity<?> createForgotPasswordToken(@RequestBody Map<String, String> data) {
         String urlPath = data.get("urlPath").trim();
-        String serverPath = "https://backend-os-v2.herokuapp.com/";
-//        String serverPath = "http://localhost:8080/";
+//        String serverPath = "https://backend-os-v2.herokuapp.com/";
+        String serverPath = "http://localhost:8080/";
 
         String email = data.get("email").trim();
         User user = userService.findByEmail(email);

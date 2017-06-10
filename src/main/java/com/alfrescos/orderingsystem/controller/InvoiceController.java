@@ -39,6 +39,9 @@ public class InvoiceController {
     private TableService tableService;
 
     @Autowired
+    private ReservedTableService reservedTableService;
+
+    @Autowired
     private InvoiceService invoiceService;
 
     @Autowired
@@ -51,15 +54,23 @@ public class InvoiceController {
     public ResponseEntity<?> create(@RequestBody Map<String, String> data) {
         String invoiceId = "INV" + new Date().getTime();
         try {
+            String customerAccountCode = UserUtil.getAccountCodeByAuthorization();
             Long tableId = Long.parseLong(data.get("tableId").trim());
             Table table = this.tableService.findById(tableId);
-            if (table.getTableStatus() != TableStatus.FREE) {
+            if (table.getTableStatus() == TableStatus.ORDERING
+                    || table.getTableStatus() == TableStatus.FOOD_IS_MADE
+                    || table.getTableStatus() == TableStatus.CLEANING) {
                 return new ResponseEntity<Object>("Table is in ordering process. You can't create invoice with this table", HttpStatus.NOT_ACCEPTABLE);
+            } else if (table.getTableStatus() == TableStatus.RESERVING) {
+                Long userId = UserUtil.getIdByAuthorization();
+                ReservedTable reservedTable = this.reservedTableService.findByUserId(userId).stream().filter(reservedTable1 -> reservedTable1.getFinalStatus() == TableStatus.RESERVING).collect(Collectors.toList()).get(0);
+                if  (reservedTable.getTable().getId() != tableId){
+                    return new ResponseEntity<>("Failed when created something. Please check again!", HttpStatus.NOT_ACCEPTABLE);
+                }
             } else {
                 table.setTableStatus(TableStatus.ORDERING);
                 this.tableService.update(table);
             }
-            String customerAccountCode = UserUtil.getAccountCodeByAuthorization();
             User customer;
             if (!customerAccountCode.equals("anonymousUser")) {
                 customer = userService.findByAccountCode(customerAccountCode);
@@ -111,8 +122,9 @@ public class InvoiceController {
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @GetMapping(value = "/all-invoices")
     public ResponseEntity<?> getAllInvoices() {
-        Iterable<Invoice> invoiceList = invoiceService.findAll();
+        List<Invoice> invoiceList = (List<Invoice>) invoiceService.findAll();
         if (invoiceList != null) {
+            invoiceList = invoiceList.stream().filter(invoice -> invoice.isVisible()).collect(Collectors.toList());
             return new ResponseEntity<>(invoiceList, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

@@ -5,14 +5,13 @@
 package com.alfrescos.orderingsystem.controller;
 
 import com.alfrescos.orderingsystem.common.InvoiceUtil;
+import com.alfrescos.orderingsystem.common.TableStatus;
 import com.alfrescos.orderingsystem.common.UserUtil;
 import com.alfrescos.orderingsystem.entity.FoodAndDrink;
 import com.alfrescos.orderingsystem.entity.Invoice;
 import com.alfrescos.orderingsystem.entity.InvoiceDetail;
-import com.alfrescos.orderingsystem.service.FoodAndDrinkService;
-import com.alfrescos.orderingsystem.service.InvoiceDetailService;
-import com.alfrescos.orderingsystem.service.InvoiceService;
-import com.alfrescos.orderingsystem.service.UserService;
+import com.alfrescos.orderingsystem.entity.Table;
+import com.alfrescos.orderingsystem.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +38,9 @@ public class InvoiceDetailController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private TableService tableService;
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping(value = "/{invoiceId}")
@@ -72,6 +74,9 @@ public class InvoiceDetailController {
             if (InvoiceUtil.addInvoiceDetail(data, invoice, timeOrdered, foodAndDrinkService, invoiceDetailService)){
                 invoice.setMade(false);
                 invoice = this.invoiceService.update(invoice);
+                Table table = invoice.getTable();
+                table.setTableStatus(TableStatus.ORDERING);
+                this.tableService.update(table);
                 if (invoice != null) {
                     return new ResponseEntity<Object>("Added successfully.", HttpStatus.CREATED);
                 } else {
